@@ -105,7 +105,6 @@ export default function Header() {
                 {/* Desktop Auth Buttons and Theme Toggle */}
                 <div className="hidden lg:flex items-center gap-4 flex-1 justify-end">
                     <AuthButtons />
-                    <ThemeToggle className="lg:hidden xl:block" />
                 </div>
 
                 {/* Mobile Menu Button */}

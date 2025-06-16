@@ -6,7 +6,7 @@ import LearningPath from './LearningPaths'
 function Hero() {
     return (
         <div>
-            <div className='bg-gradient-to-r from-brand to-gray-700 h-[80vh] relative '>
+            <div className='bg-gradient-to-r from-brand to-gray-700  h-[70vh] md:h-[80vh] relative '>
                 <Header />
                 <div className="hero-content text-white dark:text-white max-w-7xl mx-auto py-30 px-4">
                     <div className="left-section w-full text-center md:text-start md:w-1/2">

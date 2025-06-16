@@ -13,7 +13,7 @@ const CourseTabs = () => {
         <div>
             <Header />
             {/* Banner Section with Gradient Overlay */}
-            <div className="relative bg-gray-900 text-white py-24 overflow-hidden">
+            <div className="relative bg-gray-900 text-white py-24 overflow-hidden px-4">
                 {/* Background Image with Fade Effect */}
                 <div className="absolute inset-0 z-0">
                     <img

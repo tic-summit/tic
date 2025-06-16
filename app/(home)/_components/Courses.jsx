@@ -89,9 +89,9 @@ const HomeCourses = () => {
          <div className="max-w-7xl mx-auto px-4 py-8 ">
          <div className="container mx-auto px-4 py-8">
       <div 
-        className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6"
+        className="flex flex-row justify-between items-start md:items-center mb-6"
       >
-        <div className="section-sub-head mb-4 md:mb-0">
+        <div className="s mb-4 md:mb-0">
           <h2 className="text-3xl md:text-4xl font-bold mt-2 text-left">
             Featured Courses
           </h2>

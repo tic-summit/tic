@@ -1,8 +1,15 @@
+import Link from 'next/link';
+import { useParams, usePathname } from 'next/navigation'
 import React from 'react'
 
+
+
 function Logo() {
+
+  const pathname = usePathname();
+
   return (
-    <div className='text-gray-900'>Logo</div>
+    <Link href={'/'} className={`S{pathname === '/' ? 'text-white' : text-gray-900} text-xl md:text-3xl`}>Logo</Link>
   )
 }
 
