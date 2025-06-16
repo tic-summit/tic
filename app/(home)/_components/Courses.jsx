@@ -2,87 +2,10 @@ import CourseCard from '@/components/course/CourseCard';
 import { BookOpen, Heart, Star } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
+import courses from '@/app/courses/api/courses';
 
 const HomeCourses = () => {
-    const courses = [
-        {
-          id: 1,
-          title: "Introduction to Web Development",
-          instructor: "David Powell",
-          price: "Free",
-          originalPrice: null,
-          image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=300&fit=crop",
-          lessons: 12,
-          duration: "8 hrs",
-          rating: 4,
-          reviews: 23,
-        },
-        {
-          id: 2,
-          title: "Complete HTML, CSS and JavaScript Course",
-          instructor: "David Powell",
-          price: "Free",
-          originalPrice: null,
-          image: "https://images.unsplash.com/photo-1593720213428-28a5b9e94613?w=400&h=300&fit=crop",
-          instructorImage: "https://dreamslms-wp.dreamstechnologies.com/wp-content/uploads/2023/02/profile5.jpg",
-          lessons: 18,
-          duration: "30 hrs",
-          rating: 5,
-          reviews: 45,
-        },
-        {
-          id: 3,
-          title: "Fullstack WordPress Developer Course",
-          instructor: "David Powell",
-          price: "$260",
-          originalPrice: "$300",
-          image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&h=300&fit=crop",
-          instructorImage: "https://dreamslms-wp.dreamstechnologies.com/wp-content/uploads/2023/02/profile5.jpg",
-          lessons: 25,
-          duration: "78 hrs 30 mins",
-          rating: 4,
-          reviews: 12,
-        },
-        {
-          id: 4,
-          title: "Advanced Android & Kotlin Development Course",
-          instructor: "Michael Morgan",
-          price: "$15",
-          originalPrice: "$18",
-          image: "https://images.unsplash.com/photo-1607252650355-f7fd0460ccdb?w=400&h=300&fit=crop",
-          instructorImage: "https://dreamslms-wp.dreamstechnologies.com/wp-content/uploads/2023/02/profile5.jpg",
-          lessons: 9,
-          duration: "78 hrs 30 mins",
-          rating: 5,
-          reviews: 8,
-        },
-        {
-          id: 5,
-          title: "iOS & Swift Complete Application Development",
-          instructor: "Michael Morgan",
-          price: "Free",
-          originalPrice: null,
-          image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=300&fit=crop",
-          lessons: 4,
-          duration: "60 hrs 30 mins",
-          rating: 4,
-          reviews: 15,
-        },
-        {
-          id: 6,
-          title: "REST APIs with Flask and Python",
-          instructor: "Michael Morgan",
-          price: "$12",
-          originalPrice: "$14",
-          image: "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=400&h=300&fit=crop",
-          instructorImage: "https://dreamslms-wp.dreamstechnologies.com/wp-content/uploads/2023/02/profile5.jpg",
-          lessons: 4,
-          duration: "50 hrs 30 mins",
-          rating: 4,
-          reviews: 7,
-        }
-      ];
-
+    
 
   return (
     <div className='bg-gradient-to-b'>

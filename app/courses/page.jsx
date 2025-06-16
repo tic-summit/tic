@@ -6,6 +6,7 @@ import CourseCard from '@/components/course/CourseCard';
 import Link from 'next/link';
 import Header from '@/components/header';
 import { motion, AnimatePresence } from 'framer-motion';
+import courses from './api/courses';
 
 export default function CourseListing() {
     const [searchText, setSearchText] = useState('');
@@ -18,99 +19,7 @@ export default function CourseListing() {
     const [showMobileFilters, setShowMobileFilters] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
 
-    // Sample course data
-    const courses = [
-        {
-            id: 19320,
-            title: "Power Electronics",
-            category: "Engineering",
-            image: "/api/placeholder/420/295",
-            url: "/courses/power-electronics/",
-            price: "Free",
-            originalPrice: null,
-            curriculum: 7,
-            duration: "1d 1h 50m",
-            rating: 3.93,
-            reviews: 15,
-            lessons: 7,
-            description: "Donec eu congue sem. Fusce ut eu est semper augue accumsan. Integer consequat ultricies arcu a feugiat."
-        },
-        {
-            id: 19321,
-            title: "Advanced Mathematics",
-            category: "Mathematics",
-            image: "/api/placeholder/420/295",
-            url: "/courses/advanced-mathematics/",
-            price: "$99",
-            originalPrice: "$149",
-            curriculum: 12,
-            duration: "2d 3h 20m",
-            rating: 4.5,
-            reviews: 28,
-            lessons: 15,
-            description: "Master advanced mathematical concepts with practical applications in engineering and science."
-        },
-        {
-            id: 19322,
-            title: "Introduction to Law",
-            category: "Law",
-            image: "/api/placeholder/420/295",
-            url: "/courses/intro-law/",
-            price: "Free",
-            originalPrice: null,
-            curriculum: 8,
-            duration: "1d 5h 30m",
-            rating: 4.2,
-            reviews: 42,
-            lessons: 10,
-            description: "Learn the fundamentals of law and legal systems in this comprehensive introduction course."
-        },
-        {
-            id: 19323,
-            title: "Health Sciences Basics",
-            category: "Health",
-            image: "/api/placeholder/420/295",
-            url: "/courses/health-sciences/",
-            price: "$79",
-            originalPrice: "$120",
-            curriculum: 9,
-            duration: "1d 8h 15m",
-            rating: 4.1,
-            reviews: 35,
-            lessons: 12,
-            description: "Explore the fundamentals of health sciences and medical terminology."
-        },
-        {
-            id: 19324,
-            title: "Educational Psychology",
-            category: "Education",
-            image: "/api/placeholder/420/295",
-            url: "/courses/educational-psychology/",
-            price: "$59",
-            originalPrice: "$89",
-            curriculum: 6,
-            duration: "18h 45m",
-            rating: 4.3,
-            reviews: 22,
-            lessons: 8,
-            description: "Understanding how people learn and develop in educational settings."
-        },
-        {
-            id: 19325,
-            title: "Structural Engineering",
-            category: "Engineering",
-            image: "/api/placeholder/420/295",
-            url: "/courses/structural-engineering/",
-            price: "$129",
-            originalPrice: "$179",
-            curriculum: 15,
-            duration: "3d 2h 10m",
-            rating: 4.7,
-            reviews: 18,
-            lessons: 20,
-            description: "Learn the principles of structural design and analysis for buildings and bridges."
-        }
-    ];
+
 
     const categories = [
         { id: 18, name: "Education" },
