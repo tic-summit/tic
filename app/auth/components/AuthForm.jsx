@@ -1,17 +1,30 @@
 // File: components/AuthForm.jsx
 "use client"
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Head from 'next/head';
 import Link from 'next/link';
 import Logo from '@/components/ui/Logo';
+import api from '@/services/api';
+import { useAuth } from '@/contexts/AuthContexts';
 
 export default function AuthForm({ type = "signin" }) {
+    const router = useRouter();
+    const { login } = useAuth();
+    
     const [formData, setFormData] = useState({
         email: '',
         password: '',
         ...(type === 'signup' && {
-            name: '',
-            confirmPassword: ''
+            fullName: '',
+            confirmPassword: '',
+            phoneNumber: '',
+            contact: '',
+            userType: 'student',
+            country: {
+                name: '',
+                code: ''
+            }
         })
     });
 
@@ -20,10 +33,21 @@ export default function AuthForm({ type = "signin" }) {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+        
+        if (name === 'countryName' || name === 'countryCode') {
+            setFormData(prev => ({
+                ...prev,
+                country: {
+                    ...prev.country,
+                    [name === 'countryName' ? 'name' : 'code']: value
+                }
+            }));
+        } else {
+            setFormData(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        }
     };
 
     const validate = () => {
@@ -39,12 +63,16 @@ export default function AuthForm({ type = "signin" }) {
         }
 
         if (type === 'signup') {
-            if (!formData.name) newErrors.name = "Name is required";
+            if (!formData.fullName) newErrors.fullName = "Full name is required";
             if (!formData.confirmPassword) {
                 newErrors.confirmPassword = "Please confirm your password";
             } else if (formData.password !== formData.confirmPassword) {
                 newErrors.confirmPassword = "Passwords don't match";
             }
+            if (!formData.phoneNumber) newErrors.phoneNumber = "Phone number is required";
+            if (!formData.contact) newErrors.contact = "Contact is required";
+            if (!formData.country.name) newErrors.countryName = "Country name is required";
+            if (!formData.country.code) newErrors.countryCode = "Country code is required";
         }
 
         setErrors(newErrors);
@@ -57,13 +85,49 @@ export default function AuthForm({ type = "signin" }) {
 
         setIsLoading(true);
         try {
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            alert(`${type === 'signin' ? "Signed in" : "Account created"} successfully!`);
-            // In a real app, you would redirect here
-            // router.push('/dashboard');
+            let response;
+            
+            if (type === 'signin') {
+                // Login endpoint
+                response = await api.post('/auth/login', {
+                    email: formData.email,
+                    password: formData.password
+                });
+            } else {
+                // Signup endpoint
+                response = await api.post('/auth/signup', {
+                    fullName: formData.fullName,
+                    email: formData.email,
+                    password: formData.password,
+                    userType: formData.userType,
+                    phoneNumber: formData.phoneNumber,
+                    contact: formData.contact,
+                    country: {
+                        name: formData.country.name,
+                        code: formData.country.code
+                    }
+                });
+            }
+
+            // Handle successful authentication
+            const { user, token } = response.data;
+            login(user, token);
+            
+            // Redirect to dashboard
+            if(user.userTYpe === 'instructor'){
+                router.push('/instructor/dashboard');
+            }
+            else{
+                router.push('/student/dashboard');
+            }
+           
+            
         } catch (error) {
-            alert("An error occurred. Please try again.");
+            const errorMessage = error.response?.data?.message || 
+                               error.response?.data?.error || 
+                               `${type === 'signin' ? 'Sign in' : 'Sign up'} failed. Please try again.`;
+            
+            setErrors({ general: errorMessage });
         } finally {
             setIsLoading(false);
         }
@@ -99,7 +163,7 @@ export default function AuthForm({ type = "signin" }) {
                     ) : (
                         <>
                             Already have an account?{' '}
-                            <Link href="/auth/signin" className="font-mediu text-brand hover:text-brand/80">
+                            <Link href="/auth/login" className="font-mediu text-brand hover:text-brand/80">
                                 Sign in
                             </Link>
                         </>
@@ -110,22 +174,28 @@ export default function AuthForm({ type = "signin" }) {
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="bg-white py-8 px-4 border border-gray-200 sm:rounded-lg sm:px-10">
                     <form className="space-y-6" onSubmit={handleSubmit}>
+                        {errors.general && (
+                            <div className="bg-red-50 border border-red-200 rounded-md p-4">
+                                <p className="text-sm text-red-600">{errors.general}</p>
+                            </div>
+                        )}
+
                         {type === 'signup' && (
                             <div>
-                                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                                <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
                                     Full Name
                                 </label>
                                 <div className="mt-1">
                                     <input
-                                        id="name"
-                                        name="name"
+                                        id="fullName"
+                                        name="fullName"
                                         type="text"
                                         autoComplete="name"
-                                        value={formData.name}
+                                        value={formData.fullName}
                                         onChange={handleChange}
-                                        className={`appearance-none block w-full px-3 py-2 border ${errors.name ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-brand/50 focus:border-brand/50 sm:text-sm`}
+                                        className={`appearance-none block w-full px-3 py-2 border ${errors.fullName ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-brand/50 focus:border-brand/50 sm:text-sm`}
                                     />
-                                    {errors.name && <p className="mt-2 text-sm text-red-600">{errors.name}</p>}
+                                    {errors.fullName && <p className="mt-2 text-sm text-red-600">{errors.fullName}</p>}
                                 </div>
                             </div>
                         )}
@@ -167,23 +237,116 @@ export default function AuthForm({ type = "signin" }) {
                         </div>
 
                         {type === 'signup' && (
-                            <div>
-                                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                                    Confirm Password
-                                </label>
-                                <div className="mt-1">
-                                    <input
-                                        id="confirmPassword"
-                                        name="confirmPassword"
-                                        type="password"
-                                        autoComplete="new-password"
-                                        value={formData.confirmPassword}
-                                        onChange={handleChange}
-                                        className={`appearance-none block w-full px-3 py-2 border ${errors.confirmPassword ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-brand/50 focus:border-brand/50 sm:text-sm`}
-                                    />
-                                    {errors.confirmPassword && <p className="mt-2 text-sm text-red-600">{errors.confirmPassword}</p>}
+                            <>
+                                <div>
+                                    <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                                        Confirm Password
+                                    </label>
+                                    <div className="mt-1">
+                                        <input
+                                            id="confirmPassword"
+                                            name="confirmPassword"
+                                            type="password"
+                                            autoComplete="new-password"
+                                            value={formData.confirmPassword}
+                                            onChange={handleChange}
+                                            className={`appearance-none block w-full px-3 py-2 border ${errors.confirmPassword ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-brand/50 focus:border-brand/50 sm:text-sm`}
+                                        />
+                                        {errors.confirmPassword && <p className="mt-2 text-sm text-red-600">{errors.confirmPassword}</p>}
+                                    </div>
                                 </div>
-                            </div>
+
+                                <div>
+                                    <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">
+                                        Phone Number
+                                    </label>
+                                    <div className="mt-1">
+                                        <input
+                                            id="phoneNumber"
+                                            name="phoneNumber"
+                                            type="tel"
+                                            autoComplete="tel"
+                                            value={formData.phoneNumber}
+                                            onChange={handleChange}
+                                            className={`appearance-none block w-full px-3 py-2 border ${errors.phoneNumber ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-brand/50 focus:border-brand/50 sm:text-sm`}
+                                        />
+                                        {errors.phoneNumber && <p className="mt-2 text-sm text-red-600">{errors.phoneNumber}</p>}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label htmlFor="contact" className="block text-sm font-medium text-gray-700">
+                                        Contact
+                                    </label>
+                                    <div className="mt-1">
+                                        <input
+                                            id="contact"
+                                            name="contact"
+                                            type="text"
+                                            value={formData.contact}
+                                            onChange={handleChange}
+                                            className={`appearance-none block w-full px-3 py-2 border ${errors.contact ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-brand/50 focus:border-brand/50 sm:text-sm`}
+                                        />
+                                        {errors.contact && <p className="mt-2 text-sm text-red-600">{errors.contact}</p>}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label htmlFor="userType" className="block text-sm font-medium text-gray-700">
+                                        User Type
+                                    </label>
+                                    <div className="mt-1">
+                                        <select
+                                            id="userType"
+                                            name="userType"
+                                            value={formData.userType}
+                                            onChange={handleChange}
+                                            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-brand/50 focus:border-brand/50 sm:text-sm"
+                                        >
+                                            <option value="student">Student</option>
+                                            <option value="instructor">Instructor</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label htmlFor="countryName" className="block text-sm font-medium text-gray-700">
+                                            Country Name
+                                        </label>
+                                        <div className="mt-1">
+                                            <input
+                                                id="countryName"
+                                                name="countryName"
+                                                type="text"
+                                                value={formData.country.name}
+                                                onChange={handleChange}
+                                                className={`appearance-none block w-full px-3 py-2 border ${errors.countryName ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-brand/50 focus:border-brand/50 sm:text-sm`}
+                                                placeholder="e.g., Cameroon"
+                                            />
+                                            {errors.countryName && <p className="mt-2 text-sm text-red-600">{errors.countryName}</p>}
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label htmlFor="countryCode" className="block text-sm font-medium text-gray-700">
+                                            Country Code
+                                        </label>
+                                        <div className="mt-1">
+                                            <input
+                                                id="countryCode"
+                                                name="countryCode"
+                                                type="text"
+                                                value={formData.country.code}
+                                                onChange={handleChange}
+                                                className={`appearance-none block w-full px-3 py-2 border ${errors.countryCode ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-brand/50 focus:border-brand/50 sm:text-sm`}
+                                                placeholder="e.g., CM"
+                                            />
+                                            {errors.countryCode && <p className="mt-2 text-sm text-red-600">{errors.countryCode}</p>}
+                                        </div>
+                                    </div>
+                                </div>
+                            </>
                         )}
 
                         {type === 'signin' && (

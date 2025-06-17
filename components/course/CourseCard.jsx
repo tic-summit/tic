@@ -13,14 +13,14 @@ export default function CourseCard({course, index}) {
   >
     <div className=" rounded-lg overflow-hidden border border-gray-300">
       <div className="relative">
-        <a href={course.url}>
+        <div href={course.url}>
           <img 
             src={course.image} 
             alt={course.title} 
             className="w-full h-48 object-cover"
             loading="lazy"
           />
-        </a>
+        </div>
         <div className="absolute top-4 right-4 bg-white px-3 py-1 rounded">
           {course.originalPrice ? (
             <h3 className="text-sm font-semibold">
@@ -44,7 +44,7 @@ export default function CourseCard({course, index}) {
         </div>
 
         <h3 className="text-lg font-semibold mb-3 hover:text-primary">
-          <a href={course.url}>{course.title}</a>
+          <div href={course.url}>{course.title}</div>
         </h3>
 
         <div className="flex items-center text-sm text-gray-600 mb-4">

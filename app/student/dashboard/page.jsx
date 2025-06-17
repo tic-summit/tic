@@ -37,8 +37,12 @@ import Image from 'next/image';
 import Header from '@/components/header';
 import TopBar from '@/components/header/components/TopBar';
 import Link from 'next/link';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import { useAuth } from '@/contexts/AuthContexts';
 
-const Dashboard = () => {
+const DashboardContent = () => {
+    const {user} = useAuth()
+    console.log(user);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -66,10 +70,11 @@ const Dashboard = () => {
                             src="/Hero.webp"
                             width={150}
                             height={150}
+                            alt="student"
                         />
                         <div className="user-name flex flex-col">
-                            <span className='text-2xl md:text-3xl mt-1 md:mt-0 lg:mb-0'>John Doe</span>
-                            <span className="email text-gray-800">Jae@gmail.com</span>
+                            <span className='text-2xl md:text-3xl mt-1 md:mt-0 lg:mb-0'>{user.fullName}</span>
+                            <span className="email text-gray-800">{user.email}</span>
                         </div>
                     </div>
                 </div>
@@ -347,4 +352,10 @@ const Dashboard = () => {
     );
 };
 
-export default Dashboard;
+export default function Dashboard() {
+    return (
+      <ProtectedRoute>
+        <DashboardContent />
+      </ProtectedRoute>
+    );
+  }

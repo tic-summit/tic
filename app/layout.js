@@ -1,15 +1,15 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "@/contexts/AuthContexts";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+import { Nunito } from 'next/font/google'
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const nunito = Nunito({
+  subsets: ['latin'],
+  weight: ['400', '600', '700'], // Customize weights as needed
+  variable: '--font-nunito',
+})
+
 
 
 
@@ -17,9 +17,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`lang="en" className={nunito.variable} antialiased`}
       >
-        {children}
+           <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );
