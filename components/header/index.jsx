@@ -31,13 +31,11 @@ export default function Header() {
     // Animation variants
     const headerVariants = {
         scrolled: {
-            backgroundColor: pathname === '/' ? '#1e2939' : 'rgb(255, 255, 255)',
-            boxShadow: '0px 4px 6px -1px rgba(0, 0, 0, 0.1)',
-            color: pathname === '/' ? 'rgb(255, 255, 255)' : 'rgb(31, 41, 55)'
+            backgroundColor: pathname === '/' ? '' : 'rgb(255, 255, 255)',
+            color: pathname === '/' ? 'rgb(31, 41, 55)' : 'rgb(31, 41, 55)'
         },
         normal: {
             backgroundColor: pathname === '/' ? 'rgba(0, 0, 0, 0)' : 'rgb(255, 255, 255)',
-            boxShadow: '0px 0px 0px 0px rgba(0, 0, 0, 0)',
             color: pathname === '/' ? 'rgb(255, 255, 255)' : 'rgb(31, 41, 55)'
         }
     };
@@ -84,7 +82,7 @@ export default function Header() {
 
     return (
         <motion.header 
-            className="sticky top-0 z-50"
+            className="sticky top-0 z-50 backdrop-blur-2xl font-semibold text-sm"
             initial="normal"
             animate={isScrolled || pathname === '/' ? "scrolled" : "normal"}
             variants={headerVariants}
@@ -109,7 +107,7 @@ export default function Header() {
 
                 {/* Mobile Menu Button */}
                 <motion.button 
-                    className={`lg:hidden p-2 ${pathname === '/' ? 'text-white' : 'text-gray-800'}`}
+                    className={`lg:hidden p-2 ${pathname === '/' ? 'text-blue-950' : 'text-gray-800'}`}
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                     aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
                     whileTap={{ scale: 0.95 }}

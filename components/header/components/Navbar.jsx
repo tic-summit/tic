@@ -33,10 +33,10 @@ export default function Navbar({ mobile, variants }) {
                 href={link.href}
                 className={`block transition-colors ${mobile ? 'py-2' : 'py-6'} ${
                   isActive 
-                    ? 'font-semibold lg:border-b-4 border-blue-500 ' 
+                    ? 'font-semibold lg:border-b-4 border-brand ' 
                     : mobile 
                       ? 'text-gray-800' 
-                      : 'text-current hover:text-blue-500 hover:font-semibold hover:border-b-4 hover:border-blue-500 hover:transition-colors duration-200'
+                      : 'text-current hover:border-b-4 hover:border-brand hover:transition-colors duration-200'
                 }`}
               > 
                 {link.name}

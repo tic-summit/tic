@@ -23,7 +23,7 @@ const HomeCourses = () => {
         <div className="all-btn all-category">
           <Link
             href="/courses" 
-            className="bg-primary hover:bg-primary-dark border rounded-full border-brand px-6 py-3  font-medium transition-colors duration-300 inline-block"
+            className="bg-primary hover:bg-primary-dark border rounded-full border-secondary text-secondary font-semibold px-6 py-3  transition-colors duration-300 inline-block"
           >
             All Courses
           </Link>

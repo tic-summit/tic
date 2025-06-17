@@ -12,8 +12,9 @@
 }
 
 @theme{
-  --color-brand: #1e2939;
+  --color-brand: #1e1a4d;
   --color-dark: #0a0a0a;
+  --color-secondary: #162456;
 }
 
 html {
