@@ -42,7 +42,7 @@ function Hero() {
                             <div className="title text-3xl sm:text-4xl md:text-5xl font-bold tracking-wide">
                                 Empowering the Next Generation of Tech Talent
                             </div>
-                            <div className="subtitle text-xs sm:text-sm md:text-base">
+                            <div className="subtitle text-[17px] sm:text-lg">
                                 Master in-demand tech skills through interactive courses, real-world projects, hackathons, internships, and expert mentorship — all in one platform
                             </div>
                         </div>
