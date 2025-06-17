@@ -39,8 +39,8 @@ function Hero() {
                 <div className="hero-content text-secondary max-w-7xl mx-auto py-20 sm:py-30 px-4 relative z-10 h-full flex flex-col md:flex-row items-center md:justify-between">
                     <div className="left-section w-full text-center md:text-start md:w-1/2">
                         <div className="header space-y-4 sm:space-y-6">
-                            <div className="title text-3xl sm:text-4xl font-bold tracking-wide">
-                                Empowering the Next Generation of Tech Talent
+                            <div className="title text-lg sm:text-4xl font-bold tracking-wide">
+                                Empowering < br className='lg:hidden' /> the Next Generation of Tech Talent
                             </div>
                             <div className="subtitle text-[17px] sm:text-lg">
                                 Master in-demand tech skills through interactive courses, real-world projects, hackathons, internships, and expert mentorship — all in one platform
