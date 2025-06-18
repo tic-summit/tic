@@ -85,12 +85,11 @@ export default function CourseCurriculum() {
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
-                            className={`flex items-center px-4 py-2 border-r whitespace-nowrap  ${activeTab === tab.id
+                            className={`flex items-center px-4 py-2 rounded-xl  whitespace-nowrap text-xs  ${activeTab === tab.id
                                 ? 'bg-brand text-white'
                                 : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
                                 }`}
                         >
-                            <span className="mr-2">{tab.icon}</span>
                             {tab.label}
                         </button>
                     ))}

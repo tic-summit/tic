@@ -85,7 +85,7 @@ const InstructorDashboardContent = () => {
             <div className="flex flex-col xl:flex-row max-w-7xl mx-auto px-4">
 
                 {/* Left sidebar */}
-                <div className={`fixed xl:static inset-y-0 left-0 z-50 w-80 xl:w-72 bg-white xl:bg-transparent border-r xl:border-r-0 transform transition-transform duration-300 ease-in-out ${sidebarOpen ? 'translate-x-0' : '-translate-x-full xl:translate-x-0'}`}>
+                <div className={`fixed xl:static inset-y-0 left-0 z-30 w-80 xl:w-72 bg-white xl:bg-transparent border-r xl:border-r-0 transform transition-transform duration-300 ease-in-out ${sidebarOpen ? 'translate-x-0' : '-translate-x-full xl:translate-x-0'}`}>
                     {/* Sidebar header */}
                     <div className="xl:hidden flex items-center justify-between p-4 bg-gray-100 border-b border-gray-300">
                         <h5 className="text-lg font-semibold">My profile</h5>

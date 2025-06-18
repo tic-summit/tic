@@ -1,3 +1,4 @@
+"use client"
 import Header from '@/components/header'
 import React from 'react'
 import Searchbar from './Searchbar.'
@@ -5,22 +6,24 @@ import LearningPath from './LearningPaths'
 import { FaBook, FaAngular, FaJs, FaLightbulb, FaHistory, FaStar, FaEnvelope } from 'react-icons/fa'
 import { SiJavascript } from 'react-icons/si'
 import { GiCash } from 'react-icons/gi'
-import { LucideVerified } from 'lucide-react'
+import { ArrowBigRight, ArrowRight, LucideVerified } from 'lucide-react'
 import Image from 'next/image'
+import { useAuth } from '@/contexts/AuthContexts'
+import Link from 'next/link'
 
 function Hero() {
+    const {user, isAuthenticated} = useAuth()
     return (
         <div>
-            <div className='bg-gradient-to-r from-gray-50 to-blue-50 h-[65vh] md:h-[80vh] relative overflow-hidden'>
+            <div className='bg-gradient-to-r from-gray-50 to-blue-50 min-h-[65vh] md:h-[80vh]'>
                 {/* Floating Icons - Adjusted for mobile */}
-                <FaAngular className="hidden sm:block absolute top-1/4 sm:top-1/3 right-1/4 sm:right-1/3 text-red-500 text-3xl sm:text-5xl opacity-70 z-10 animate-float-delay" />
+                <FaAngular className=" absolute top-1/6 sm:top-1/3 right-1/4 sm:right-1/3 text-red-500 text-3xl sm:text-5xl opacity-70 z-10 animate-float-delay" />
                 <SiJavascript className="hidden sm:block absolute top-1/6 sm:top-1/5 right-1/6 sm:right-1/4 text-yellow-500 text-2xl sm:text-4xl opacity-70 z-10 animate-float" />
                 <FaLightbulb className="absolute top-1/6 left-1/6 text-yellow-500 text-2xl sm:text-4xl opacity-70 z-10 animate-float-delay" />
-                <FaHistory className="hidden sm:block absolute top-3/4 right-1/4 sm:right-1/3 text-purple-500 text-2xl sm:text-4xl opacity-70 z-10 animate-float-delay" />
                 <FaStar className="absolute top-1/4 right-1/6 sm:right-1/5 text-yellow-500 text-2xl sm:text-4xl opacity-70 z-10 animate-float" />
                 
                 {/* Notification Card - Adjusted for mobile */}
-                <div className='absolute bottom-4 sm:bottom-18 right-4 sm:right-1/3 p-4 sm:p-6 rounded-2xl border border-gray-300 text-xl sm:text-4xl z-20 animate-float text-gray-800 backdrop-blur-md bg-white/30'>
+                {/* <div className='absolute bottom-4 sm:bottom-18 right-4 sm:right-1/3 p-4 sm:p-6 rounded-2xl border border-gray-300 text-xl sm:text-4xl z-20 animate-float text-gray-800 backdrop-blur-md bg-white/30'>
                     <div className="flex items-center gap-2 sm:gap-4">
                         <div className="bg-yellow-500 p-2 sm:p-3 rounded-full w-fit">
                             <FaEnvelope className="text-white text-sm sm:text-lg" />
@@ -33,13 +36,13 @@ function Hero() {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
                 <Header />
-                <div className="hero-content text-secondary max-w-7xl mx-auto py-20 sm:py-30 px-4 relative z-10 h-full flex flex-col md:flex-row items-center md:justify-between">
-                    <div className="left-section w-full text-center md:text-start md:w-1/2">
+                <div className="hero-content text-secondary max-w-7xl mx-auto py-20 sm:py-30 px-4 relative z-10 h-full flex flex-col md:flex-row  md:justify-between">
+                    <div className="left-section w-full text-center md:text-start md:w-1/2 ">
                         <div className="header space-y-4 sm:space-y-6">
-                            <div className="title text-lg sm:text-4xl font-bold tracking-wide">
+                            <div className="title text-lg sm:text-4xl font-bold tracking-wide font-edu mt-4">
                                 Empowering < br className='lg:hidden' /> the Next Generation of Tech Talent
                             </div>
                             <div className="subtitle text-[17px] sm:text-lg">
@@ -48,6 +51,15 @@ function Hero() {
                         </div>
                         <div className="search-wrapper mt-6 sm:mt-8 md:mt-12">
                             <Searchbar />
+                        </div>
+                        <div className="button-wrap flex flex-col gap-6 mt-10">
+                            {isAuthenticated ? <Link href="/" className='border border-brand lg:boder-none lg:bg-brand py-3 lg:py-4 text-brand lg:text-white font-bold flex justify-center gap-2 items-center rounded-full text-center  w-full lg:w-1/2'>Browse Hackathons <ArrowRight /></Link> : (<>
+                            <button className="bg-brand py-3 lg:p-4 text-white font-bold w-full lg:w-1/2 rounded-full">
+                                Get started
+                            </button>
+                            <button className="border border-brand py-3 lg:py-4 text-brand font-bold w-full lg:w-1/2 rounded-full">
+                                Log in
+                            </button></>)}
                         </div>
                     </div>
                     

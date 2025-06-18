@@ -4,7 +4,7 @@ import { Facebook, Instagram, StarIcon, TimerIcon, Twitter, User2Icon } from 'lu
 
 function CourseInfo() {
   return (
-    <div className=" bg-white roun p-6 flex- border border-gray-300 rounded-xl">
+    <div className=" bg-white roun p-6 flex- border border-gray-300 rounded-xl h-fit">
     <h3 className="text-xl font-bold mb-4">Course Info</h3>
     <ul className="space-y-3">
         <li className="flex">

@@ -31,7 +31,7 @@ export default function Header() {
     // Animation variants
     const headerVariants = {
         scrolled: {
-            backgroundColor: pathname === '/' ? '' : 'rgb(255, 255, 255)',
+            backgroundColor: pathname === '/' ? 'white' : 'rgb(255, 255, 255)',
             color: pathname === '/' ? 'rgb(31, 41, 55)' : 'rgb(31, 41, 55)'
         },
         normal: {
@@ -82,7 +82,7 @@ export default function Header() {
 
     return (
         <motion.header 
-            className="sticky top-0 z-50 backdrop-blur-2xl font-semibold text-sm"
+            className="sticky top-0 z-50  font-semibold text-sm"
             initial="normal"
             animate={isScrolled || pathname === '/' ? "scrolled" : "normal"}
             variants={headerVariants}
