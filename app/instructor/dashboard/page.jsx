@@ -1,38 +1,19 @@
 "use client"
 import { useState } from 'react';
 import {
-    Menu,
     X,
-    ChevronUp,
     LogOut,
     Edit,
     Settings,
     Trash,
-    ChevronDown,
     ChevronLeft,
     ChevronRight,
     LayoutDashboard,
-    BookOpen,
     ShoppingCart,
     FileText,
     Diamond,
-    CreditCard,
     Heart,
-    Lock,
-    MenuIcon,
-    FileX,
-    BookX,
-    Repeat,
-    LucideFlagTriangleLeft,
-    FileTerminalIcon,
-    ListFilter,
-    Users,
-    Star,
-    Wallet,
-    BarChart2,
-    FolderCheck,
-    GraduationCap,
-    Gem,
+
     Tv,
 } from 'lucide-react';
 import { FaAngleLeft, FaAngleRight, FaAward, FaCheckCircle, FaPlay, FaTv, FaUserGraduate, FaGem } from 'react-icons/fa';
@@ -42,11 +23,75 @@ import TopBar from '@/components/header/components/TopBar';
 import Link from 'next/link';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { useAuth } from '@/contexts/AuthContexts';
+import { Sider } from '@/components/ui/sider';
+
+
+
+
 
 const InstructorDashboardContent = () => {
-    const {user} = useAuth()
+    const {user, logout} = useAuth()
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
+
+    const defaultNavItems = [
+        { 
+          id: 'dashboard',
+          name: 'Dashboard', 
+          icon: <LayoutDashboard className="h-5 w-5" />,
+          component: <div>Dashboard Content</div>
+        },
+        { 
+          id: 'courses',
+          name: 'My Courses', 
+          icon: <ShoppingCart className="h-5 w-5" />,
+          component: <div>My Courses Content</div>
+        },
+        { 
+          id: 'resume',
+          name: 'Course Resume', 
+          icon: <FileText className="h-5 w-5" />,
+          component: <div>Course Resume Content</div>
+        },
+        { 
+          id: 'quiz',
+          name: 'Quiz', 
+          icon: <Diamond className="h-5 w-5" />,
+          component: <div>Quiz Content</div>
+        },
+        { 
+          id: 'saved',
+          name: 'Saved', 
+          icon: <Heart className="h-5 w-5" />,
+          component: <div>Saved Content</div>
+        },
+        { 
+          id: 'edit-profile',
+          name: 'Edit Profile', 
+          icon: <Edit className="h-5 w-5" />,
+          component: <div>Edit Profile Content</div>
+        },
+        { 
+          id: 'settings',
+          name: 'Settings', 
+          icon: <Settings className="h-5 w-5" />,
+          component: <div>Settings Content</div>
+        },
+        { 
+          id: 'delete-profile',
+          name: 'Delete Profile', 
+          icon: <Trash className="h-5 w-5" />,
+          component: <div>Delete Profile Content</div>
+        },
+        { 
+          id: logout,
+          name: 'Sign Out', 
+          icon: <LogOut className="h-5 w-5" />,
+          component: <div>Sign Out Confirmation</div>,
+          isDestructive: true
+        }
+      ];
+    
 
     const toggleSidebar = () => {
         setSidebarOpen(!sidebarOpen);
@@ -99,58 +144,7 @@ const InstructorDashboardContent = () => {
                     </div>
 
                     {/* Sidebar content */}
-                    <div className="p-3 xl:p-0 rounded-xl">
-                        <div className="bg-white border border-gray-300 rounded-3 pb-0 p-3 w-full">
-                            {/* Dashboard menu */}
-                            <nav className="space-y-1 z-50">
-                                <a className="flex items-center px-3 py-2 text-sm font-medium bg-brand text-white rounded-lg  " href="#">
-                                    <LayoutDashboard className="mr-3 h-5 w-5" />
-                                    Dashboard
-                                </a>
-                                <a className="flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-gray-700 hover:text-white rounded-md" href="#">
-                                    <ShoppingCart className="mr-3 h-5 w-5" />
-                                    My Courses
-                                </a>
-                                <a className="flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-gray-700 hover:text-white rounded-md" href="#">
-                                    <Diamond className="mr-3 h-5 w-5" />
-                                    Quiz
-                                </a>
-                                <a className="flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-gray-700 hover:text-white rounded-md" href="#">
-                                    <BarChart2 className="mr-3 h-5 w-5" />
-                                    Earnings
-                                </a>
-                                <a className="flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-gray-700 hover:text-white rounded-md" href="#">
-                                    <Users className="mr-3 h-5 w-5" />
-                                    Students
-                                </a>
-                                <a className="flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-gray-700 hover:text-white rounded-md" href="#">
-                                    <FolderCheck className="mr-3 h-5 w-5" />
-                                    Orders
-                                </a>
-                                <a className="flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-gray-700 hover:text-white rounded-md" href="#">
-                                    <Star className="mr-3 h-5 w-5" />
-                                    Reviews
-                                </a>
-                                <a className="flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-gray-700 hover:text-white rounded-md" href="#">
-                                    <Edit className="mr-3 h-5 w-5" />
-                                    Edit Profile
-                                </a>
-                            
-                                <a className="flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-gray-700 hover:text-white rounded-md" href="#">
-                                    <Settings className="mr-3 h-5 w-5" />
-                                    Settings
-                                </a>
-                                <a className="flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-gray-700 hover:text-white rounded-md" href="#">
-                                    <Trash className="mr-3 h-5 w-5" />
-                                    Delete Profile
-                                </a>
-                                <a className="flex items-center px-3 py-2 text-sm font-medium text-red-400 hover:bg-red-900 hover:bg-opacity-25 hover:text-red-300 rounded-md" href="#">
-                                    <LogOut className="mr-3 h-5 w-5" />
-                                    Sign Out
-                                </a>
-                            </nav>
-                        </div>
-                    </div>
+                    <Sider defaula navItems={defaultNavItems}/>
                 </div>
 
                 {/* Overlay for mobile */}
@@ -166,7 +160,7 @@ const InstructorDashboardContent = () => {
                     {/* Mobile menu button */}
                     <div className="xl:hidden bg-brand p-2 w-fit rounded-full">
                         <button
-                            className="text-white p-2 hover:bg-gray-700"
+                            className="text-white p-2 hover:bg-brand"
                             onClick={toggleSidebar}
                         >
                             <LayoutDashboard size={16} />

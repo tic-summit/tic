@@ -1,36 +1,20 @@
 "use client"
 import { useState } from 'react';
 import {
-    Menu,
     X,
-    MonitorPlay,
-    CheckCircle,
-    Award,
     Search,
-    Play,
-    RotateCcw,
     LogOut,
     Edit,
     Settings,
     Trash,
-    ChevronDown,
-    ChevronLeft,
-    ChevronRight,
     LayoutDashboard,
-    BookOpen,
     ShoppingCart,
     FileText,
     Diamond,
-    CreditCard,
     Heart,
-    Lock,
-    MenuIcon,
-    FileX,
-    BookX,
     Repeat,
     LucideFlagTriangleLeft,
-    FileTerminalIcon,
-    ListFilter,
+ 
 } from 'lucide-react';
 import { FaAngleLeft, FaAngleRight, FaAward, FaCheckCircle, FaPlay, FaTv } from 'react-icons/fa';
 import Image from 'next/image';
@@ -39,12 +23,84 @@ import TopBar from '@/components/header/components/TopBar';
 import Link from 'next/link';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { useAuth } from '@/contexts/AuthContexts';
+import { Sider } from '@/components/ui/sider';
+
+
+
+  
+  
 
 const DashboardContent = () => {
-    const {user} = useAuth()
+    const {user, logout} = useAuth()
     console.log(user);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const defaultNavItems = [
+        {
+          id: 'dashboard',
+          name: 'Dashboard',
+          icon: <LayoutDashboard className="mr-3 h-5 w-5" />,
+          href: '#',
+          className: 'flex items-center px-3 py-2 text-sm font-medium text-white bg-brand rounded-md'
+        },
+        {
+          id: 'courses',
+          name: 'My Courses',
+          icon: <ShoppingCart className="mr-3 h-5 w-5" />,
+          href: '#',
+          className: 'flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-brand hover:text-white rounded-md'
+        },
+        {
+          id: 'resume',
+          name: 'Course Resume',
+          icon: <FileText className="mr-3 h-5 w-5" />,
+          href: '#',
+          className: 'flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-brand hover:text-white rounded-md'
+        },
+        {
+          id: 'quiz',
+          name: 'Quiz',
+          icon: <Diamond className="mr-3 h-5 w-5" />,
+          href: '#',
+          className: 'flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-brand hover:text-white rounded-md'
+        },
+        {
+          id: 'saved',
+          name: 'Saved',
+          icon: <Heart className="mr-3 h-5 w-5" />,
+          href: '#',
+          className: 'flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-brand hover:text-white rounded-md'
+        },
+        {
+          id: 'edit-profile',
+          name: 'Edit Profile',
+          icon: <Edit className="mr-3 h-5 w-5" />,
+          href: '#',
+          className: 'flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-brand hover:text-white rounded-md'
+        },
+        {
+          id: 'settings',
+          name: 'Settings',
+          icon: <Settings className="mr-3 h-5 w-5" />,
+          href: '#',
+          className: 'flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-brand hover:text-white rounded-md'
+        },
+        {
+          id: 'delete-profile',
+          name: 'Delete Profile',
+          icon: <Trash className="mr-3 h-5 w-5" />,
+          href: '#',
+          className: 'flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-brand hover:text-white rounded-md'
+        },
+        {
+          id: logout,
+          name: 'Sign Out',
+          icon: <LogOut className="mr-3 h-5 w-5" />,
+          href: '#',
+          className: 'flex items-center px-3 py-2 text-sm font-medium text-red-400 hover:bg-red-900 hover:bg-opacity-25 hover:text-red-300 rounded-md',
+          isDestructive: true
+        }
+      ];
 
     const toggleSidebar = () => {
         setSidebarOpen(!sidebarOpen);
@@ -96,52 +152,7 @@ const DashboardContent = () => {
                     </div>
 
                     {/* Sidebar content */}
-                    <div className="p-3 xl:p-0 border border-gray-300 rounded-lg">
-                        <div className=" rounded-lg p-4 w-full">
-                            {/* Dashboard menu */}
-                            <nav className="space-y-1 z-50">
-                                <a className="flex items-center px-3 py-2 text-sm font-medium text-white bg-brand rounded-md" href="#">
-                                    <LayoutDashboard className="mr-3 h-5 w-5" />
-                                    Dashboard
-                                </a>
-
-                                <a className="flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-gray-700 hover:text-white rounded-md" href="#">
-                                    <ShoppingCart className="mr-3 h-5 w-5" />
-                                    My Courses
-                                </a>
-                                <a className="flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-gray-700 hover:text-white rounded-md" href="#">
-                                    <FileText className="mr-3 h-5 w-5" />
-                                    Course Resume
-                                </a>
-                                <a className="flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-gray-700 hover:text-white rounded-md" href="#">
-                                    <Diamond className="mr-3 h-5 w-5" />
-                                    Quiz
-                                </a>
-
-                                <a className="flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-gray-700 hover:text-white rounded-md" href="#">
-                                    <Heart className="mr-3 h-5 w-5" />
-                                    Saved
-                                </a>
-                                <a className="flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-gray-700 hover:text-white rounded-md" href="#">
-                                    <Edit className="mr-3 h-5 w-5" />
-                                    Edit Profile
-                                </a>
-                                <a className="flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-gray-700 hover:text-white rounded-md" href="#">
-                                    <Settings className="mr-3 h-5 w-5" />
-                                    Settings
-                                </a>
-                                <a className="flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-gray-700 hover:text-white rounded-md" href="#">
-                                    <Trash className="mr-3 h-5 w-5" />
-                                    Delete Profile
-                                </a>
-                                <a className="flex items-center px-3 py-2 text-sm font-medium text-red-400 hover:bg-red-900 hover:bg-opacity-25 hover:text-red-300 rounded-md" href="#">
-                                    <LogOut className="mr-3 h-5 w-5" />
-                                    Sign Out
-                                </a>
-
-                            </nav>
-                        </div>
-                    </div>
+                    <Sider navItems={defaultNavItems}/>
                 </div>
 
                 {/* Overlay for mobile */}
