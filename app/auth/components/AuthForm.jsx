@@ -114,12 +114,11 @@ export default function AuthForm({ type = "signin" }) {
             login(user, token);
             
             // Redirect to dashboard
-            if(user.userTYpe === 'instructor'){
+            if(user.userType === 'instructor')
                 router.push('/instructor/dashboard');
-            }
-            else{
-                router.push('/student/dashboard');
-            }
+    
+            else if(user.userType)
+                router.push('/student/dashboard')
            
             
         } catch (error) {
