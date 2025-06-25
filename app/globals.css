@@ -11,45 +11,74 @@
   --foreground: #ededed;
 }
 
-@theme{
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* app/globals.css or in your CSS module */
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
+
+@theme {
   --color-brand: #1e1a4d;
   --color-dark: #0a0a0a;
   --color-secondary: #162456;
 }
 
-html {
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* styles/globals.css */
-
-body {
-  font-family: 'Inter', sans-serif;
-  font-optical-sizing: auto;
+/* Cellofy Font Family */
+@font-face {
+  font-family: 'Cellofy';
+  src: url('/fonts/cellofy/Cellofy-Regular.otf') format('opentype');
   font-weight: 400;
   font-style: normal;
+  font-display: swap;
 }
 
-/* Optional: create a custom utility class */
+@font-face {
+  font-family: 'Cellofy';
+  src: url('/fonts/cellofy/Cellofy-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Cellofy';
+  src: url('/fonts/cellofy/Cellofy-Italic.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Apply Cellofy as default font */
+body {
+  font-family: 'Cellofy', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-optical-sizing: auto;
+}
+
+/* Utility classes for other fonts */
 .font-inter {
   font-family: 'Inter', sans-serif;
-  font-optical-sizing: auto;
-  font-style: normal;
 }
 
-.font-edu{
+.font-edu {
   font-family: "Edu NSW ACT Hand Pre", cursive;
-  font-optical-sizing: auto;
-  font-style: normal;
 }
 
-.font-fairPlay{
+.font-fairPlay {
   font-family: "Playfair Display", serif;
-  font-optical-sizing: auto;
-  font-style: normal;
 }
 
-
+/* Rest of your existing styles... */
 
 Button{
   font-size: 16 !important 
