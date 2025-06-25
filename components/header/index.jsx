@@ -82,14 +82,15 @@ export default function Header() {
 
     return (
         <motion.header 
-            className="sticky top-0 z-50  font-semibold text-sm"
+            className="sticky top-0 z-50  font-semibold text-sm d"
             initial="normal"
             animate={isScrolled || pathname === '/' ? "scrolled" : "normal"}
             variants={headerVariants}
             transition={{ duration: 0.3 }}
         >
             {/* Main header */}
-            <div className="max-w-[1450px] mx-auto px-4  flex items-center justify-between gap-4">
+            <div className="bg-brand/10">
+                <div className="max-w-7xl mx-auto px-4  flex items-center justify-between gap-4">
                 {/* Logo */}
                 <div className="flex-1">
                     <Logo />
@@ -114,6 +115,7 @@ export default function Header() {
                 >
                     {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                 </motion.button>
+            </div>
             </div>
 
             {/* Mobile Menu */}

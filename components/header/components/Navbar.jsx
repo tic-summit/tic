@@ -31,9 +31,9 @@ export default function Navbar({ mobile, variants }) {
             >
               <Link
                 href={link.href}
-                className={`block transition-colors ${mobile ? 'py-2' : 'py-6'} ${
+                className={`block transition-colors text-lg font-light ${mobile ? 'py-2' : 'py-6'} ${
                   isActive 
-                    ? 'font-semibold lg:border-b-4 border-brand ' 
+                    ? ' lg:border-b-4 border-brand ' 
                     : mobile 
                       ? 'text-gray-800' 
                       : 'text-current hover:border-b-4 hover:border-brand hover:transition-colors duration-200'

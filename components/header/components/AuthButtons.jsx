@@ -11,8 +11,8 @@ function AuthButtons(mobile) {
     return (
         <>
             {!isAuthenticated ? (<div><div className="auth-buttons flex flex-col md:flex-row items-center gap-4">
-                <Link href={'/auth/login'} className={`px-4 py-2 flex-1 w-full md:w-fit rounded-full border text-center  ${(pathname === '/' && !mobile) ? 'border-white text-white' : mobile && 'bg-brand text-white'} font-semibold `}>Login</ Link>
-                <Link href={'/auth/signup'} className="px-4 py-2 flex-1 w-full md:w-fit  rounded-full border text-center border-gray-800 text-gray-800 font-semibold dark:bg-white ">Register</Link>
+                <Link href={'/auth/login'} className={`px-4 py-2 flex-1 w-full md:w-fit rounded-full  text-center  text-lg ${(pathname === '/' && !mobile) ? ' text-white' : mobile && 'bg-brand text-white'} font-semibold `}>Login</ Link>
+                <Link href={'/auth/signup'} className="px-4 py-2 flex-1 w-full md:w-fit  rounded-full border text-center text-lg border-gray-800 text-gray-800 font-semibold dark:bg-white ">Register</Link>
             </div>
             </div>) :
             <div className='flex items-center gap-2'>  
