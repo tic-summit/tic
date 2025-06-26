@@ -1,14 +1,16 @@
+"use client"
+import { useCourses } from '@/app/courses/api/courses';
 import CourseCard from '@/components/course/CourseCard';
 import { BookOpen, Heart, Star } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
-import courses from '@/app/courses/api/courses';
 
 const HomeCourses = () => {
+  const {courses} = useCourses();
     
 
   return (
-    <div className='bg-brand/5'>
+    <div className='bg-brand/10'>
          <div className="max-w-7xl mx-auto px-4 py-8 ">
          <div className="container mx-auto px-4 py-8">
       <div 

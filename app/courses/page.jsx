@@ -6,9 +6,11 @@ import CourseCard from '@/components/course/CourseCard';
 import Link from 'next/link';
 import Header from '@/components/header';
 import { motion, AnimatePresence } from 'framer-motion';
-import courses from './api/courses';
+import { useCourses } from './api/courses';
 
 export default function CourseListing() {
+      const { courses, loading, error, refresh } = useCourses();
+      console.log(courses);
     const [searchText, setSearchText] = useState('');
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [costFilter, setCostFilter] = useState('all');
