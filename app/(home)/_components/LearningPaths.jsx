@@ -36,12 +36,12 @@ export default function LearningPath() {
   ];
 
   return (
-    <section className="py-12">
+    <section className="py-12 px-4">
       <div className="max-w-7xl mx-auto px-2 text-center">
         <h1 className="font-bold text-xl  md:text-4xl">Tic Learning Path</h1>
         <div className="text-sm text-gray-500 mt-4">Class odio natoque sociosqu etiam tempor orci. Sem et tortor consequat id.<br/> Fermentum egestas tellus. Nunc eu hendrerit turpis. Fusce non lectus sem In pellentesque nunc.</div>
         <div
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-8 w-full"
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 md:gap-4 mt-8 w-full"
 
         >
           {steps.map((step, index) => (
