@@ -15,8 +15,9 @@ import {
     Heart,
 
     Tv,
+    Book,
 } from 'lucide-react';
-import { FaAngleLeft, FaAngleRight, FaAward, FaCheckCircle, FaPlay, FaTv, FaUserGraduate, FaGem } from 'react-icons/fa';
+import { FaAngleLeft, FaAngleRight, FaAward, FaCheckCircle, FaPlay, FaTv, FaUserGraduate, FaGem, FaBook } from 'react-icons/fa';
 import Image from 'next/image';
 import Header from '@/components/header';
 import TopBar from '@/components/header/components/TopBar';
@@ -24,74 +25,75 @@ import Link from 'next/link';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { useAuth } from '@/contexts/AuthContexts';
 import { Sider } from '@/components/ui/sider';
+import { Button } from '@/components/ui/button';
 
 
 
 
 
 const InstructorDashboardContent = () => {
-    const {user, logout} = useAuth()
+    const { user, logout } = useAuth()
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
     const defaultNavItems = [
-        { 
-          id: 'dashboard',
-          name: 'Dashboard', 
-          icon: <LayoutDashboard className="h-5 w-5" />,
-          component: <div>Dashboard Content</div>
+        {
+            id: 'dashboard',
+            name: 'Dashboard',
+            icon: <LayoutDashboard className="h-5 w-5" />,
+            component: <div>Dashboard Content</div>
         },
-        { 
-          id: 'courses',
-          name: 'My Courses', 
-          icon: <ShoppingCart className="h-5 w-5" />,
-          component: <div>My Courses Content</div>
+        {
+            id: 'courses',
+            name: 'My Courses',
+            icon: <ShoppingCart className="h-5 w-5" />,
+            component: <div>My Courses Content</div>
         },
-        { 
-          id: 'resume',
-          name: 'Course Resume', 
-          icon: <FileText className="h-5 w-5" />,
-          component: <div>Course Resume Content</div>
+        {
+            id: 'resume',
+            name: 'Course Resume',
+            icon: <FileText className="h-5 w-5" />,
+            component: <div>Course Resume Content</div>
         },
-        { 
-          id: 'quiz',
-          name: 'Quiz', 
-          icon: <Diamond className="h-5 w-5" />,
-          component: <div>Quiz Content</div>
+        {
+            id: 'quiz',
+            name: 'Quiz',
+            icon: <Diamond className="h-5 w-5" />,
+            component: <div>Quiz Content</div>
         },
-        { 
-          id: 'saved',
-          name: 'Saved', 
-          icon: <Heart className="h-5 w-5" />,
-          component: <div>Saved Content</div>
+        {
+            id: 'saved',
+            name: 'Saved',
+            icon: <Heart className="h-5 w-5" />,
+            component: <div>Saved Content</div>
         },
-        { 
-          id: 'edit-profile',
-          name: 'Edit Profile', 
-          icon: <Edit className="h-5 w-5" />,
-          component: <div>Edit Profile Content</div>
+        {
+            id: 'edit-profile',
+            name: 'Edit Profile',
+            icon: <Edit className="h-5 w-5" />,
+            component: <div>Edit Profile Content</div>
         },
-        { 
-          id: 'settings',
-          name: 'Settings', 
-          icon: <Settings className="h-5 w-5" />,
-          component: <div>Settings Content</div>
+        {
+            id: 'settings',
+            name: 'Settings',
+            icon: <Settings className="h-5 w-5" />,
+            component: <div>Settings Content</div>
         },
-        { 
-          id: 'delete-profile',
-          name: 'Delete Profile', 
-          icon: <Trash className="h-5 w-5" />,
-          component: <div>Delete Profile Content</div>
+        {
+            id: 'delete-profile',
+            name: 'Delete Profile',
+            icon: <Trash className="h-5 w-5" />,
+            component: <div>Delete Profile Content</div>
         },
-        { 
-          id: logout,
-          name: 'Sign Out', 
-          icon: <LogOut className="h-5 w-5" />,
-          component: <div>Sign Out Confirmation</div>,
-          isDestructive: true
+        {
+            id: logout,
+            name: 'Sign Out',
+            icon: <LogOut className="h-5 w-5" />,
+            component: <div>Sign Out Confirmation</div>,
+            isDestructive: true
         }
-      ];
-    
+    ];
+
 
     const toggleSidebar = () => {
         setSidebarOpen(!sidebarOpen);
@@ -104,26 +106,39 @@ const InstructorDashboardContent = () => {
     return (
         <div className="bg-gray-50">
             <TopBar />
-            <Header/>
+            <Header />
             <div className="hero bg-gradient-to-r from-brand to-slate-800 py-20 text-white mb-10 lg:mb-26">
                 <div className="max-w-7xl mx-auto px-4 relative -z-0">
                     <h1 className='text-2xl md:text-4xl mt-2'>Instructor Dashboard</h1>
                     <div className="flex items-center gap-2 text-white/70 px-2 mt-1">
                         <Link href={'/'}>Home</Link>
                     </div>
-                    <div className="absolute -bottom-42 flex items-start gap-5">
+                    <div className="absolute -bottom-42 right-0 left-0 px-2 flex items-start gap-2 md:gap-5">
                         <Image
-                        
+
                             className="w-[100px] h-[100px] md:w-[120px] md:h-[120px] object-cover rounded-full border-4 border-gray-50"
                             src="/Hero.webp"
                             width={150}
                             height={150}
                             alt="Instructor"
                         />
-                        <div className="user-name flex flex-col">
+                        <div className="flex flex-col">
                             <span className='text-2xl md:text-3xl mt-1 md:mt-0 lg:mb-0'>{user.fullName}</span>
-                            <span className="email text-gray-800">{user.email}</span>
+                            <span className="email text-gray-700">{user.email}</span>
+                            <div className='md:flex items-center gap-4 mt-1'>
+                                <div className="flex gap-2 items-center  text-xs">
+                                    <FaBook className='text-brand h-4 w-4' />
+                                    <h5 className="text-gray-600">25</h5>
+                                    <p className="text-gray-600">Total Courses</p>
+                                </div>
+                                  <div className="flex gap-2 items-center  text-xs">
+                                 <FaGem className="h-4 w-4 text-blue-500" />
+                                    <h5 className="text-gray-600">12k</h5>
+                                    <p className="text-gray-600">Students</p>
+                                </div>
+                            </div>
                         </div>
+                     <Link href={`/instructor/courses/create`} className={`border  bg-transparent hover:bg-transparent border-green-600 text-green-600 font-semibold text-sm p-3 self-end ml-auto md:mr-10 rounded-full`}>Create course</Link>
                     </div>
                 </div>
             </div>
@@ -144,7 +159,7 @@ const InstructorDashboardContent = () => {
                     </div>
 
                     {/* Sidebar content */}
-                    <Sider defaula navItems={defaultNavItems}/>
+                    <Sider defaula navItems={defaultNavItems} />
                 </div>
 
                 {/* Overlay for mobile */}
@@ -206,7 +221,7 @@ const InstructorDashboardContent = () => {
                     {/* Earnings Chart */}
                     <div className="bg-white rounded-lg shadow border border-gray-300 mb-6">
                         <div className="p-6">
-                         
+
                             {/* Placeholder for Chart - in a real app you would use a charting library */}
                             <div className="bg-gray-100 rounded h-80 flex items-center justify-center">
                                 <p className="text-gray-500">Earnings Chart</p>

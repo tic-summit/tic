@@ -17,7 +17,7 @@ const HomeCourses = () => {
         className="flex flex-row justify-between items-start md:items-center mb-6"
       >
         <div className="s mb-4 md:mb-0">
-          <h2 className="text-3xl md:text-4xl font-bold mt-2 text-left">
+          <h2 className="text-xl md:text-4xl font-bold mt-2 text-left">
             Featured Courses
           </h2>
         </div>
@@ -25,7 +25,7 @@ const HomeCourses = () => {
         <div className="all-btn all-category">
           <Link
             href="/courses" 
-            className="bg-primary hover:bg-primary-dark border rounded-full border-secondary text-secondary font-semibold px-6 py-3  transition-colors duration-300 inline-block"
+            className="bg-primary hover:bg-primary-dark text-sm text-nowrap rounded-full  text-secondary font-semibold px-6 py-3  transition-colors duration-300 inline-block"
           >
             All Courses
           </Link>
@@ -41,9 +41,9 @@ const HomeCourses = () => {
         </p>
       </div>
     </div>
-      <div className="course-feature">
+      <div className="course-feature md:px-6 lg:px-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {courses.map((course, index) => (
+          {courses.slice(0, 6).map((course, index) => (
         <CourseCard 
         key={course.id} 
         course={course} 

@@ -18,45 +18,32 @@ import {
     TimerIcon,
     StarIcon
 } from 'lucide-react';
+import useCourseDetails from '@/app/api/courses/useCourseDetails.js';
+import { Skeleton } from '@/components/ui/skeleton';
 
-export default function CourseCurriculum() {
+export default function CourseCurriculum({ courseId }) {
     const [activeTab, setActiveTab] = useState('curriculum');
-        const [scrollPosition, setScrollPosition] = useState(0);
+    const [scrollPosition, setScrollPosition] = useState(0);
     
-     
-    
-        const curriculumItems = [
-            { title: 'Aliquam massa turpis', duration: '2 hrs', preview: true },
-            { title: 'Cras pharetra nisl et magna', duration: '30 mins', preview: true },
-            { title: 'Nullam vestibulum eros', duration: '20 mins', preview: false },
-            { title: 'Placerat odio eu', duration: '2 hrs', preview: true },
-            { title: 'Aliquam dolor non', duration: '30 mins', preview: false, hasChildren: true }
-        ];
-    
-        const members = Array(10).fill(null).map((_, i) => ({
-            name: `Member ${i + 1}`,
-            avatar: `https://i.pravatar.cc/150?img=${i + 10}`
-        }));
-    
-        const instructors = [
-            {
-                name: 'James Catwin',
-                role: 'Art Director',
-                avatar: 'https://dtlmselementor.wpengine.com/wp-content/uploads/2023/11/Teacher-image-2.jpg'
-            },
-            {
-                name: 'Jim Morrison',
-                role: 'Chief Programmer',
-                avatar: 'https://dtlmselementor.wpengine.com/wp-content/uploads/2023/11/Teacher-image-4.jpg'
-            }
-        ];
-    
-        const scrollTabs = (direction) => {
-            const container = document.querySelector('.tabs-container');
-            const scrollAmount = direction === 'right' ? 200 : -200;
-            container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-            setScrollPosition(container.scrollLeft + scrollAmount);
-        };
+    const { 
+        curriculum, 
+        loading, 
+        error, 
+        instructor 
+    } = useCourseDetails(courseId);
+
+    const members = Array(10).fill(null).map((_, i) => ({
+        name: `Member ${i + 1}`,
+        avatar: `https://i.pravatar.cc/150?img=${i + 10}`
+    }));
+
+    const scrollTabs = (direction) => {
+        const container = document.querySelector('.tabs-container');
+        const scrollAmount = direction === 'right' ? 200 : -200;
+        container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        setScrollPosition(container.scrollLeft + scrollAmount);
+    };
+
     const tabs = [
         { id: 'curriculum', icon: <BookOpen size={18} />, label: 'Curriculum' },
         { id: 'members', icon: <Users size={18} />, label: 'Members' },
@@ -64,150 +51,161 @@ export default function CourseCurriculum() {
         { id: 'news', icon: <Newspaper size={18} />, label: 'News' },
         { id: 'reviews', icon: <Star size={18} />, label: 'Reviews' }
     ];
-  return (
-    <div className='flex-1'>
-    {/* Tab Content */}
-    <div className="bg-white roun overflow-hidden rounded-xl">
-        {/* Tabs Navigation */}
-        <div className="relative mb-8">
-            <div className="flex items-center">
-                {scrollPosition > 0 && (
-                    <button
-                        onClick={() => scrollTabs('left')}
-                        className="p-2 mr-2 rounded-full bg-gray-100 hover:bg-gray-200 "
-                    >
-                        <ChevronLeft size={20} />
-                    </button>
-                )}
 
-                <div className="tabs-container flex overflow-x-auto scrollbar-hide space-x-1">
-                    {tabs.map(tab => (
+    if (loading) return <div className="flex-1 flex items-center justify-center p-6">
+
+<div role="status">
+    <svg aria-hidden="true" className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-brand" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+        <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+    </svg>
+</div>
+
+    </div>;
+    if (error) return <div className="flex-1 p-6 text-red-500">Error: {error}</div>;
+
+    return (
+        <div className='flex-1'>
+            {/* Tab Content */}
+            <div className="bg-white roun overflow-hidden rounded-xl">
+                {/* Tabs Navigation */}
+                <div className="relative mb-8">
+                    <div className="flex items-center">
+                        {scrollPosition > 0 && (
+                            <button
+                                onClick={() => scrollTabs('left')}
+                                className="p-2 mr-2 rounded-full bg-gray-100 hover:bg-gray-200 "
+                            >
+                                <ChevronLeft size={20} />
+                            </button>
+                        )}
+
+                        <div className="tabs-container flex overflow-x-auto scrollbar-hide space-x-1">
+                            {tabs.map(tab => (
+                                <button
+                                    key={tab.id}
+                                    onClick={() => setActiveTab(tab.id)}
+                                    className={`flex items-center px-4 py-2 rounded-xl whitespace-nowrap text-xs ${
+                                        activeTab === tab.id
+                                            ? 'bg-brand text-white'
+                                            : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                                    }`}
+                                >
+                                    {tab.label}
+                                </button>
+                            ))}
+                        </div>
+
                         <button
-                            key={tab.id}
-                            onClick={() => setActiveTab(tab.id)}
-                            className={`flex items-center px-4 py-2 rounded-xl  whitespace-nowrap text-xs  ${activeTab === tab.id
-                                ? 'bg-brand text-white'
-                                : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
-                                }`}
+                            onClick={() => scrollTabs('right')}
+                            className="p-2 ml-2 rounded-full bg-gray-100 hover:bg-gray-200 "
                         >
-                            {tab.label}
+                            <ChevronRight size={20} />
                         </button>
-                    ))}
+                    </div>
                 </div>
+                <div className='border border-gray-300 rounded-xl'>
 
-                <button
-                    onClick={() => scrollTabs('right')}
-                    className="p-2 ml-2 rounded-full bg-gray-100 hover:bg-gray-200 "
-                >
-                    <ChevronRight size={20} />
-                </button>
-            </div>
-        </div>
-        <div className='border border-gray-300 rounded-xl'>
-
-            {/* Curriculum Tab */}
-            {activeTab === 'curriculum' && (
-                <div className="p-6 ">
-                    <h3 className="text-2xl font-bold mb-6">Course Curriculum</h3>
-                    <div className="space-y-4">
-                        {curriculumItems.map((item, index) => (
-                            <div key={index} className="border border-gray-200 rounded-lg p-4 ">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center">
-                                        <FileText className="text-primary mr-3" size={20} />
-                                        <h4 className="font-medium">{item.title}</h4>
-                                    </div>
-                                    <div className="flex items-center space-x-4">
-                                        {item.preview && (
-                                            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                                                Preview
-                                            </span>
-                                        )}
-                                        <span className="text-sm text-gray-500 flex items-center">
-                                            <Clock className="mr-1" size={14} />
-                                            {item.duration}
-                                        </span>
-                                    </div>
-                                </div>
-                                {item.hasChildren && (
-                                    <div className="ml-10 mt-3 pl-4 border-l-2 border-gray-200">
-                                        <div className="flex items-center justify-between py-2">
+                    {/* Curriculum Tab */}
+                    {activeTab === 'curriculum' && (
+                        <div className="p-6">
+                            <h3 className="text-2xl font-bold mb-6">Course Curriculum</h3>
+                            <div className="space-y-4">
+                                {curriculum?.map((module, index) => (
+                                    <div key={module.id} className="border border-gray-200 rounded-lg p-4">
+                                        <div className="flex items-center justify-between">
                                             <div className="flex items-center">
-                                                <FileText className="text-gray-400 mr-3" size={18} />
-                                                <span className="text-gray-600">Fill In The Blank Questions</span>
+                                                <FileText className="text-primary mr-3" size={20} />
+                                                <h4 className="font-medium">{module.title}</h4>
                                             </div>
-                                            <span className="text-sm text-gray-500 flex items-center">
-                                                <Clock className="mr-1" size={14} />
-                                                30 mins
-                                            </span>
+                                            <div className="flex items-center space-x-4">
+                                                {module.resources.videoUrl && (
+                                                    <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                                                        Video
+                                                    </span>
+                                                )}
+                                                <span className="text-sm text-gray-500 flex items-center">
+                                                    <Clock className="mr-1" size={14} />
+                                                    30 mins
+                                                </span>
+                                            </div>
+                                        </div>
+                                        {module.summaries.length > 0 && (
+                                            <div className="ml-10 mt-3 pl-4 border-l-2 border-gray-200">
+                                                {module.summaries.map(summary => (
+                                                    <div key={summary.id} className="flex items-center justify-between py-2">
+                                                        <div className="flex items-center">
+                                                            <FileText className="text-gray-400 mr-3" size={18} />
+                                                            <span className="text-gray-600">{summary.title}</span>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                            
+                        </div>
+                    )}
+
+                    {/* Members Tab */}
+                    {activeTab === 'members' && (
+                        <div className="p-6">
+                            <div className="flex justify-between items-center mb-6">
+                                <h3 className="text-2xl font-bold">Course Members</h3>
+                                <p className="text-gray-600">115 enrolled students</p>
+                            </div>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                                {members.map((member, index) => (
+                                    <div key={index} className="flex flex-col items-center p-3 hover:bg-gray-50 rounded-lg">
+                                        <img
+                                            src={member.avatar}
+                                            alt={member.name}
+                                            className="w-16 h-16 rounded-full object-cover mb-2"
+                                        />
+                                        <p className="text-sm font-medium text-center">{member.name}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Instructors Tab */}
+                    {activeTab === 'instructors' && instructor && (
+                        <div className="p-6">
+                            <h3 className="text-2xl font-bold mb-6">Instructors</h3>
+                            <div className="grid md:grid-cols-2 gap-6">
+                                <div className="flex items-start p-4 border border-gray-200 rounded-lg">
+                                    <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center mr-4">
+                                        <User2Icon size={32} className="text-gray-400" />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-lg">{instructor.name}</h4>
+                                        <p className="text-gray-600 mb-3">{instructor.role}</p>
+                                        <div className="flex space-x-3">
+                                            <a href="#" className="text-gray-500 hover:text-blue-600">
+                                                <Facebook size={18} />
+                                            </a>
+                                            <a href="#" className="text-gray-500 hover:text-blue-400">
+                                                <Twitter size={18} />
+                                            </a>
+                                            <a href="#" className="text-gray-500 hover:text-pink-600">
+                                                <Instagram size={18} />
+                                            </a>
+                                            <a href="#" className="text-gray-500 hover:text-blue-700">
+                                                <Linkedin size={18} />
+                                            </a>
                                         </div>
                                     </div>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            )}
-
-            {/* Members Tab */}
-            {activeTab === 'members' && (
-                <div className="p-6">
-                    <div className="flex justify-between items-center mb-6">
-                        <h3 className="text-2xl font-bold">Course Members</h3>
-                        <p className="text-gray-600">115 enrolled students</p>
-                    </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                        {members.map((member, index) => (
-                            <div key={index} className="flex flex-col items-center p-3 hover:bg-gray-50 rounded-lg ">
-                                <img
-                                    src={member.avatar}
-                                    alt={member.name}
-                                    className="w-16 h-16 rounded-full object-cover mb-2"
-                                />
-                                <p className="text-sm font-medium text-center">{member.name}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            )}
-
-            {/* Instructors Tab */}
-            {activeTab === 'instructors' && (
-                <div className="p-6">
-                    <h3 className="text-2xl font-bold mb-6">Instructors</h3>
-                    <div className="grid md:grid-cols-2 gap-6">
-                        {instructors.map((instructor, index) => (
-                            <div key={index} className="flex items-start p-4 border border-gray-200 rounded-lg">
-                                <img
-                                    src={instructor.avatar}
-                                    alt={instructor.name}
-                                    className="w-20 h-20 rounded-full object-cover mr-4"
-                                />
-                                <div>
-                                    <h4 className="font-bold text-lg">{instructor.name}</h4>
-                                    <p className="text-gray-600 mb-3">{instructor.role}</p>
-                                    <div className="flex space-x-3">
-                                        <a href="#" className="text-gray-500 hover:text-blue-600">
-                                            <Facebook size={18} />
-                                        </a>
-                                        <a href="#" className="text-gray-500 hover:text-blue-400">
-                                            <Twitter size={18} />
-                                        </a>
-                                        <a href="#" className="text-gray-500 hover:text-pink-600">
-                                            <Instagram size={18} />
-                                        </a>
-                                        <a href="#" className="text-gray-500 hover:text-blue-700">
-                                            <Linkedin size={18} />
-                                        </a>
-                                    </div>
                                 </div>
                             </div>
-                        ))}
-                    </div>
-                </div>
-            )}
+                        </div>
+                    )}
 
-            {/* News Tab */}
+                    {/* News and Reviews tabs remain the same */}
+                    {/* ... */}
+                        {/* News Tab */}
             {activeTab === 'news' && (
                 <div className="p-6">
                     <h3 className="text-2xl font-bold mb-6">Course News</h3>
@@ -327,10 +325,8 @@ export default function CourseCurriculum() {
                     </div>
                 </div>
             )}
+                </div>
+            </div>
         </div>
-
-    </div>
-
-</div>
-  )
+    );
 }
