@@ -56,7 +56,7 @@ export default function LearningPath() {
               </div>
               <h3 className="font-bold text-xl">{step.title}</h3>
               <p className="text-lg text-gray-500 mt-1 mb-10">{step.desc}</p>
-              <div className="absolute -bottom-9 left-1/2 transformm  -translate-x-1/2 bg-brand p-6 w-fit rounded-full text-white">
+              <div className="absolute -bottom-9 left-1/2 transform  -translate-x-1/2 duration-200 ease-in-out bg-brand p-6 w-fit rounded-full text-white">
                 <ArrowRight className="-rotate-45 group-hover:rotate-0 duration-300" />
               </div>
               </div>
