@@ -11,13 +11,13 @@ const HomeCourses = () => {
 
   return (
     <div className='bg-brand/10'>
-         <div className="max-w-[1500px] mx-auto px-4 py-8 ">
+         <div className="max-w-7xl mx-auto px-4 py-8 ">
          <div className="container mx-auto px-4 py-8">
       <div 
         className="flex flex-row justify-between items-start md:items-center mb-6"
       >
         <div className="s mb-4 md:mb-0">
-          <h2 className="text-xl md:text-4xl font-bold mt-2 text-left">
+          <h2 className="text-3xl md:text-4xl font-bold mt-2 text-left">
             Featured Courses
           </h2>
         </div>
@@ -25,7 +25,7 @@ const HomeCourses = () => {
         <div className="all-btn all-category">
           <Link
             href="/courses" 
-            className="bg-brand text-sm text-nowrap rounded-full  text-secondary font-semibold px-6 py-3  transition-colors duration-300 inline-block"
+            className="bg-brand text-nowrap text-sm rounded-full  text-secondary font-semibold px-6 py-3  transition-colors duration-300 inline-block"
           >
             All Courses
           </Link>
@@ -41,9 +41,9 @@ const HomeCourses = () => {
         </p>
       </div>
     </div>
-      <div className="course-feature px-4">
-        <div className="flex items-center flex-wrap gap-6">
-          {courses.slice(0, 6).map((course, index) => (
+      <div className="course-feature">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {courses.map((course, index) => (
         <CourseCard 
         key={course.id} 
         course={course} 
