@@ -18,7 +18,7 @@ const NavLink = ({ path, pathName, onClick }) => {
     <li>
       <Link 
         href={path} 
-        className={`${isActive ? 'text-brand-dark font-bold' : 'text-brand'}`}
+        className={`${isActive ? 'text-brand font-bold' : 'text-gray-700'}`}
         onClick={onClick}
       >
         {pathName}
@@ -106,8 +106,8 @@ function Header2() {
   const [openSearch, setOpenSearch] = useState(false)
   
   const navLinks = [
-    { path: '/', pathName: 'home' },
-    { path: '/courses', pathName: 'courses' },
+    { path: '/', pathName: 'Home' },
+    { path: '/courses', pathName: 'Courses' },
     { path: '/internships', pathName: 'Internships' },
     { path: '/hackathons', pathName: 'Hackathons' }, // Fixed duplicate pathName
     { path: '/mentor', pathName: 'Mentorship' },
