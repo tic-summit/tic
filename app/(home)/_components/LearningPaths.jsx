@@ -36,7 +36,7 @@ export default function LearningPath() {
   ];
 
   return (
-    <section className="py-12 px-4">
+    <section className="py-24 px-4">
       <div className="max-w-7xl mx-auto px-2 text-center">
         <h1 className="font-bold text-xl  md:text-4xl">Tic Learning Path</h1>
         <div className="text-sm text-gray-500 mt-4">Class odio natoque sociosqu etiam tempor orci. Sem et tortor consequat id.<br/> Fermentum egestas tellus. Nunc eu hendrerit turpis. Fusce non lectus sem In pellentesque nunc.</div>

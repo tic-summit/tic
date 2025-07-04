@@ -150,7 +150,6 @@ export default function CourseListing() {
 
     return (
         <div>
-            <Header />
             <div className="hero bg-gradient-to-r from-brand to-gray-600 py-8 text-white">
                 <div className="max-w-7xl mx-auto px-4">
                     <h1 className='text-2xl md:text-4xl'>Our Courses</h1>

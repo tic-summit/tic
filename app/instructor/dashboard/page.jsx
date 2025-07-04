@@ -105,8 +105,6 @@ const InstructorDashboardContent = () => {
 
     return (
         <div className="bg-gray-50">
-            <TopBar />
-            <Header />
             <div className="hero bg-gradient-to-r from-brand to-slate-800 py-20 text-white mb-10 lg:mb-26">
                 <div className="max-w-7xl mx-auto px-4 relative -z-0">
                     <h1 className='text-2xl md:text-4xl mt-2'>Instructor Dashboard</h1>

@@ -16,8 +16,8 @@ function AuthButtons(mobile) {
             </div>
             </div>) :
             <div className='flex items-center gap-2'>  
-            <Link href={`${user?.userType === "instructor" ? '/instructor/dashboard' : '/student/dashboard'}`} className='px-4 py-2 flex-1 md:flex-0 text-nowrap sm:w-fit rounded-full border border-brand text-brand text-center'>Dashoboard</Link>
-             <button onClick={logout} className={`px-4 py-2 flex-1 md:flex-0 text-nowrap sm:w-fit rounded-full border text-center  ${(pathname === '/' && !mobile) ? 'border-white text-white' : mobile && 'bg-brand text-white'} font-semibold `}>Log out</ button>
+            <Link href={`${user?.userType === "instructor" ? '/instructor/dashboard' : '/student/dashboard'}`} className='px-4 py-2 flex-1 md:flex-0 text-nowrap sm:w-fit rounded-full  font-semibold border text-brand text-center'>Dashoboard</Link>
+             <button onClick={logout} className={`px-4 py-2 flex-1 md:flex-0 text-nowrap sm:w-fit rounded-full  text-center  font-semibold ${(pathname === '/' && !mobile) ? 'border-white text-white' : mobile && 'bg-brand text-white'}  `}>Log out</ button>
 </div>            }
         </>
     )

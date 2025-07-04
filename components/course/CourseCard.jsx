@@ -44,18 +44,18 @@ export default function CourseCard({ course, index }) {
    
   ">
 
-    <div className='bg-pink-500 w-fit p-2 rounded-full m-4 cursor-pointer'>
-               <Link 
-      href={`/courses/${course.id}`} 
-      className="
+            <div className='bg-white w-fit p-2 rounded-full m-4 cursor-pointer'>
+              <Link
+                href={`/courses/${course.id}`}
+                className="
         
-         text-white text-xs 
+         text-green-600 text-xs font-bold 
       "
-    >
-      <Eye className='h-4 w-4' />
-    </Link>
+              >
+                <Eye className='h-4 w-4' />
+              </Link>
 
-    </div>
+            </div>
           </div>
         </div>
 
