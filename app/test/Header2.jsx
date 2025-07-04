@@ -80,7 +80,11 @@ const SearchBar = ({ isOpen, onClose }) => {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div ref={searchRef} className="search-wrap absolute left-0 right-0 z-10 max-w-sm">
+           <div 
+          ref={searchRef} 
+          className="search-wrap absolute left-0 right-0 z-10 w-full max-w-md mx-auto"
+        >
+          
           <motion.div 
             initial={{ opacity: 0, y: 50 }} 
             animate={{ opacity: 1, y: 0 }} 
@@ -122,7 +126,7 @@ function Header2() {
   }, [openMenu])
 
   return (
-    <header className="h-24 px-4 sticky top-0 left-0 right-0 bg-white z-40 shadow-sm">
+    <header className="h-24 px-4  bg-white z-40      relative">
       <div className='max-w-[1400px] mx-auto h-full flex items-center justify-between'>
         <div className="right-section">
           <Logo />
@@ -142,7 +146,6 @@ function Header2() {
                 >
                   <Search className='w-5 h-5' />
                 </button>
-                <SearchBar isOpen={openSearch} onClose={() => setOpenSearch(false)} />
               </div>
               
               <div className="relative">
@@ -179,6 +182,8 @@ function Header2() {
           </div>
         </div>
       </div>
+                      <SearchBar isOpen={openSearch} onClose={() => setOpenSearch(false)} />
+
     </header>
   )
 }
