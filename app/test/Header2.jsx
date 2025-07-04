@@ -28,7 +28,7 @@ function Header2() {
 
         const Navbar = () => (
         <div>
-            <ul className='text-[16px]  text-brand flex flex-col justify-center lg:flex-row items-center gap-8'>
+            <ul className='text-[16px]  text-brand flex flex-col justify-center lg:flex-row items-center gap-8 font-semibold'>
                 <li><Link href={'/'}>Home</Link></li>
                 <li><Link href={'/courses'}>Courses</Link></li>
                 <li><Link href={'/internships'}>Intenships</Link></li>

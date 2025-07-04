@@ -93,34 +93,18 @@ html {
 }
 
 /* Cellofy Font Family */
-@font-face {
-  font-family: 'Cellofy';
-  src: url('/fonts/cellofy/Cellofy-Regular.otf') format('opentype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
 
-@font-face {
-  font-family: 'Cellofy';
-  src: url('/fonts/cellofy/Cellofy-Bold.otf') format('opentype');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
 
-@font-face {
-  font-family: 'Cellofy';
-  src: url('/fonts/cellofy/Cellofy-Italic.otf') format('opentype');
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-}
+
 
 /* Apply Cellofy as default font */
 body {
-  font-family: 'Cellofy', -apple-system, BlinkMacSystemFont, sans-serif;
   font-optical-sizing: auto;
+    font-optical-sizing: auto;
+  font-weight: normal;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
 }
 
 /* Utility classes for other fonts */
