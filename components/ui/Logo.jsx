@@ -9,7 +9,7 @@ function Logo() {
   const pathname = usePathname();
 
   return (
-    <Link href={'/'} className={`S{pathname === '/' ? 'text-white' : text-gray-900} text-2xl`}>Logo</Link>
+    <Link href={'/'} className={`S{pathname === '/' ? 'text-white' : text-gray-900} text-2xl text-brand`}>TicPortal</Link>
   )
 }
 

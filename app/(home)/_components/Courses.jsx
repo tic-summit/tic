@@ -11,7 +11,7 @@ const HomeCourses = () => {
 
   return (
     <div className='bg-brand/10'>
-         <div className="max-w-7xl mx-auto px-4 py-8 ">
+         <div className="max-w-[1500px] mx-auto px-4 py-8 ">
          <div className="container mx-auto px-4 py-8">
       <div 
         className="flex flex-row justify-between items-start md:items-center mb-6"
@@ -41,8 +41,8 @@ const HomeCourses = () => {
         </p>
       </div>
     </div>
-      <div className="course-feature md:px-6 lg:px-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="course-feature px-4">
+        <div className="flex items-center flex-wrap gap-6">
           {courses.slice(0, 6).map((course, index) => (
         <CourseCard 
         key={course.id} 
