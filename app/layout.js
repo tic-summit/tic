@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContexts";
+import Header2 from "./test/Header2";
 // app/layout.tsx or layout.js
 export const metadata = {
   title: 'Your App',
@@ -12,7 +13,9 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head>
       </head>
-      <body><AuthProvider>{children}</AuthProvider></body>
+      <body><AuthProvider>
+        <Header2 />
+        {children}</AuthProvider></body>
     </html>
   );
 }

@@ -30,8 +30,7 @@ function CreateCourse() {
 
   return (
     <div className="bg-gray-50">
-      <Header />
-      <div className="hero bg-gradient-to-r from-brand to-slate-800 py-16 text-center text-white mb-10 lg:mb-18">
+=      <div className="hero bg-gradient-to-r from-brand to-slate-800 py-16 text-center text-white mb-10 lg:mb-18">
         <div className="max-w-7xl mx-auto px-4 relative -z-0 text-center">
           <h1 className='text-2xl md:text-4xl mt-2'>Create a new Course</h1>
           <p className="text-gray-300 mt-2">Build and customize your educational content with our intuitive course creation tools</p>
