@@ -3,7 +3,7 @@ import AuthButtons from '@/components/header/components/AuthButtons'
 import { Input } from '@/components/ui/input'
 import Logo from '@/components/ui/Logo'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Bell, Menu, Search } from 'lucide-react'
+import { Bell, Menu, Search, X } from 'lucide-react'
 import Link from 'next/link'
 import React, { useEffect, useRef, useState } from 'react'
 
