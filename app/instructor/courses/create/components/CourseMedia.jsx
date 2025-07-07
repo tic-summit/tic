@@ -1,124 +1,233 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
-export default function CourseMediaPage() {
-  const [videoUrl, setVideoUrl] = useState('');
-  const [mp4File, setMp4File] = useState(null);
-  const [webmFile, setWebmFile] = useState(null);
-  const [oggFile, setOggFile] = useState(null);
+export default function CourseMediaForm() {
+  const [videoSource, setVideoSource] = useState("External URL");
+  const [videoUrl, setVideoUrl] = useState("");
+  const [thumbnailFile, setThumbnailFile] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
+  const fileInputRef = useRef(null);
+  const imageUploadRef = useRef(null);
 
-  const handleFileChange = (event, fileType) => {
-    const file = event.target.files[0];
-    switch(fileType) {
-      case 'mp4':
-        setMp4File(file);
-        break;
-      case 'webm':
-        setWebmFile(file);
-        break;
-      case 'ogg':
-        setOggFile(file);
-        break;
-      default:
-        break;
+  const handleVideoSourceChange = (e) => {
+    setVideoSource(e.target.value);
+    setVideoUrl("");
+  };
+
+  const handleThumbnailUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setThumbnailFile(file);
+      // For preview purposes
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleImageUploadClick = () => {
+    imageUploadRef.current.click();
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Handle the image upload here
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
   return (
-    <div className="w-full">
-      <h5 className="text-lg font-semibold mb-4">Upload video</h5>
-      
-      {/* Input */}
-      <div className="w-full mt-4 mb-5">
-        <label className="block text-sm font-medium text-gray-700 mb-2">Video URL</label>
-        <input 
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
-          type="text" 
-          placeholder="Enter video url"
-          value={videoUrl}
-          onChange={(e) => setVideoUrl(e.target.value)}
-        />
+    <div className="container mx-auto lg:px-6 py-6">
+      <div className="title mb-6">
+        <h5 className="text-xl font-semibold">Course Media</h5>
+        <p className="text-gray-600 mt-1">
+          Intro Course overview provider type. (.mp4, YouTube, Vimeo etc.
+        </p>
       </div>
-      
-      <div className="relative my-4">
-        <hr className="border-gray-300" />
-        <p className="text-sm absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white px-3 mb-0">Or</p>
+
+      <div className="grid grid-cols-1 gap-6">
+        {/* Course Thumbnail Upload */}
+        <div className="col-span-1">
+          <div className="input-block">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+              <div className="md:col-span-12">
+                <label className="form-label block text-sm font-medium text-gray-700 mb-1">
+                  Course Thumbnail<span className="text-red-500 ms-1">*</span>
+                </label>
+              </div>
+              <div className="md:col-span-10">
+                <input
+                  type="text"
+                  className="form-control w-full px-3 py-2 border border-gray-300 rounded-md  focus:outline-none focus:ring-brand focus:border-brand"
+                  placeholder={thumbnailFile ? thumbnailFile.name : "No File Selected"}
+                  readOnly
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label
+                  htmlFor="file-upload"
+                  className="file-upload-btn w-full inline-flex justify-center py-2 px-4 border border-transparent  text-sm font-medium rounded-md text-white bg-brand hover:bg-brand/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand cursor-pointer"
+                >
+                  Upload File
+                </label>
+                <input
+                  type="file"
+                  id="file-upload"
+                  name="file"
+                  className="hidden"
+                  onChange={handleThumbnailUpload}
+                  ref={fileInputRef}
+                  accept="image/*"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Image Upload Section */}
+        <div className="col-span-1">
+          <div
+            className="upload-img-section border-2 border-dashed border-gray-300 rounded-lg p-8 flex flex-col items-center justify-center cursor-pointer hover:border-indigo-300 transition-colors"
+            id="upload-img-section"
+            onClick={handleImageUploadClick}
+          >
+            <input
+              type="file"
+              id="upload-img-input"
+              className="hidden"
+              accept="image/jpeg, image/png, image/gif, image/webp"
+              onChange={handleImageUpload}
+              ref={imageUploadRef}
+            />
+            {previewImage ? (
+              <img
+                src={previewImage}
+                alt="Preview"
+                className="max-h-48 rounded-md mb-4"
+              />
+            ) : (
+              <div className="upload-content text-center">
+                <span className="flex items-center justify-center mb-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-10 w-10 text-gray-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                  </svg>
+                </span>
+                <p className="text-center font-medium mb-1 text-gray-700">
+                  Upload Image
+                </p>
+                <span className="text-center text-gray-500 text-sm">
+                  JPEG, PNG, GIF, and WebP formats, up to 2 MB
+                </span>
+              </div>
+            )}
+          </div>
+          <hr className="my-6 border-gray-200" />
+        </div>
+
+        {/* Video Source Selection */}
+        <div className="col-span-1">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+            <div className="md:col-span-4">
+              <div className="input-block-link">
+                <label className="form-label block text-sm font-medium text-gray-700 mb-1">
+                  Course Video<span className="text-red-500 ms-1">*</span>
+                </label>
+                <select
+                  className="form-control w-full px-3 py-2 border border-gray-300 rounded-md  focus:outline-none focus:ring-brand focus:border-brand"
+                  value={videoSource}
+                  onChange={handleVideoSourceChange}
+                >
+                  <option>External URL</option>
+                  <option>YouTube</option>
+                  <option>Vimeo</option>
+                  <option>MP4 Upload</option>
+                </select>
+              </div>
+            </div>
+            <div className="md:col-span-8">
+              <div className="input-block-link">
+                <label className="form-label block text-sm font-medium text-gray-700 mb-1 invisible">
+                  &nbsp;
+                </label>
+                <input
+                  type="text"
+                  className="form-control w-full px-3 py-2 border border-gray-300 rounded-md  focus:outline-none focus:ring-brand focus:border-brand"
+                  placeholder={
+                    videoSource === "YouTube"
+                      ? "YouTube URL"
+                      : videoSource === "Vimeo"
+                      ? "Vimeo URL"
+                      : "External URL Link"
+                  }
+                  value={videoUrl}
+                  onChange={(e) => setVideoUrl(e.target.value)}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Video Preview */}
+        <div className="col-span-1">
+          <div className="relative">
+            <a
+              href={videoUrl || "#"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`block ${!videoUrl ? 'pointer-events-none' : ''}`}
+            >
+              {previewImage ? (
+                <img
+                  className="w-full h-auto rounded-lg object-cover"
+                  src={previewImage}
+                  alt="Course thumbnail"
+                />
+              ) : (
+                <div className="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center">
+                  <span className="text-gray-500">Video preview will appear here</span>
+                </div>
+              )}
+              {videoUrl && (
+                <div className="play-icon absolute inset-0 flex items-center justify-center">
+                  <div className="bg-white bg-opacity-80 rounded-full p-4">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-8 w-8 text-brand"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              )}
+            </a>
+          </div>
+        </div>
       </div>
-      
-      <div className="w-full">
-        <label className="block text-sm font-medium text-gray-700 mb-2">Upload video</label>
-        
-        <div className="flex mb-3">
-          <input 
-            type="file" 
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
-            id="inputGroupFile01"
-            accept=".mp4"
-            onChange={(e) => handleFileChange(e, 'mp4')}
-          />
-          <label 
-            className="px-3 py-2 bg-gray-100 border border-l-0 border-gray-300 rounded-r-md text-sm text-gray-700" 
-            htmlFor="inputGroupFile01"
-          >
-            .mp4
-          </label>
-        </div>
-        
-        <div className="flex mb-3">
-          <input 
-            type="file" 
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
-            id="inputGroupFile02"
-            accept=".webm"
-            onChange={(e) => handleFileChange(e, 'webm')}
-          />
-          <label 
-            className="px-3 py-2 bg-gray-100 border border-l-0 border-gray-300 rounded-r-md text-sm text-gray-700" 
-            htmlFor="inputGroupFile02"
-          >
-            .WebM
-          </label>
-        </div>
-        
-        <div className="flex mb-3">
-          <input 
-            type="file" 
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
-            id="inputGroupFile03"
-            accept=".ogg"
-            onChange={(e) => handleFileChange(e, 'ogg')}
-          />
-          <label 
-            className="px-3 py-2 bg-gray-100 border border-l-0 border-gray-300 rounded-r-md text-sm text-gray-700" 
-            htmlFor="inputGroupFile03"
-          >
-            .OGG
-          </label>
-        </div>
-      </div>
-      
-      {/* Preview */}
-      <h5 className="text-lg font-semibold mt-4 mb-4">Video preview</h5>
-      <div className="relative border-2 border-gray-300 rounded-xl overflow-hidden">
-        {/* Video thumbnail */}
-        <img 
-          src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
-          className="w-full h-64 object-cover" 
-          alt="Video preview thumbnail"
-        />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          {/* Video link */}
-          <a 
-            href="https://www.youtube.com/embed/tXHviS-4ygo" 
-            className="inline-flex items-center justify-center w-16 h-16 bg-white text-red-500 rounded-full shadow-lg hover:shadow-xl transition-shadow duration-200 text-2xl"
-            data-glightbox="" 
-            data-gallery="video-tour"
-          >
-            <svg className="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
-            </svg>
-          </a>
-        </div>
-      </div>
+
+   
     </div>
   );
 }

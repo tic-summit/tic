@@ -2,7 +2,7 @@
 
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContexts";
-import Header2 from "./test/Header2";
+import Header2 from "../components/header/Header2";
 
 export const metadata = {
   title: "Your App",
