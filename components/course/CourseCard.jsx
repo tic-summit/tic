@@ -7,7 +7,7 @@ export default function CourseCard({ course, index }) {
     <div
 
       key={course.id}
-      className="course-box shadow max-w-[340px]"
+      className="course-box shadow max-w-full"
       data-aos="fade-up"
       data-aos-delay={index * 100}
     >

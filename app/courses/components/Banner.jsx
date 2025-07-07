@@ -1,5 +1,5 @@
 import React from 'react';
-import { StarIcon, TimerIcon, User2Icon } from 'lucide-react';
+import { StarIcon, TimerIcon, User2Icon, CalendarIcon, BarChart2Icon, BookmarkIcon } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContexts';
 import Link from 'next/link';
 import useCourseDetails from '@/app/api/courses/useCourseDetails.js';
@@ -51,62 +51,95 @@ export default function Banner({ courseId }) {
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 relative z-10">
         <div className="max-w-4xl">
+          {/* Course Categories */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            {course.categories?.map((category, index) => (
+              <span 
+                key={index}
+                className="px-3 py-1 bg-brand/20 text-brand rounded-full text-xs font-medium"
+              >
+                {category}
+              </span>
+            ))}
+          </div>
+
           {/* Course Title */}
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
             {course.title}
           </h2>
 
           {/* Course Description */}
-          <p className="text-lg text-gray-300 mb-8 max-w-2xl">
+          <p className="text-lg text-gray-300 mb-6 max-w-2xl">
             {course.description}
           </p>
 
+          {/* Course Meta Information */}
+          <div className="flex flex-wrap items-center gap-4 mb-8 text-sm text-gray-300">
+            {course.instructor && (
+              <div className="flex items-center">
+                <span>Created by </span>
+                <span className="font-medium ml-1 text-white">{course.instructor.name}</span>
+              </div>
+            )}
+            
+            <div className="flex items-center">
+              <CalendarIcon className="w-4 h-4 mr-1" />
+              <span>Last updated {course.lastUpdated || 'May 2023'}</span>
+            </div>
+            
+            <div className="flex items-center">
+              <BarChart2Icon className="w-4 h-4 mr-1" />
+              <span>{course.level || 'All Levels'}</span>
+            </div>
+          </div>
+
           {/* Course Info */}
-          <div className="flex flex-wrap items-center gap-6">
+          <div className="flex flex-wrap items-center gap-4 mb-8">
             <div className="flex items-center bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-              <img
-                src="https://dreamslms-wp.dreamstechnologies.com/wp-content/themes/dreamslms/assets/images/icon-01.svg"
-                alt="Lessons"
-                className="w-5 h-5 mr-2"
-              />
-              <span>{course.modules?.length || 0} Comprehensive Lessons</span>
+              <BookmarkIcon className="w-4 h-4 mr-2" />
+              <span>{course.modules?.length || 0} Lessons</span>
             </div>
 
             <div className="flex items-center bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-              <TimerIcon className="w-5 h-5 mr-2" />
-              <span>Self-paced Learning</span>
+              <TimerIcon className="w-4 h-4 mr-2" />
+              <span>{course.duration || 'Self-paced'}</span>
             </div>
 
             <div className="flex items-center bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-              <User2Icon className="w-5 h-5 mr-2" />
-              <span className="mr-4">{course.enrollmentCount || 0} Enrolled</span>
+              <User2Icon className="w-4 h-4 mr-2" />
+              <span className="mr-3">{course.enrollmentCount?.toLocaleString() || '0'} students</span>
               <div className="flex items-center">
                 {[...Array(5)].map((_, i) => (
                   <StarIcon
                     key={i}
-                    className="w-4 h-4 text-yellow-400 fill-yellow-400"
+                    className="w-3 h-3 text-yellow-400 fill-yellow-400"
                   />
                 ))}
-                <span className="ml-2">5/5</span>
+                <span className="ml-1 text-xs">5.0</span>
               </div>
             </div>
           </div>
 
           {/* CTA Button */}
-          {isAuthenticated ? (
-            <button
-              className="mt-8 border hover:bg-primary-dark text-white px-8 py-3 rounded-full font-medium  text-sm"
-            >
-              Enroll Now
+          <div className="flex gap-4">
+            {isAuthenticated ? (
+              <button
+                className="bg-brand hover:bg-brand-dark text-white px-8 py-3 rounded-full font-medium text-sm transition-colors"
+              >
+                Enroll Now
+              </button>
+            ) : (
+              <Link
+                href={'/auth/login'}
+                className="bg-brand hover:bg-brand-dark text-white px-8 py-3 rounded-full font-medium text-sm transition-colors"
+              >
+                Login to Enroll
+              </Link>
+            )}
+            <button className="border border-white/30 hover:bg-white/10 text-white px-6 py-3 rounded-full font-medium text-sm transition-colors">
+              Add to Wishlist
             </button>
-          ) : (
-            <Link
-              href={'/auth/login'}
-              className=" mt-8 block w-fit border  text-white px-8 py-3 rounded-full font-medium text-sm"
-            >
-              Login to Enroll
-            </Link>
-          )}
+          </div>
         </div>
       </div>
     </div>

@@ -9,7 +9,6 @@ import CurriculumComponent from './components/Curriculum'
 
 function CreateCourse() {
   const [activeStep, setActiveStep] = useState(1)
-
   const steps = [
     { id: 1, name: 'Course details', component: <CourseDetails /> },
     { id: 2, name: 'Course media', component: <CourseMediaPage /> },
@@ -30,13 +29,13 @@ function CreateCourse() {
 
   return (
     <div className="bg-gray-50">
-=      <div className="hero bg-gradient-to-r from-brand to-slate-800 py-16 text-center text-white mb-10 lg:mb-18">
+      <div className="hero bg-gradient-to-r from-brand to-slate-800 py-16 text-center text-white mb-10 lg:mb-18">
         <div className="max-w-7xl mx-auto px-4 relative -z-0 text-center">
           <h1 className='text-2xl md:text-4xl mt-2'>Create a new Course</h1>
           <p className="text-gray-300 mt-2">Build and customize your educational content with our intuitive course creation tools</p>
         </div>
       </div>
-
+      
       <div className='max-w-7xl mx-auto px-6'>
         <div className="description-form text-center">
           <p className="text-gray-500 mb-8">
@@ -44,33 +43,83 @@ function CreateCourse() {
             and select the appropriate category to help students find and understand your content.
           </p>
         </div>
+        
         <div className='border rounded-xl h-fit'>
-          <div className='flex gap-3 items-center justify-between border-b p-6'>
-            {steps.map((step) => (
-              <div key={step.id} className='flex flex-col gap-2 items-center justify-center'>
-                <Button
-                  variant={activeStep === step.id ? 'brand' : 'outline'}
-                  className={`rounded-full text-sm h-14 w-14 cursor-pointer shadow ${
-                    activeStep === step.id ? 'bg-brand text-white' : 'bg-white text-gray-700'
-                  }`}
-                  onClick={() => setActiveStep(step.id)}
-                >
-                  {step.id}
-                </Button>
-                <div className={`text-sm font-bold ${
-                  activeStep === step.id ? 'text-brand' : 'text-gray-500'
-                }`}>
-                  {step.name}
+          <div className='border-b p-6'>
+            <ul className="form-wizard-steps" id="progressbar2">
+              <li className="progress-activated">
+                <div className="profile-step">
+                  <span className="dot-active mb-2">
+                    <span className="number">01</span>
+                    <span className="tickmark">
+                      <i className="fa-solid fa-check"></i>
+                    </span>
+                  </span>
+                  <div className="step-section">
+                    <p>Course Information</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              </li>
+              <li className="progress-activated">
+                <div className="profile-step">
+                  <span className="dot-active mb-2">
+                    <span className="number">02</span>
+                    <span className="tickmark">
+                      <i className="fa-solid fa-check"></i>
+                    </span>
+                  </span>
+                  <div className="step-section">
+                    <p>Course Media</p>
+                  </div>
+                </div>
+              </li>
+              <li className="progress-activated">
+                <div className="profile-step">
+                  <span className="dot-active mb-2">
+                    <span className="number">03</span>
+                    <span className="tickmark">
+                      <i className="fa-solid fa-check"></i>
+                    </span>
+                  </span>
+                  <div className="step-section">
+                    <p>Curriculam</p>
+                  </div>
+                </div>
+              </li>
+              <li className="progress-active">
+                <div className="profile-step">
+                  <span className="dot-active mb-2">
+                    <span className="number">04</span>
+                    <span className="tickmark">
+                      <i className="fa-solid fa-check"></i>
+                    </span>
+                  </span>
+                  <div className="step-section">
+                    <p>Additional information</p>
+                  </div>
+                </div>
+              </li>
+              <li className="">
+                <div className="profile-step">
+                  <span className="dot-active mb-2">
+                    <span className="number">05</span>
+                    <span className="tickmark">
+                      <i className="fa-solid fa-check"></i>
+                    </span>
+                  </span>
+                  <div className="step-section">
+                    <p>Pricing</p>
+                  </div>
+                </div>
+              </li>
+            </ul>
           </div>
           
           {/* Current Step Content */}
           <div className="p-6">
             {steps.find(step => step.id === activeStep)?.component}
           </div>
-
+          
           {/* Navigation Buttons */}
           <div className="flex justify-between p-6 border-t">
             <Button
