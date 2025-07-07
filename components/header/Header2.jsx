@@ -55,9 +55,9 @@ const SearchBar = ({ isOpen, onClose }) => {
 function Header2() {
     const [openMenu, setOpenMenu] = useState(false)
     const [openSearch, setOpenSearch] = useState(false)
-    const [isCourseMenuOpen, setIsCourseMenuOpen] = useState(false)
     const params = useParams()
     const { user } = useAuth()
+    const pathName = usePathname();
 
     const navLinks = [
         { path: '/', pathName: 'Home' },
@@ -89,7 +89,7 @@ function Header2() {
 
     return (
         <header className="h-24 px-4  bg-white z-40      relative">
-            <div className='max-w-[1400px] mx-auto h-full flex items-center justify-between'>
+            <div className={`${pathname === '/labs/new' ? '' : 'max-w-[1400px]'} mx-auto h-full flex items-center justify-between`}>
                 <div className="right-section">
                     <Logo />
                 </div>
