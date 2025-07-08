@@ -1,4 +1,4 @@
-"use client" // This directive is necessary because we're using client-side hooks like useState, useEffect, and usePathname
+"use client"
 
 import AuthButtons from '@/components/header/components/AuthButtons'
 import { Input } from '@/components/ui/input'
@@ -33,17 +33,31 @@ const SearchBar = ({ isOpen, onClose }) => {
             {isOpen && (
                 <div
                     ref={searchRef}
-                    className="search-wrap absolute left-0 right-0 z-10 w-full max-w-md mx-auto"
+                    className="fixed inset-0 z-50 bg-black/50 lg:bg-transparent lg:relative"
+                    onClick={onClose}
                 >
-
                     <motion.div
-                        initial={{ opacity: 0, y: 50 }}
+                        initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 50 }}
-                        transition={{ duration: 0.5 }}
-                        className='bg-gray-200 border p-2 rounded-lg min-w-full'
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3 }}
+                        className='bg-white p-4 lg:p-2 lg:absolute lg:left-0 lg:right-0 lg:top-full lg:mx-auto lg:max-w-md lg:rounded-lg lg:shadow-lg'
+                        onClick={(e) => e.stopPropagation()}
                     >
-                        <Input placeholder="Search courses" className='border border-brand bg-white text-ellipsis' />
+                        <div className='relative'>
+                            <Input 
+                                placeholder="Search courses" 
+                                className='border border-brand bg-white pl-10 pr-4 py-3 w-full'
+                                autoFocus
+                            />
+                            <Search className='absolute left-3 top-3.5 w-5 h-5 text-gray-400' />
+                            <button 
+                                className='absolute right-3 top-3.5 lg:hidden'
+                                onClick={onClose}
+                            >
+                                <X className='w-5 h-5' />
+                            </button>
+                        </div>
                     </motion.div>
                 </div>
             )}
@@ -51,7 +65,6 @@ const SearchBar = ({ isOpen, onClose }) => {
     )
 }
 
-// Main Header component
 function Header2() {
     const [openMenu, setOpenMenu] = useState(false)
     const [openSearch, setOpenSearch] = useState(false)
@@ -63,11 +76,10 @@ function Header2() {
         { path: '/', pathName: 'Home' },
         { path: '/courses', pathName: 'courses' },
         { path: '/internships', pathName: 'Internships' },
-        { path: '/hackathons', pathName: 'Hackathons' }, // Fixed duplicate pathName
+        { path: '/hackathons', pathName: 'Hackathons' },
         { path: '/mentor', pathName: 'Mentorship' },
     ]
 
-    // Close menu when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (openMenu && !event.target.closest('.mobile-menu-trigger')) {
@@ -82,68 +94,81 @@ function Header2() {
     const pathname = usePathname();
 
     if (pathname.startsWith(`/courses/${params.id}/`)) {
-        return (
-            <CourseHeadr />
-       );
+        return <CourseHeadr />;
     }
 
     return (
-        <header className="h-24 px-4  bg-white z-40      relative">
+        <header className="h-16 lg:h-24 px-4 bg-white z-40 sticky top-0">
             <div className={`${pathname === '/labs/new' ? '' : 'max-w-[1400px]'} mx-auto h-full flex items-center justify-between`}>
-                <div className="right-section">
-                    <Logo />
+                {/* Left section - Logo */}
+                <div className="flex items-center">
+                    <Logo className="h-8 lg:h-10" />
                 </div>
 
+                {/* Middle section - Desktop Nav */}
                 <div className="middle-section hidden lg:block">
                     <Navbar links={navLinks} onLinkClick={() => { }} />
                 </div>
 
-                <div className="left-section">
-                    <div className='flex gap-4 md:gap-8 lg:gap-20 relative'>
-                        <div className='flex items-center gap-4'>
-                            <div className='relative'>
-                                <button
-                                    className='border-none p-4 hover:bg-gray-100 rounded-full'
-                                    onClick={() => setOpenSearch(!openSearch)}
-                                >
-                                    <Search className='w-5 h-5' />
-                                </button>
-                            </div>
-
-                            <div className="relative">
-                                <button className="border-none bg-transparent p-2 hover:bg-gray-100 rounded-full">
-                                    <Bell className="w-6 h-6" />
-                                </button>
-                                <div className="absolute -top-1 right-1 bg-green-600 text-white text-xs flex items-center justify-center w-5 h-5 rounded-full">
-                                    0
-                                </div>
-                            </div>
+                {/* Right section - Icons and Auth */}
+                <div className="flex items-center gap-2 sm:gap-4 md:gap-6 lg:gap-8">
+                    <div className='flex items-center gap-2 sm:gap-4'>
+                        {/* Search Button */}
+                        <button
+                            className='p-2 hover:bg-gray-100 rounded-full lg:hidden'
+                            onClick={() => setOpenSearch(!openSearch)}
+                        >
+                            <Search className='w-5 h-5' />
+                        </button>
+                        
+                        {/* Search Bar (desktop) */}
+                        <div className='hidden lg:block relative'>
+                            <button
+                                className='p-2 hover:bg-gray-100 rounded-full'
+                                onClick={() => setOpenSearch(!openSearch)}
+                            >
+                                <Search className='w-5 h-5' />
+                            </button>
                         </div>
 
-                        <div className='flex items-center gap-4'>
-                            <div className="auth-btn hidden md:block">
-                                <AuthButtons />
-                            </div>
-
-                            <div className='lg:hidden p-2 rounded hover:bg-gray-200 mobile-menu-trigger'>
-                                <button onClick={() => setOpenMenu(true)}>
-                                    <Menu className='w-6 h-6' />
-                                </button>
-
-                                <AnimatePresence>
-                                    {openMenu && (
-                                        <MobileMenu
-                                            isOpen={openMenu}
-                                            onClose={() => setOpenMenu(false)}
-                                            links={navLinks}
-                                        />
-                                    )}
-                                </AnimatePresence>
+                        {/* Notifications */}
+                        <div className="relative">
+                            <button className="p-2 hover:bg-gray-100 rounded-full">
+                                <Bell className="w-5 h-5 sm:w-6 sm:h-6" />
+                            </button>
+                            <div className="absolute -top-1 right-0 bg-green-600 text-white text-xs flex items-center justify-center w-4 h-4 sm:w-5 sm:h-5 rounded-full">
+                                0
                             </div>
                         </div>
                     </div>
+
+                    {/* Auth Buttons */}
+                    <div className="hidden md:block">
+                        <AuthButtons />
+                    </div>
+
+                    {/* Mobile Menu Button */}
+                    <button 
+                        className='p-2 rounded hover:bg-gray-200 lg:hidden mobile-menu-trigger'
+                        onClick={() => setOpenMenu(true)}
+                    >
+                        <Menu className='w-6 h-6' />
+                    </button>
                 </div>
             </div>
+
+            {/* Mobile Menu */}
+            <AnimatePresence>
+                {openMenu && (
+                    <MobileMenu
+                        isOpen={openMenu}
+                        onClose={() => setOpenMenu(false)}
+                        links={navLinks}
+                    />
+                )}
+            </AnimatePresence>
+
+            {/* Search Bar */}
             <SearchBar isOpen={openSearch} onClose={() => setOpenSearch(false)} />
         </header>
     )

@@ -105,38 +105,59 @@ const InstructorDashboardContent = () => {
 
     return (
         <div className="bg-gray-50">
-            <div className="hero bg-gradient-to-r from-brand to-slate-800 py-20 text-white mb-10 lg:mb-26">
-                <div className="max-w-7xl mx-auto px-4 relative -z-0">
-                    <h1 className='text-2xl md:text-4xl mt-2'>Instructor Dashboard</h1>
-                    <div className="flex items-center gap-2 text-white/70 px-2 mt-1">
-                        <Link href={'/'}>Home</Link>
+            <div className="hero bg-gradient-to-r from-brand to-slate-800 py-8 text-white mb-4 relative overflow-hidden">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    {/* Header and Breadcrumb */}
+                    <div className="mb-16 md:mb-20">
+                        <h1 className='text-3xl sm:text-4xl md:text-5xl font-bold'>Instructor Dashboard</h1>
+                        <div className="flex items-center gap-2 text-white/80 mt-2">
+                            <Link href={'/'} className="hover:text-white transition-colors">Home</Link>
+                            <span>/</span>
+                            <span>Dashboard</span>
+                        </div>
                     </div>
-                    <div className="absolute -bottom-42 right-0 left-0 px-2 flex items-start gap-2 md:gap-5">
-                        <Image
 
-                            className="w-[100px] h-[100px] md:w-[120px] md:h-[120px] object-cover rounded-full border-4 border-gray-50"
-                            src="/Hero.webp"
-                            width={150}
-                            height={150}
-                            alt="Instructor"
-                        />
-                        <div className="flex flex-col">
-                            <span className='text-2xl md:text-3xl mt-1 md:mt-0 lg:mb-0'>{user.fullName}</span>
-                            <span className="email text-gray-700">{user.email}</span>
-                            <div className='md:flex items-center gap-4 mt-1'>
-                                <div className="flex gap-2 items-center  text-xs">
-                                    <FaBook className='text-brand h-4 w-4' />
-                                    <h5 className="text-gray-600">25</h5>
-                                    <p className="text-gray-600">Total Courses</p>
-                                </div>
-                                  <div className="flex gap-2 items-center  text-xs">
-                                 <FaGem className="h-4 w-4 text-blue-500" />
-                                    <h5 className="text-gray-600">12k</h5>
-                                    <p className="text-gray-600">Students</p>
-                                </div>
+                    {/* Profile Section */}
+                    <div className="flex flex-col md:flex-row items-start gap-4 md:gap-8 pb-16 md:pb-24">
+                        {/* Profile Image */}
+                        <div className="flex-shrink-0 relative -mt-8 md:-mt-16">
+                            <div className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 relative">
+                                <Image
+                                    className="object-cover rounded-full border-4 border-white shadow-lg"
+                                    src="/Hero.webp"
+                                    fill
+                                    alt="Instructor"
+                                />
                             </div>
                         </div>
-                     <Link href={`/instructor/courses/create`} className={`border  bg-transparent hover:bg-transparent border-green-600 text-green-600 font-semibold text-sm p-3 self-end ml-auto md:mr-10 rounded-full`}>Create course</Link>
+
+                        {/* Profile Info */}
+                        <div className="flex-1 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                            <div>
+                                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold">{user.fullName}</h2>
+                                <p className="text-gray-300 text-sm sm:text-base">{user.email}</p>
+
+                                {/* Stats */}
+                                <div className="flex flex-wrap gap-4 mt-3 sm:mt-4">
+                                    <div className="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-full">
+                                        <FaBook className='text-brand h-4 w-4' />
+                                        <span className="text-sm sm:text-base">25 Courses</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-full">
+                                        <FaGem className="h-4 w-4 text-blue-400" />
+                                        <span className="text-sm sm:text-base">12k Students</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Create Course Button */}
+                            <Link
+                                href="/instructor/courses/create"
+                                className="inline-flex items-center justify-center border-2 border-green-500 hover:bg-green-500/10 text-green-500 hover:text-green-400 font-medium text-sm sm:text-base px-4 py-2 sm:px-6 sm:py-3 rounded-full transition-all duration-200 shadow-sm mt-4 md:mt-0"
+                            >
+                                Create course
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -169,7 +190,7 @@ const InstructorDashboardContent = () => {
                 )}
 
                 {/* Main content */}
-                <div className="flex-1 xl:ml-0 pt-16 xl:pt-4 px-4 xl:px-6">
+                <div className="flex-1 xl:ml-0 pt-4 xl:pt-4 px-4 xl:px-6">
                     {/* Mobile menu button */}
                     <div className="xl:hidden bg-brand p-2 w-fit rounded-full">
                         <button

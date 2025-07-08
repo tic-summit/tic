@@ -16,51 +16,7 @@ export default function AdvancedWorkspace() {
     const [mobileView, setMobileView] = useState('editor'); // 'editor', 'preview', 'console', 'tests'
 
     // Load projects from memory (localStorage removed for Claude compatibility)
-    useEffect(() => {
-        // For demo purposes, start with some sample projects
-        const sampleProjects = [
-            {
-                id: 1,
-                name: "React Counter",
-                template: "react",
-                files: {
-                    '/App.js': `import { useState } from 'react';
-import './styles.css';
-
-export default function App() {
-  const [count, setCount] = useState(0);
-
-  return (
-    <div className="app">
-      <h1>React Counter</h1>
-      <button onClick={() => setCount(count + 1)}>
-        Count: {count}
-      </button>
-    </div>
-  );
-}`,
-                    '/styles.css': `.app { 
-  padding: 20px; 
-  text-align: center;
-}
-button {
-  padding: 8px 16px;
-  background: #646cff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-}`
-                },
-                dependencies: {},
-                lastEdited: new Date().toISOString()
-            }
-        ];
-
-        setProjects(sampleProjects);
-        setActiveProject(sampleProjects[0]);
-        setShowWelcome(false);
-    }, []);
-
+ 
     // Project templates
     const templates = {
         react: {
