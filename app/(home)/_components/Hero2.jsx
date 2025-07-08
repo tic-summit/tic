@@ -37,7 +37,7 @@ function Hero2() {
                                     </h2>
                                 </div>
                                 <div className="hero-action">
-                                    <Link href={`/course`} className='  text-xl flex items-center gap-2 text-brand'>Explore Courses <ArrowRight /></Link>
+                                    <Link href={`/courses`} className='  text-xl flex items-center gap-2 text-brand'>Explore Courses <ArrowRight /></Link>
                                 </div>
                             </div>
                         </div>
