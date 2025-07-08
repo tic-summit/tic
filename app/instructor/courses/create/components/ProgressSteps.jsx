@@ -16,6 +16,7 @@ export default function ProgressSteps({ activeStep, steps }) {
                 {step.id.toString().padStart(2, '0')}
               </div>
               <div className={`
+               hidden md:block
                 absolute top-full mt-1 text-xs md:text-sm 
                 whitespace-nowrap text-center w-[80px] md:w-auto
                 ${activeStep >= step.id ? 'text-brand font-medium' : 'text-gray-500'}

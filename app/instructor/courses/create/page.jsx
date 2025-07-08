@@ -56,7 +56,7 @@ function CreateCourse() {
           <ProgressSteps activeStep={activeStep} steps={steps} />
           
           {/* Render current step component */}
-          <div className="p-6 md:p-8">
+          <div className="p-2 md:p-8">
             {steps.find(step => step.id === activeStep)?.component}
           </div>
           

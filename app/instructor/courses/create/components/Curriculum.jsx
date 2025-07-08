@@ -32,8 +32,11 @@ export default function CurriculumForm() {
   ]);
 
   const [showModal, setShowModal] = useState(false);
+  const [showTopicModal, setShowTopicModal] = useState(false);
   const [editingLesson, setEditingLesson] = useState(null);
+  const [editingTopic, setEditingTopic] = useState(null);
   const [currentTopicId, setCurrentTopicId] = useState(null);
+  const [topicName, setTopicName] = useState('');
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -52,14 +55,40 @@ export default function CurriculumForm() {
     })));
   };
 
-  const addNewTopic = () => {
-    const newTopic = {
-      id: topics.length + 1,
-      title: `New Topic ${topics.length + 1}`,
-      expanded: false,
-      lessons: []
-    };
-    setTopics([...topics, newTopic]);
+  const openTopicModal = (topic = null) => {
+    setEditingTopic(topic);
+    setTopicName(topic ? topic.title : '');
+    setShowTopicModal(true);
+  };
+
+  const handleTopicSubmit = () => {
+    if (!topicName.trim()) return;
+
+    if (editingTopic) {
+      // Update existing topic
+      setTopics(topics.map(topic => 
+        topic.id === editingTopic.id 
+          ? { ...topic, title: topicName.trim() }
+          : topic
+      ));
+    } else {
+      // Add new topic
+      const newTopic = {
+        id: Date.now(),
+        title: topicName.trim(),
+        expanded: false,
+        lessons: []
+      };
+      setTopics([...topics, newTopic]);
+    }
+    
+    setShowTopicModal(false);
+    setEditingTopic(null);
+    setTopicName('');
+  };
+
+  const deleteTopic = (topicId) => {
+    setTopics(topics.filter(topic => topic.id !== topicId));
   };
 
   const openLessonModal = (topicId, lesson = null) => {
@@ -198,7 +227,7 @@ export default function CurriculumForm() {
           </div>
           <div className="md:text-right">
             <button
-              onClick={addNewTopic}
+              onClick={() => openTopicModal()}
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand hover:bg-brand focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand"
             >
               <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -225,13 +254,39 @@ export default function CurriculumForm() {
                   </svg>
                   {topic.title}
                 </span>
-                <svg
-                  className={`h-5 w-5 transform transition-transform ${topic.expanded ? 'rotate-180' : ''}`}
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openTopicModal(topic);
+                    }}
+                    className="text-blue-600 hover:text-blue-800 p-1"
+                    title="Edit Topic"
+                  >
+                    <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteTopic(topic.id);
+                    }}
+                    className="text-red-600 hover:text-red-800 p-1"
+                    title="Delete Topic"
+                  >
+                    <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+                  <svg
+                    className={`h-5 w-5 transform transition-transform ${topic.expanded ? 'rotate-180' : ''}`}
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </div>
               </button>
             </h2>
             {topic.expanded && (
@@ -286,6 +341,61 @@ export default function CurriculumForm() {
           </div>
         ))}
       </div>
+
+      {/* Topic Modal */}
+      {showTopicModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg w-full max-w-md mx-4">
+            <div className="flex items-center justify-between p-4 border-b">
+              <h5 className="text-lg font-semibold">
+                {editingTopic ? 'Edit Topic' : 'Add New Topic'}
+              </h5>
+              <button
+                onClick={() => setShowTopicModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="p-6">
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Topic Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={topicName}
+                  onChange={(e) => setTopicName(e.target.value)}
+                  placeholder="Enter topic name..."
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand"
+                  autoFocus
+                />
+              </div>
+
+              <div className="flex justify-end space-x-3">
+                <button
+                  type="button"
+                  onClick={() => setShowTopicModal(false)}
+                  className="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleTopicSubmit}
+                  disabled={!topicName.trim()}
+                  className="px-4 py-2 bg-brand text-white rounded-md hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {editingTopic ? 'Update Topic' : 'Add Topic'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Lesson Modal */}
       {showModal && (
