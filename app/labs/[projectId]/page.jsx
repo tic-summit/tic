@@ -5,7 +5,7 @@ import { Sandpack } from '@codesandbox/sandpack-react';
 
 export default function PublicSharePage() {
   const { projectId } = useParams();
-  const [project, setProject] = useState<any>(null);
+  const [project, setProject] = useState(null);
 
   useEffect(() => {
     fetch(`/api/labs/${projectId}/get`)

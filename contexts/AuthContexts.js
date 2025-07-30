@@ -15,8 +15,9 @@ export const AuthProvider = ({ children }) => {
       
       if (storedUser && token) {
         try {
-          // Verify token with backend if needed
-          setUser(JSON.parse(storedUser));
+          // Combine user data with token
+          const userData = { ...JSON.parse(storedUser), token };
+          setUser(userData);
           setIsAuthenticated(true);
         } catch (error) {
           console.error('Token verification failed:', error);
@@ -30,9 +31,11 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (userData, token) => {
+    // Combine user data with token before storing
+    const userWithToken = { ...userData, token };
     localStorage.setItem('user', JSON.stringify(userData));
     localStorage.setItem('token', token);
-    setUser(userData);
+    setUser(userWithToken);
     setIsAuthenticated(true);
   };
 

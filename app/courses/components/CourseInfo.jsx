@@ -5,7 +5,6 @@ import { Facebook, Instagram, StarIcon, TimerIcon, Twitter, User2Icon } from 'lu
 function CourseInfo({ courseId }) {
     const { courseInfo, loading, error } = useCourseDetails(courseId);
 
-    console.log(useCourseDetails(courseId));
 
     if (loading) return (
         <div className="bg-white p-6 border border-gray-300 rounded-xl h-fit">

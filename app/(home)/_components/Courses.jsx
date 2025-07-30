@@ -11,7 +11,7 @@ const HomeCourses = () => {
 
   return (
     <div className='bg-brand/10'>
-         <div className="max-w-7xl mx-auto px-4 py-8 ">
+         <div className="max-w-[1320px] mx-auto px-4 py-8 ">
          <div className="container mx-auto px-4 py-8">
       <div 
         className="flex flex-row justify-between items-start md:items-center mb-6"

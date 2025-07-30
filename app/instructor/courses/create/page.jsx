@@ -1,23 +1,30 @@
 "use client"
 import React, { useState } from 'react'
-import CourseDetails from './components/CourseDetails'
-import TopBar from '@/components/header/components/TopBar'
-import Header from '@/components/header'
 import { Button } from '@/components/ui/button'
-import CourseMediaPage from './components/CourseMedia'
-import CurriculumComponent from './components/Curriculum'
-import ProgressSteps from './components/ProgressSteps'
 import BasicInformationForm from './components/CourseDetails'
 import CourseMediaForm from './components/CourseMedia'
 import CurriculumForm from './components/Curriculum'
+import ProgressSteps from './components/ProgressSteps'
 
 function CreateCourse() {
   const [activeStep, setActiveStep] = useState(1)
+  const [courseId, setCourseId] = useState(null)
+  const [completedSteps, setCompletedSteps] = useState([])
+    const handleStepComplete = () => {
+    if (!completedSteps.includes(activeStep)) {
+      setCompletedSteps([...completedSteps, activeStep])
+    }
+    handleNext()
+  }
+
+  console.log(courseId)
+
   const steps = [
-    { id: 1, name: 'Course details', component: <BasicInformationForm /> },
-    { id: 2, name: 'Course media', component: <CourseMediaForm /> },
-    { id: 3, name: 'Curriculum', component: <CurriculumForm /> },
+    { id: 1, name: 'Course details', component: <BasicInformationForm setCourseId={setCourseId} onComplete={handleStepComplete} /> },
+    { id: 2, name: 'Course media', component: <CourseMediaForm courseId={courseId} onComplete={handleStepComplete} /> },
+    { id: 3, name: 'Curriculum', component: <CurriculumForm courseId={courseId} onComplete={handleStepComplete} /> },
   ]
+
 
   const handleNext = () => {
     if (activeStep < steps.length) {
@@ -52,15 +59,18 @@ function CreateCourse() {
         </div>
         
         <div className='border rounded-xl h-fit bg-white'>
-          {/* Progress Steps - pass activeStep as prop */}
-          <ProgressSteps activeStep={activeStep} steps={steps} />
+          <ProgressSteps 
+            activeStep={activeStep} 
+            steps={steps} 
+            completedSteps={completedSteps}
+          />
           
-          {/* Render current step component */}
           <div className="p-2 md:p-8">
-            {steps.find(step => step.id === activeStep)?.component}
+            {React.cloneElement(steps.find(step => step.id === activeStep)?.component, {
+              courseId: courseId
+            })}
           </div>
           
-          {/* Navigation buttons */}
           <div className="flex justify-between p-6 border-t">
             <div>
               {!isFirstStep && (
@@ -77,17 +87,23 @@ function CreateCourse() {
               )}
             </div>
             <div>
-              <Button
-                onClick={handleNext}
-                className="gap-2"
-              >
-                {isLastStep ? 'Submit' : 'Next'}
-                {!isLastStep && (
+              {!isLastStep && (
+                <Button
+                  onClick={handleNext}
+                  className="gap-2"
+                  disabled={!completedSteps.includes(activeStep)}
+                >
+                  Next
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
                   </svg>
-                )}
-              </Button>
+                </Button>
+              )}
+              {isLastStep && (
+                <Button className="gap-2">
+                  Submit Course
+                </Button>
+              )}
             </div>
           </div>
         </div>

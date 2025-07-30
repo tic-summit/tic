@@ -33,12 +33,16 @@ export default function CourseCurriculum({ courseId }) {
     const [scrollPosition, setScrollPosition] = useState(0);
 
     const {
+        course,
         curriculum,
         loading,
         error,
         instructor,
         courseDetails
     } = useCourseDetails(courseId);
+
+    console.log(curriculum)
+
 
     const members = Array(10).fill(null).map((_, i) => ({
         name: `Member ${i + 1}`,
@@ -126,7 +130,7 @@ export default function CourseCurriculum({ courseId }) {
                             <div className="mb-8">
                                 <h4 className="text-lg font-semibold mb-3">Description</h4>
                                 <p className="text-gray-700 leading-relaxed">
-                                    {courseDetails?.description || 'This course provides comprehensive training in...'}
+                                    {course?.description || 'This course provides comprehensive training in...'}
                                 </p>
                             </div>
 
@@ -134,7 +138,7 @@ export default function CourseCurriculum({ courseId }) {
                             <div className="mb-8">
                                 <h4 className="text-lg font-semibold mb-3">What you'll learn</h4>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                    {courseDetails?.learningOutcomes?.map((outcome, index) => (
+                                    {course?.whatYouLearn?.map((outcome, index) => (
                                         <div key={index} className="flex items-start">
                                             <Check className="text-green-500 mt-1 mr-2 flex-shrink-0" />
                                             <span>{outcome}</span>
@@ -180,7 +184,7 @@ export default function CourseCurriculum({ courseId }) {
                                     </div>
                                     <div className="flex items-center">
                                         <Languages className="text-brand mr-2" size={18} />
-                                        <span>English captions</span>
+                                        <span>{course?.language} captions</span>
                                     </div>
                                     <div className="flex items-center">
                                         <FaCertificate className="text-brand mr-2" size={18} />
@@ -193,7 +197,7 @@ export default function CourseCurriculum({ courseId }) {
                             <div className="mb-8">
                                 <h4 className="text-lg font-semibold mb-3">Requirements</h4>
                                 <ul className="list-disc pl-5 space-y-1">
-                                    {courseDetails?.requirements?.map((req, index) => (
+                                    {course?.requirements?.map((req, index) => (
                                         <li key={index}>{req}</li>
                                     )) || (
                                             <>

@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect } from 'react';
 import { SandpackProvider, SandpackLayout, SandpackCodeEditor, SandpackPreview, SandpackConsole, SandpackTests } from '@codesandbox/sandpack-react';
-import { X } from 'lucide-react';
+import { MenuSquare, X } from 'lucide-react';
 
 export default function AdvancedWorkspace() {
     // State management
@@ -263,18 +263,17 @@ counter.addEventListener('click', () => {
                     <>
                         {/* Mobile Header */}
                         <div className="lg:hidden bg-white border-b border-gray-200 p-3 flex items-center justify-between">
-                            <button
-                                onClick={toggleSidebar}
-                                className="p-2 rounded-md hover:bg-gray-100"
-                            >
-                                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                                </svg>
-                            </button>
+                             <div className="w-10" />
                             <h1 className="text-lg font-semibold truncate px-2">
                                 {activeProject?.name}
                             </h1>
-                            <div className="w-10" />
+                         
+                                  <button
+                                onClick={toggleSidebar}
+                                className="p-2 rounded-md hover:bg-gray-100"
+                            >
+                              <MenuSquare />
+                            </button>
                         </div>
 
                         {/* Desktop Toolbar */}

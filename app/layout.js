@@ -3,6 +3,8 @@
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContexts";
 import Header2 from "../components/header/Header2";
+import ClientLayout from "@/components/ClientLayout";
+import { Toaster } from "sonner";
 
 export const metadata = {
   title: "Your App",
@@ -23,8 +25,10 @@ export default function RootLayout({ children }) {
       </head>
       <body className="font-roboto">
         <AuthProvider>
-          <Header2 />
+         <ClientLayout>
           {children}
+          <Toaster richColors />
+          </ClientLayout>
         </AuthProvider>
       </body>
     </html>

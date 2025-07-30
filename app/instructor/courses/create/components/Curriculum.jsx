@@ -1,41 +1,19 @@
+import { useAuth } from '@/contexts/AuthContexts';
+import { finalizeCourseCurriculum } from '@/services/courseApi/courseApi';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
+import { toast } from 'sonner'
 
-export default function CurriculumForm() {
-  const [topics, setTopics] = useState([
-    {
-      id: 1,
-      title: "Introduction of Digital Marketing",
-      expanded: false,
-      lessons: [
-        { id: 1, title: "Describe SEO Engine", type: "video", isPremium: false },
-        { id: 2, title: "Know about all marketing", type: "pdf", isPremium: true }
-      ]
-    },
-    {
-      id: 2,
-      title: "Installing Development Software",
-      expanded: true,
-      lessons: [
-        { id: 3, title: "Describe SEO Engine", type: "video", isPremium: false },
-        { id: 4, title: "Know about all marketing", type: "quiz", isPremium: true }
-      ]
-    },
-    {
-      id: 3,
-      title: "Hello World Project from GitHub",
-      expanded: false,
-      lessons: [
-        { id: 5, title: "Describe SEO Engine", type: "pdf", isPremium: false },
-        { id: 6, title: "Know about all marketing", type: "video", isPremium: true }
-      ]
-    }
-  ]);
-
+export default function CurriculumForm({ courseId, onComplete }) {
+  const { user } = useAuth()
+  const [topics, setTopics] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showTopicModal, setShowTopicModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingLesson, setEditingLesson] = useState(null);
   const [editingTopic, setEditingTopic] = useState(null);
   const [currentTopicId, setCurrentTopicId] = useState(null);
+  const router = useRouter()
   const [topicName, setTopicName] = useState('');
   const [formData, setFormData] = useState({
     title: '',
@@ -55,6 +33,43 @@ export default function CurriculumForm() {
     })));
   };
 
+  const handleFinalizeCurriculum = async () => {
+    try {
+      // First validate we have at least one topic with lessons
+      if (topics.length === 0 || topics.every(t => t.lessons.length === 0)) {
+        alert('Please add at least one topic with lessons before finalizing');
+        return;
+      }
+
+      // Transform quiz lessons to include questions if needed
+      const curriculumWithQuizData = topics.map(topic => ({
+        ...topic,
+        lessons: topic.lessons.map(lesson => {
+          if (lesson.type === 'quiz' && !lesson.questions) {
+            return {
+              ...lesson,
+              questions: [], // Default empty questions array
+              passingScore: 80 // Default passing score
+            };
+          }
+          return lesson;
+        })
+      }));
+
+      await finalizeCourseCurriculum(courseId, curriculumWithQuizData, user.token);
+      setIsSubmitting(true);
+      // Show success message
+      toast.success('Curriculum finalized successfully!');
+
+      // Call the onComplete callback to proceed to next step
+      onComplete();
+      return router.push('/instructor/dashboard')
+    } catch (error) {
+      console.error('Failed to finalize curriculum:', error);
+      toast.error(`Failed to finalize curriculum: ${error.message}`);
+    }
+  };
+
   const openTopicModal = (topic = null) => {
     setEditingTopic(topic);
     setTopicName(topic ? topic.title : '');
@@ -66,8 +81,8 @@ export default function CurriculumForm() {
 
     if (editingTopic) {
       // Update existing topic
-      setTopics(topics.map(topic => 
-        topic.id === editingTopic.id 
+      setTopics(topics.map(topic =>
+        topic.id === editingTopic.id
           ? { ...topic, title: topicName.trim() }
           : topic
       ));
@@ -81,7 +96,7 @@ export default function CurriculumForm() {
       };
       setTopics([...topics, newTopic]);
     }
-    
+
     setShowTopicModal(false);
     setEditingTopic(null);
     setTopicName('');
@@ -138,15 +153,15 @@ export default function CurriculumForm() {
 
   const handleSubmit = (e) => {
     if (e) e.preventDefault();
-    
+
     if (editingLesson) {
       // Update existing lesson
       setTopics(topics.map(topic => {
         if (topic.id === currentTopicId) {
           return {
             ...topic,
-            lessons: topic.lessons.map(lesson => 
-              lesson.id === editingLesson.id 
+            lessons: topic.lessons.map(lesson =>
+              lesson.id === editingLesson.id
                 ? { ...lesson, ...formData, type: formData.lessonType }
                 : lesson
             )
@@ -174,7 +189,7 @@ export default function CurriculumForm() {
         return topic;
       }));
     }
-    
+
     setShowModal(false);
     setEditingLesson(null);
     setCurrentTopicId(null);
@@ -241,105 +256,146 @@ export default function CurriculumForm() {
 
       {/* Accordion Topics */}
       <div className="space-y-4">
-        {topics.map((topic) => (
-          <div key={topic.id} className="border border-gray-200 rounded-lg overflow-hidden">
-            <h2>
-              <button
-                className={`flex items-center justify-between w-full px-4 py-3 text-left font-medium transition-colors ${topic.expanded ? 'bg-gray-50' : 'bg-white'}`}
-                onClick={() => toggleTopic(topic.id)}
-              >
-                <span className="flex items-center">
-                  <svg className="h-5 w-5 mr-2 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-                  </svg>
-                  {topic.title}
-                </span>
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      openTopicModal(topic);
-                    }}
-                    className="text-blue-600 hover:text-blue-800 p-1"
-                    title="Edit Topic"
-                  >
-                    <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+        {topics.length > 0 ? (
+          topics.map((topic) => (
+            <div key={topic.id} className="border border-gray-200 rounded-lg overflow-hidden">
+              <h2>
+                <button
+                  className={`flex items-center justify-between w-full px-4 py-3 text-left font-medium transition-colors ${topic.expanded ? 'bg-gray-50' : 'bg-white'}`}
+                  onClick={() => toggleTopic(topic.id)}
+                >
+                  <span className="flex items-center">
+                    <svg className="h-5 w-5 mr-2 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
                     </svg>
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deleteTopic(topic.id);
-                    }}
-                    className="text-red-600 hover:text-red-800 p-1"
-                    title="Delete Topic"
-                  >
-                    <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                    {topic.title}
+                  </span>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openTopicModal(topic);
+                      }}
+                      className="text-blue-600 hover:text-blue-800 p-1"
+                      title="Edit Topic"
+                    >
+                      <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteTopic(topic.id);
+                      }}
+                      className="text-red-600 hover:text-red-800 p-1"
+                      title="Delete Topic"
+                    >
+                      <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                    </button>
+                    <svg
+                      className={`h-5 w-5 transform transition-transform ${topic.expanded ? 'rotate-180' : ''}`}
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                     </svg>
-                  </button>
-                  <svg
-                    className={`h-5 w-5 transform transition-transform ${topic.expanded ? 'rotate-180' : ''}`}
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </div>
-              </button>
-            </h2>
-            {topic.expanded && (
-              <div className="p-4 bg-gray-50">
-                {topic.lessons.map((lesson) => (
-                  <div key={lesson.id} className="flex items-center justify-between bg-white p-3 border rounded-lg mb-3">
-                    <div className="flex items-center">
-                      {getIconForLessonType(lesson.type)}
-                      <div className="ml-3">
-                        <p className="font-medium text-gray-700 mb-0">{lesson.title}</p>
-                        <div className="flex items-center mt-1">
-                          <span className={`text-xs px-2 py-1 rounded-full ${lesson.isPremium ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}`}>
-                            {lesson.isPremium ? 'Premium' : 'Free'}
-                          </span>
-                          <span className="text-xs text-gray-500 ml-2 capitalize">{lesson.type}</span>
+                  </div>
+                </button>
+              </h2>
+              {topic.expanded && (
+                <div className="p-4 bg-gray-50">
+                  {topic.lessons.length > 0 ? (
+                    topic.lessons.map((lesson) => (
+                      <div key={lesson.id} className="flex items-center justify-between bg-white p-3 border rounded-lg mb-3">
+                        <div className="flex items-center">
+                          {getIconForLessonType(lesson.type)}
+                          <div className="ml-3">
+                            <p className="font-medium text-gray-700 mb-0">{lesson.title}</p>
+                            <div className="flex items-center mt-1">
+                              <span className={`text-xs px-2 py-1 rounded-full ${lesson.isPremium ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}`}>
+                                {lesson.isPremium ? 'Premium' : 'Free'}
+                              </span>
+                              <span className="text-xs text-gray-500 ml-2 capitalize">{lesson.type}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <button
+                            onClick={() => openLessonModal(topic.id, lesson)}
+                            className="text-brand hover:text-brand/90"
+                          >
+                            <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                              <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                            </svg>
+                          </button>
+                          <button
+                            onClick={() => deleteLesson(topic.id, lesson.id)}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                            </svg>
+                          </button>
                         </div>
                       </div>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <button 
-                        onClick={() => openLessonModal(topic.id, lesson)}
-                        className="text-brand hover:text-brand/90"
-                      >
-                        <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                          <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                        </svg>
-                      </button>
-                      <button
-                        onClick={() => deleteLesson(topic.id, lesson.id)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
-                        </svg>
-                      </button>
-                    </div>
+                    ))
+                  ) : (
+                    <p className="text-gray-500 text-center py-4">No lessons added yet</p>
+                  )}
+                  <div className="flex items-center justify-end">
+                    <button
+                      onClick={() => openLessonModal(topic.id)}
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand hover:bg-brand focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand"
+                    >
+                      <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
+                      </svg>
+                      Add Lesson
+                    </button>
                   </div>
-                ))}
-                <div className="flex items-center justify-start">
-                  <button
-                    onClick={() => openLessonModal(topic.id)}
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand hover:bg-brand focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand"
-                  >
-                    <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
-                    </svg>
-                    Add Lesson
-                  </button>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
+          ))
+        ) : (
+          <div className="text-center py-10">
+            <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <h3 className="mt-2 text-sm font-medium text-gray-900">No topics</h3>
+            <p className="mt-1 text-sm text-gray-500">Get started by adding your first topic.</p>
+            <div className="mt-6">
+              <button
+                onClick={() => openTopicModal()}
+                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-brand hover:bg-brand focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand"
+              >
+                <svg className="-ml-1 mr-2 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
+                </svg>
+                Add Topic
+              </button>
+            </div>
           </div>
-        ))}
+        )}
+      </div>
+
+      <div className="mt-8 flex justify-end">
+        <button
+          onClick={handleFinalizeCurriculum}
+          className="px-6 py-3 bg-brand hover:bg-brand text-white rounded-md"
+        > {isSubmitting ? (
+          <span className="flex items-center">
+            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Saving Course...
+          </span>
+        ) : 'Save'}
+        </button>
       </div>
 
       {/* Topic Modal */}
@@ -359,7 +415,7 @@ export default function CurriculumForm() {
                 </svg>
               </button>
             </div>
-            
+
             <div className="p-6">
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -414,7 +470,7 @@ export default function CurriculumForm() {
                 </svg>
               </button>
             </div>
-            
+
             <div className="p-6">
               <div className="space-y-4">
                 {/* Lesson Title */}
@@ -571,6 +627,7 @@ export default function CurriculumForm() {
                   {editingLesson ? 'Update Lesson' : 'Add Lesson'}
                 </button>
               </div>
+
             </div>
           </div>
         </div>

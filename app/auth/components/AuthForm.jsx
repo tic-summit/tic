@@ -117,8 +117,8 @@ export default function AuthForm({ type = "signin" }) {
             }
 
             // Handle successful authentication
-            const { user, token } = response.data;
-            login(user, token);
+            const { user, accessToken } = response.data;
+            login(user, accessToken);
             
             // Redirect to dashboard
             if(user.userType === 'instructor')
