@@ -58,7 +58,7 @@ function Hero() {
                             </div>
 
                             {/* Main Heading */}
-                            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold tracking-wide text-white leading-tight">
+                            <h1 className="text-2xl sm:text-4xl font-bold tracking-wide text-white leading-tight">
                                 Empowering the Next{' '}
                                 <br className="hidden sm:block" />
                                 Generation of{' '}

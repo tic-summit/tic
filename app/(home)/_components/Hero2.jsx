@@ -16,7 +16,7 @@ function Hero2() {
 
 
     return (
-        <div className='bg-[#f1f0f8]'>
+        <div className='bg-gray-50'>
             {/*Header */}
 
             {/* Hero */}
@@ -26,7 +26,7 @@ function Hero2() {
                     <div className='grid grid-cols-1 md:grid-cols-2 h-[calc(70vh-6rem)]   md:h-[calc(75vh-6rem)] gap-4  pl-4  overflow-hidden'>
                         <div className="letf-section md:ml-10 h-[calc(70vh-6rem)]  md:h-[calc(75vh-6rem)]  flex flex-col  justify-center">
                             <div className="hero-title space-y-8 px-2 md:px-10">
-                                <h1 className='text-3xl md:text-4xl lg:text-7xl  tracking-tight leading-10 md:leading-16 lg:leading-24'>
+                                <h1 className='text-3xl md:text-4xl lg:text-6xl  tracking-tight leading-10 md:leading-14 lg:leading-18'>
                                     <span className='text-green-400'>Empowering</span> The Next <span className='text-brand'>Genration</span> Of Tech Talents
                                 </h1>
                                 <div className="hero-subtitle ">
