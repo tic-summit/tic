@@ -6,19 +6,25 @@ import React from 'react'
 
 function AuthButtons(mobile) {
     const pathname = usePathname();
-    const { isAuthenticated, logout, user } = useAuth()
+    const { isAuthenticated, logout, user, isLoading:loading } = useAuth()
 
     return (
         <>
-            {!isAuthenticated ? (<div><div className="auth-buttons flex flex-col md:flex-row items-center gap-4">
-                <Link href={'/auth/login'} className={`px-4 py-2 flex-1 w-full md:w-fit rounded-full  text-center  text-lg ${(pathname === '/' && !mobile) ? ' text-white' : mobile && 'bg-brand text-white'} font-semibold `}>Login</ Link>
+           {
+            loading ? <div>Loading...</div> : (
+                <>
+                 {!isAuthenticated ? (<div><div className="auth-buttons flex flex-col md:flex-row items-center gap-4">
                 <Link href={'/auth/signup'} className="px-4 py-2 flex-1 w-full md:w-fit  rounded-full text-center text-lg border text-brand font-semibold dark:bg-white ">Register</Link>
+                <Link href={'/auth/login'} className={`px-4 py-2 flex-1 w-full md:w-fit rounded-full  text-center  text-lg ${(pathname === '/' && !mobile) ? ' text-white' : mobile && 'bg-brand text-white'} font-semibold `}>Login</ Link>
             </div>
             </div>) :
-            <div className='flex items-center gap-2'>  
-            <Link href={`${user?.userType === "instructor" ? '/instructor/dashboard' : '/student/dashboard'}`} className='px-4 py-2 flex-1 md:flex-0 text-nowrap sm:w-fit rounded-full  font-semibold border text-brand text-center'>Dashoboard</Link>
-             <button onClick={logout} className={`px-4 py-2 flex-1 md:flex-0 text-nowrap sm:w-fit rounded-full  text-center  font-semibold ${(pathname === '/' && !mobile) ? 'border-white text-white' : mobile && 'bg-brand text-white'}  `}>Log out</ button>
-</div>            }
+                <div className='flex items-center gap-2'>
+                    <Link href={`${user?.userType === "instructor" ? '/instructor/dashboard' : '/student/dashboard'}`} className='px-4 py-2 flex-1 md:flex-0 text-nowrap sm:w-fit rounded-full  font-semibold border text-brand text-center'>Dashoboard</Link>
+                    <button onClick={logout} className={`px-4 py-2 flex-1 md:flex-0 text-nowrap sm:w-fit rounded-full  text-center  font-semibold ${(pathname === '/' && !mobile) ? 'border-white text-white' : mobile && 'bg-brand text-white'}  `}>Log out</ button>
+                </div>}
+                </>
+            )
+           }
         </>
     )
 }

@@ -40,10 +40,12 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('user');
+    setTimeout(() => {
+      localStorage.removeItem('user');
     localStorage.removeItem('token');
     setUser(null);
     setIsAuthenticated(false);
+    }, 1000); // Simulate a delay for logout
   };
 
   return (

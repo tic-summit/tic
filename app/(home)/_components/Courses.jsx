@@ -1,12 +1,18 @@
 "use client"
 import { useCourses } from '@/app/courses/api/courses';
 import CourseCard from '@/components/course/CourseCard';
+import { Icon } from '@iconify/react';
 import { BookOpen, Heart, Star } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 
 const HomeCourses = () => {
-  const {courses} = useCourses();
+  const page = 1;
+  const {data:courses, isLoading, isError, error} = useCourses({ page });
+
+
+  if (isError) return <div>Error: {error.message}</div>;
+  
     
 
   return (
@@ -17,7 +23,7 @@ const HomeCourses = () => {
         className="flex flex-row justify-between items-start md:items-center mb-6"
       >
         <div className="s mb-4 md:mb-0">
-          <h2 className="text-3xl md:text-4xl font-bold mt-2 text-left">
+          <h2 className="text-3xl font-bold mt-2 text-left">
             Featured Courses
           </h2>
         </div>
@@ -41,17 +47,19 @@ const HomeCourses = () => {
         </p>
       </div>
     </div>
-      <div className="course-feature">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {courses.slice(0, 6).map((course, index) => (
-        <CourseCard 
-        key={course.id} 
-        course={course} 
-        index={index} 
-      />
+     {
+      isLoading ? (
+        <div className='h-[10vh] flex justify-center items-center'>
+          <Icon icon="svg-spinners:90-ring-with-bg" width="24" height="24" />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {courses.slice(0, 8).map((course, index) => (
+            <CourseCard key={course.id} course={course} index={index} />
           ))}
         </div>
-      </div>
+      )
+     }
     </div>
     </div>
    

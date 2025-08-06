@@ -7,6 +7,7 @@ import Link from 'next/link';
 import Logo from '@/components/ui/Logo';
 import api from '@/services/api';
 import { useAuth } from '@/contexts/AuthContexts';
+import { useMutation } from '@tanstack/react-query';
 
 export default function AuthForm({ type = "signin" }) {
     const router = useRouter();
@@ -30,7 +31,6 @@ export default function AuthForm({ type = "signin" }) {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [errors, setErrors] = useState({});
-    const [isLoading, setIsLoading] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -86,24 +86,18 @@ export default function AuthForm({ type = "signin" }) {
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!validate()) return;
-
-        setIsLoading(true);
-        try {
-            let response;
-            
-            if (type === 'signin') {
-                // Login endpoint
-                response = await api.post('/auth/login', {
+      
+    const mutation = useMutation({
+        mutationFn: async (formData) =>  {
+            if(type === 'signin') {
+                 const response = await api.post('/auth/login', {
                     email: formData.email,
                     password: formData.password
                 });
-            } else {
-                // Signup endpoint
-                response = await api.post('/auth/signup', {
+                return response.data;
+            }
+            else{
+                const response = await api.post('/auth/signup', {
                     fullName: formData.fullName,
                     email: formData.email,
                     password: formData.password,
@@ -114,29 +108,34 @@ export default function AuthForm({ type = "signin" }) {
                         code: formData.country.code
                     }
                 });
+                return response.data;
             }
 
-            // Handle successful authentication
-            const { user, accessToken } = response.data;
-            login(user, accessToken);
+        }
+    })
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!validate()) return;
+        mutation.mutate(formData, {
+            onSuccess: ({ user, accessToken }) => {
+                  login(user, accessToken);
             
             // Redirect to dashboard
             if(user.userType === 'instructor')
                 router.push('/instructor/dashboard');
     
-            else if(user.userType)
-                router.push('/student/dashboard')
-           
-            
-        } catch (error) {
-            const errorMessage = error.response?.data?.message || 
-                               error.response?.data?.error || 
-                               `${type === 'signin' ? 'Sign in' : 'Sign up'} failed. Please try again.`;
-            
-            setErrors({ general: errorMessage });
-        } finally {
-            setIsLoading(false);
+            else if(user.userType === 'student')
+                router.push('/student/dashboard');
+        },
+        onError: (error) => {
+            const message = error.response?.data?.message ||
+                            error.response?.data?.error ||
+                            `${type === 'signin' ? 'Sign in' : 'Sign up'} failed. Please try again.`;
+
+            setErrors({ general: message });
         }
+    });
     };
 
     return (
@@ -401,10 +400,10 @@ export default function AuthForm({ type = "signin" }) {
                         <div>
                             <button
                                 type="submit"
-                                disabled={isLoading}
+                                disabled={mutation.isPending}
                                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-brand hover:bg-brand/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand/50 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                {isLoading ? (
+                                {mutation.isPending? (
                                     <>
                                         <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>

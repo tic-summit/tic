@@ -1,5 +1,6 @@
 'use client'
 
+import { Icon } from "@iconify/react";
 import {
   UserCircle,
   BookOpen,
@@ -13,22 +14,22 @@ import {
 export default function LearningPath() {
   const steps = [
     {
-      icon: <UserCircle className="w-16 h-16 text-gray-900" />,
+      icon: <Icon icon="game-icons:archive-register" className="text-brand" width="64" height="64" />,
       title: "Register",
       desc: "Choose your tech domain"
     },
     {
-      icon: <BookOpen className="w-16 h-16 text-gray-900" />,
+      icon: <Icon icon="emojione-v1:closed-book" width="64" height="64" />,
       title: "Learn",
       desc: "Access courses"
     },
     {
-      icon: <Code className="w-16 h-16 text-gray-900" />,
+      icon: <Icon icon="ic:outline-build-circle" className="text-brand" width="64" height="64" />,
       title: "Build",
       desc: "Work on hands-on projects"
     },
     {
-      icon: <Trophy className="w-16 h-16 text-gray-900" />,
+      icon: <Icon icon="streamline-ultimate-color:award-trophy-1" className="text-brand" width="64" height="64" />,
       title: "Compete",
       desc: "Join hackathons"
     },

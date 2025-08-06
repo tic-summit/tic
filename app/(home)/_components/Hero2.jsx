@@ -23,8 +23,8 @@ function Hero2() {
             {/* bg-[#f1f0f8 */}
             <div className=''>
                 <div className='max-w-[1500px] mx-auto'>
-                    <div className='grid grid-cols-1 md:grid-cols-2 h-[calc(70vh-6rem)]   md:h-[calc(95vh-6rem)] gap-4  pl-4  overflow-hidden'>
-                        <div className="letf-section md:ml-10 h-[calc(70vh-6rem)]  md:h-[calc(95vh-6rem)]  flex flex-col  justify-center">
+                    <div className='grid grid-cols-1 md:grid-cols-2 h-[calc(70vh-6rem)]   md:h-[calc(75vh-6rem)] gap-4  pl-4  overflow-hidden'>
+                        <div className="letf-section md:ml-10 h-[calc(70vh-6rem)]  md:h-[calc(75vh-6rem)]  flex flex-col  justify-center">
                             <div className="hero-title space-y-8 px-2 md:px-10">
                                 <h1 className='text-3xl md:text-4xl lg:text-7xl  tracking-tight leading-10 md:leading-16 lg:leading-24'>
                                     <span className='text-green-400'>Empowering</span> The Next <span className='text-brand'>Genration</span> Of Tech Talents
@@ -44,9 +44,9 @@ function Hero2() {
                         <div className="hidden md:block right-section  h-full ml-16">
                             <div className="h-full border-none pt-6">
                                 <img
-                                    src="/hero.png"
+                                    src="/images/hero.webp"
                                     alt=""
-                                    className="object-cover h-[90%]"
+                                    className="object-contain h-[90%]"
                                 />
                             </div>
                         </div>

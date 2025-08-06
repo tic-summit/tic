@@ -5,12 +5,12 @@ import { AuthProvider } from "@/contexts/AuthContexts";
 import Header2 from "../components/header/Header2";
 import ClientLayout from "@/components/ClientLayout";
 import { Toaster } from "sonner";
+import { QueryClientComponent } from "@/services/queryClientComponent";
 
 export const metadata = {
   title: "Your App",
   description: "...",
 };
-
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
@@ -24,12 +24,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body className="font-roboto">
-        <AuthProvider>
-         <ClientLayout>
-          {children}
-          <Toaster richColors />
-          </ClientLayout>
-        </AuthProvider>
+        <QueryClientComponent children={children} />
       </body>
     </html>
   );

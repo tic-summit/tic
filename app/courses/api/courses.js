@@ -1,4 +1,5 @@
 "use client"
+import { useMutation, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -57,8 +58,8 @@ const transformCourseData = (course) => ({
   id: course._id,
   title: course.title,
   instructor: course.instructor?.fullName || "Unknown Instructor",
-  price: course.price || "Free",
-  originalPrice: course.price === 'Free' ? null : `$${Math.round(parseInt(String(course.price).replace(/\D/g, '')) * 1.15)}`,
+  price: course?.price ?? "Free",
+  originalPrice: (course.price === 'Free' ||  course.price === '$NaN')? null : course.price,
   image: course.thumbnail || COURSE_CONFIG.DEFAULT_IMAGES[course.category?.toLowerCase()] || COURSE_CONFIG.DEFAULT_IMAGES.default,
   instructorImage: course.instructor?.avatar || 'https://dreamslms.dreamstechnologies.com/wp-content/uploads/2023/02/profile5.jpg',
   lessons: course.features?.length || 10,
@@ -68,73 +69,25 @@ const transformCourseData = (course) => ({
   isNew: new Date(course.createdAt) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
 });
 
-// Cache implementation
-const courseCache = {
-  data: null,
-  lastFetch: 0,
-  ttl: 5 * 60 * 1000, // 5 minutes cache
-  isStale() {
-    return Date.now() - this.lastFetch > this.ttl;
-  }
-};
+const fetchCourses = async (page) => {
+      const response = await apiClient.get(`/courses?page=${page}&limit=10`, {
+        limit: 10
+      });
+      return response.data.map(transformCourseData);}
 
 // Main data fetching function
-export const fetchCourses = async (forceRefresh = false) => {
-  if (!forceRefresh && courseCache.data && !courseCache.isStale()) {
-    return courseCache.data;
-  }
-
-  try {
-    const response = await apiClient.get('/courses');
-    courseCache.data = response.data.map(transformCourseData);
-    courseCache.lastFetch = Date.now();
-    return courseCache.data;
-  } catch (error) {
-    console.error('Error fetching courses:', error);
-    if (courseCache.data) {
-      return courseCache.data; // Return stale data if available
-    }
-    return COURSE_CONFIG.FALLBACK_COURSES;
-  }
+export const useCourses =  (page) => {
+  return useQuery({
+    queryKey: ['courses', page],
+    queryFn: () => fetchCourses({page}),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    cacheTime: 10 * 60 * 1000, // 10 minutes
+    refetchOnWindowFocus: false,
+    retry: 1,
+    keepPreviousData: true,
+  })
 };
+
 
 // React Hook implementation
-export const useCourses = () => {
-  const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  const refresh = useCallback(async () => {
-    try {
-      setLoading(true);
-      const data = await fetchCourses(true);
-      setCourses(data);
-    } catch (err) {
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchCourses();
-        setCourses(data);
-      } catch (err) {
-        setError(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadData();
-  }, []);
-
-  return { courses, loading, error, refresh };
-};
-
-// Export initialized promise
-export const coursesPromise = fetchCourses();
-export default coursesPromise;

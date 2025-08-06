@@ -7,10 +7,11 @@ import Link from 'next/link';
 import Header from '@/components/header';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCourses } from './api/courses';
+import { Icon } from '@iconify/react';
 
 export default function CourseListing() {
-      const { courses, loading, error, refresh } = useCourses();
-      console.log(courses);
+
+
     const [searchText, setSearchText] = useState('');
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [costFilter, setCostFilter] = useState('all');
@@ -20,6 +21,11 @@ export default function CourseListing() {
     const [currentPage, setCurrentPage] = useState(1);
     const [showMobileFilters, setShowMobileFilters] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
+    const { data: courses, isLoading: loading, isError, error } = useCourses({ page: currentPage });
+    console.log(currentPage)
+        if (isError) return <div>Error: {error.message}</div>;
+
+
 
 
 
@@ -53,7 +59,7 @@ export default function CourseListing() {
         );
     };
 
-    const filteredCourses = courses.filter(course => {
+    const filteredCourses = courses?.filter(course => {
         if (searchText && !course.title.toLowerCase().includes(searchText.toLowerCase())) {
             return false;
         }
@@ -255,50 +261,58 @@ export default function CourseListing() {
                                 </select>
                             </div>
                         </div>
+                        {
+                            loading ? <div className='h-[20vh] flex items-center justify-center'><Icon icon="svg-spinners:90-ring-with-bg" width="24" height="24" /></div> : (
+                                <>
+                                    {/* Courses Grid */}
+                                    <div className={`${displayType === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'}`}>
+                                        {filteredCourses?.map((course, index) => (
+                                            <CourseCard key={course.id} course={course} index={index} />
+                                        ))}
+                                    </div>
 
-                        {/* Courses Grid */}
-                        <div className={`${displayType === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'}`}>
-                            {filteredCourses.map((course, index) => (
-                                <CourseCard key={course.id} course={course} index={index} />
-                            ))}
-                        </div>
+                                    {/* No Results */}
+                                    {filteredCourses?.length === 0 && (
+                                        <div className="text-center py-12">
+                                            <h3 className="text-lg font-medium text-gray-700">No courses found</h3>
+                                            <p className="text-gray-500 mt-2">Try adjusting your search or filter criteria</p>
+                                        </div>
+                                    )}
 
-                        {/* No Results */}
-                        {filteredCourses.length === 0 && (
-                            <div className="text-center py-12">
-                                <h3 className="text-lg font-medium text-gray-700">No courses found</h3>
-                                <p className="text-gray-500 mt-2">Try adjusting your search or filter criteria</p>
-                            </div>
-                        )}
+                                    {/* Pagination */}
+                                    <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+                                        <div className="text-sm text-gray-600">
+                                            Showing 1-{filteredCourses?.length} of {filteredCourses?.length} courses
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <button
+                                                className="px-3 py-2 bg-brand text-white rounded-full disabled:opacity-50"
+                                                disabled={currentPage === 1}
+                                                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                            >
+                                                <ChevronsLeft />
+                                            </button>
+                                            <button className="px-4 py-2 bg-brand text-white rounded-full">1</button>
+                                            <button
+                                                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300"
+                                                onClick={() => setCurrentPage(2)}
+                                            >
+                                                2
+                                            </button>
+                                            <button
+                                                className="flex items-center gap-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300"
+                                                onClick={() => setCurrentPage(p => p + 1)}
+                                                disabled={filteredCourses?.length < 10}
+                                            >
+                                                <ChevronRight className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    </div></>
+                            )
 
-                        {/* Pagination */}
-                        <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-                            <div className="text-sm text-gray-600">
-                                Showing 1-{filteredCourses.length} of {filteredCourses.length} courses
-                            </div>
-                            <div className="flex gap-2">
-                                <button
-                                    className="px-3 py-2 bg-brand text-white rounded-full disabled:opacity-50"
-                                    disabled={currentPage === 1}
-                                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                                >
-                                    <ChevronsLeft />
-                                </button>
-                                <button className="px-4 py-2 bg-brand text-white rounded-full">1</button>
-                                <button
-                                    className="px-4 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300"
-                                    onClick={() => setCurrentPage(2)}
-                                >
-                                    2
-                                </button>
-                                <button
-                                    className="flex items-center gap-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300"
-                                    onClick={() => setCurrentPage(p => p + 1)}
-                                >
-                                    <ChevronRight className="w-4 h-4" />
-                                </button>
-                            </div>
-                        </div>
+                        }
+
+
                     </div>
                 </div>
             </div>
