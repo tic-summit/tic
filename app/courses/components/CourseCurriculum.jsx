@@ -33,15 +33,15 @@ export default function CourseCurriculum({ courseId }) {
     const [scrollPosition, setScrollPosition] = useState(0);
 
     const {
-        course,
-        curriculum,
+        data:course,
+        getCurriculum:curriculum,
         loading,
         error,
-        instructor,
+        getInstructorInfo:instructor,
         courseDetails
     } = useCourseDetails(courseId);
 
-    console.log(curriculum)
+    console.log(course)
 
 
     const members = Array(10).fill(null).map((_, i) => ({

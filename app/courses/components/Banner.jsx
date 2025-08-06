@@ -6,7 +6,7 @@ import useCourseDetails from '@/app/api/courses/useCourseDetails.js';
 
 export default function Banner({ courseId }) {
   const { user, isAuthenticated } = useAuth();
-  const { course, courseInfo, loading, error } = useCourseDetails(courseId);
+  const { data:course, getCourseInfo:courseInfo, loading, error } = useCourseDetails(courseId);
 
   if (loading) return (
     <div className="relative bg-gray-900 text-white py-24 overflow-hidden px-4">

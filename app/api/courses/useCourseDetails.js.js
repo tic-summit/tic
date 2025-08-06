@@ -1,83 +1,72 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import axios, { AxiosError, AxiosResponse } from 'axios';
+import { useQuery } from '@tanstack/react-query';
 
 
 
-const useCourseDetails = (courseId) => {
-  const [course, setCourse] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchCourseDetails = async () => {
-      try {
-        setLoading(true);
+const fetchCourseDetails = async(courseId) =>{
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/courses/${courseId}`
         );
-        console.log(response);
 
-        if (response.data.success) {
-          setCourse(response.data.data);
-        } else {
-          setError('Failed to fetch course details');
-        }
-      } catch (err) {
-        const axiosError = err;
-        setError(
-          axiosError.response?.data?.message ||
-          axiosError.message ||
-          'An error occurred while fetching course details'
-        );
-      } finally {
-        setLoading(false);
-      }
+        if (!response.data.success) {
+          throw new Error('Failed to fetch course details');
+        } 
+        return response.data.data;
+}
+
+
+const useCourseDetails = (courseId) => {
+  const query = useQuery({
+    queryKey: ['courseDetails', courseId],
+    queryFn: () =>  fetchCourseDetails(courseId),
+    enabled: !!courseId,
+    onError: (error) => {
+         console.error('Error fetching course details:', error);
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    cacheTime: 10 * 60 * 1000, // 10 minutes
+    refetchOnWindowFocus: false,
+    retry: 1,
+  })
+    const getCourseInfo = useMemo( () => {
+    if (!query.data) return null;
+
+    return {
+      id: query?.data?._id,
+      title: query?.data?.title,
+      description: query?.data?.description,
+      category: query?.data?.category,
+      thumbnail: query?.data?.thumbnail,
+      duration: query?.data?.duration,
+      pace: query?.data?.pace,
+      price: query?.data?.price,
+      level: query?.data?.level,
+      features: query?.data?.features,
+      rating: query?.data?.rating,
+      studentsEnrolled: query?.data?.studentsEnrolled,
+      createdAt: query?.data?.createdAt,
+      videoUrl: query?.data?.videoUrl,
+      documentPath: query?.data?.documentPath,
     };
+  }, [query?.data]);
 
-    if (courseId) {
-      fetchCourseDetails();
-    }
-  }, [courseId]);
-
-  // Helper functions to extract specific data
-  const getCourseInfo = () => {
-    if (!course) return null;
+  const getInstructorInfo = useMemo(() => {
+    if (!query?.data) return null;
     
     return {
-      id: course._id,
-      title: course.title,
-      description: course.description,
-      category: course.category,
-      thumbnail: course.thumbnail,
-      duration: course.duration,
-      pace: course.pace,
-      price: course.price,
-      level: course.level,
-      features: course.features,
-      rating: course.rating,
-      studentsEnrolled: course.studentsEnrolled,
-      createdAt: course.createdAt,
-      videoUrl: course.videoUrl,
-      documentPath: course.documentPath,
+      id: query?.data?.instructor._id,
+      name: query?.data?.instructor.fullName,
+      email: query?.data?.instructor.email,
+      role: query?.data?.instructor.role,
+      joinDate: query?.data?.instructor.createdAt,
     };
-  };
+  }, [query?.data]);
 
-  const getInstructorInfo = () => {
-    if (!course) return null;
+  const getCurriculum = useMemo(() => {
+    if (!query?.data) return null;
     
-    return {
-      id: course.instructor._id,
-      name: course.instructor.fullName,
-      email: course.instructor.email,
-      role: course.instructor.role,
-      joinDate: course.instructor.createdAt,
-    };
-  };
-
-  const getCurriculum = () => {
-    if (!course) return null;
-    
-    return course.modules.map(module => ({
+    return query?.data?.modules.map(module => ({
       id: module._id,
       title: module.title,
       resources: {
@@ -101,16 +90,14 @@ const useCourseDetails = (courseId) => {
         })),
       })),
     }));
-  };
+  }, [query?.data]);
 
-  return {
-    course,
-    loading,
-    error,
-    courseInfo: getCourseInfo(),
-    instructor: getInstructorInfo(),
-    curriculum: getCurriculum(),
-  };
-};
+  return{
+    ...query,
+   getCourseInfo, 
+   getInstructorInfo,
+   getCurriculum,
+  }
+}
 
 export default useCourseDetails;

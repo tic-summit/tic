@@ -3,7 +3,7 @@ import useCourseDetails from '@/app/api/courses/useCourseDetails.js';
 import { Facebook, Instagram, StarIcon, TimerIcon, Twitter, User2Icon } from 'lucide-react';
 
 function CourseInfo({ courseId }) {
-    const { courseInfo, loading, error } = useCourseDetails(courseId);
+    const { getCourseInfo:courseInfo, loading, error } = useCourseDetails(courseId);
 
 
     if (loading) return (
