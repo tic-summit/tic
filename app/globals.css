@@ -105,6 +105,7 @@ body {
   font-style: normal;
   font-variation-settings:
     "wdth" 100;
+    background-color: rgb(253, 246, 246);
 }
 
 /* Utility classes for other fonts */

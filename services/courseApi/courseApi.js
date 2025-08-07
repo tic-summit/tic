@@ -22,21 +22,9 @@ export const createCourseStep1 = async (courseData, token) => {
 
 export const updateCourseStep2 = async (courseId, mediaData, token) => {
   try {
-    const formData = new FormData();
-    
-    // Append thumbnail file
-    if (mediaData.get('thumbnail')) {
-      formData.append('thumbnail', mediaData.get('thumbnail'));
-    }
-    
-    // Append promo video file
-    if (mediaData.get('promoVideo')) {
-      formData.append('promoVideo', mediaData.get('promoVideo'));
-    }
-
     const response = await axios.post(
       `${baseURL}/courses/${courseId}/step2`,
-      formData,
+      mediaData, // Use the FormData directly
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -55,61 +43,61 @@ export const updateCourseStep2 = async (courseId, mediaData, token) => {
 // src/services/courseService.js
 
 
-export const finalizeCourseCurriculum = async (courseId, curriculumData, token) => {
-  try {
-    // Transform the data to match backend structure
-    const transformedData = {
-      modules: curriculumData.map((module, moduleIndex) => ({
-        title: module.title,
-        order: moduleIndex + 1,
-        topics: module.lessons.map((lesson, lessonIndex) => {
-          const baseTopic = {
-            title: lesson.title,
-            order: lessonIndex + 1,
-            type: lesson.type,
-            description: lesson.description || '',
-          };
+// export const finalizeCourseCurriculum = async (courseId, curriculumData, token) => {
+//   try {
+//     // Transform the data to match backend structure
+//     const transformedData = {
+//       modules: curriculumData.map((module, moduleIndex) => ({
+//         title: module.title,
+//         order: moduleIndex + 1,
+//         topics: module.lessons.map((lesson, lessonIndex) => {
+//           const baseTopic = {
+//             title: lesson.title,
+//             order: lessonIndex + 1,
+//             type: lesson.type,
+//             description: lesson.description || '',
+//           };
 
-          // Add content based on type
-          let content = {};
-          switch (lesson.type) {
-            case 'video':
-              content = { videoUrl: lesson.videoLink || '' };
-              break;
-            case 'pdf':
-              content = { fileUrl: '' }; // You'll need to handle file uploads separately
-              break;
-            case 'quiz':
-              content = {
-                questions: lesson.questions || [],
-                passingScore: lesson.passingScore || 80
-              };
-              break;
-            default:
-              content = { textContent: lesson.textContent || '' };
-          }
+//           // Add content based on type
+//           let content = {};
+//           switch (lesson.type) {
+//             case 'video':
+//               content = { videoUrl: lesson.videoLink || '' };
+//               break;
+//             case 'pdf':
+//               content = { fileUrl: '' }; // You'll need to handle file uploads separately
+//               break;
+//             case 'quiz':
+//               content = {
+//                 questions: lesson.questions || [],
+//                 passingScore: lesson.passingScore || 80
+//               };
+//               break;
+//             default:
+//               content = { textContent: lesson.textContent || '' };
+//           }
 
-          return {
-            ...baseTopic,
-            content
-          };
-        })
-      }))
-    };
+//           return {
+//             ...baseTopic,
+//             content
+//           };
+//         })
+//       }))
+//     };
 
-    const response = await axios.post(
-      `${baseURL}/courses/step3/${courseId}`,
-      transformedData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        }
-      }
-    );
-    return response.data;
-  } catch (error) {
-    console.error('Error finalizing course curriculum:', error);
-    throw error;
-  }
-};
+//     const response = await axios.post(
+//       `${baseURL}/courses/step3/${courseId}`,
+//       transformedData,
+//       {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//           'Content-Type': 'application/json',
+//         }
+//       }
+//     );
+//     return response.data;
+//   } catch (error) {
+//     console.error('Error finalizing course curriculum:', error);
+//     throw error;
+//   }
+// };

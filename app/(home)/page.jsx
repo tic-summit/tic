@@ -8,7 +8,7 @@ import CallToAction from './_components/CallToAction'
 
 export default function Home() {
   return (
-    <div className='bg-gray-100'>
+    <div className=''>
       <Hero2 />
       <LearningPath />
       <HomeCourses />

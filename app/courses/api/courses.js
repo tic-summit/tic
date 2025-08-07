@@ -69,24 +69,25 @@ const transformCourseData = (course) => ({
   isNew: new Date(course.createdAt) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
 });
 
-const fetchCourses = async (page) => {
-      const response = await apiClient.get(`/courses?page=${page}&limit=10`, {
-        limit: 10
+const fetchCourses = async () => {
+      const response = await apiClient.get(`/courses`, {
       });
+      console.log(response);
       return response.data.map(transformCourseData);}
 
 // Main data fetching function
 export const useCourses =  (page) => {
   return useQuery({
     queryKey: ['courses', page],
-    queryFn: () => fetchCourses({page}),
+    queryFn: fetchCourses,
     staleTime: 5 * 60 * 1000, // 5 minutes
     cacheTime: 10 * 60 * 1000, // 10 minutes
     refetchOnWindowFocus: false,
     retry: 1,
-    keepPreviousData: true,
   })
+
 };
+
 
 
 // React Hook implementation

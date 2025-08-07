@@ -7,8 +7,7 @@ import Link from 'next/link';
 import React from 'react';
 
 const HomeCourses = () => {
-  const page = 1;
-  const {data:courses, isLoading, isError, error} = useCourses({ page });
+  const {data:courses, isLoading, isError, error} = useCourses();
 
 
   if (isError) return <div>Error: {error.message}</div>;
@@ -54,7 +53,7 @@ const HomeCourses = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {courses.slice(0, 8).map((course, index) => (
+          {courses?.slice(0, 8).map((course, index) => (
             <CourseCard key={course.id} course={course} index={index} />
           ))}
         </div>
