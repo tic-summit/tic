@@ -157,7 +157,7 @@ export default function CourseListing() {
     return (
         <div>
             <div className="hero bg-gradient-to-r from-brand to-gray-600 py-8 text-white">
-                <div className="max-w-7xl mx-auto px-4">
+                <div className="max-w-[1500px] mx-auto px-4">
                     <h1 className='text-2xl md:text-4xl'>Our Courses</h1>
                     <div className="flex items-center gap-2 text-white/70 px-2 mt-1">
                         <Link href={'/'}>Home /</Link>
@@ -165,7 +165,7 @@ export default function CourseListing() {
                     </div>
                 </div>
             </div>
-            <div className="max-w-7xl mx-auto px-4 py-8 relative">
+            <div className="max-w-[1500px] mx-auto px-4 py-8 relative">
                 {/* Mobile Filter Button */}
                 {isMobile && (
                     <button

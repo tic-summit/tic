@@ -52,7 +52,7 @@ const InstructorDashboardContent = () => {
     <div className="bg-gray-50 min-h-screen">
       {/* Hero Section */}
       <div className="hero bg-gradient-to-r from-brand to-slate-800 py-8 text-white mb-4 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header and Breadcrumb */}
           <div className="mb-16 md:mb-20">
             <h1 className='text-3xl sm:text-4xl md:text-5xl font-bold'>Instructor Dashboard</h1>
@@ -69,7 +69,7 @@ const InstructorDashboardContent = () => {
       </div>
 
       {/* Main Layout */}
-      <div className="flex flex-col xl:flex-row max-w-7xl mx-auto px-4">
+      <div className="flex flex-col xl:flex-row max-w-[1500px] mx-auto px-4">
         {/* Sidebar */}
         <div className={`fixed xl:static inset-y-0 left-0 z-60 lg:z-10 w-80 xl:w-72 bg-white xl:bg-transparent border-r xl:border-r-0 transform transition-transform duration-300 ease-in-out ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full xl:translate-x-0'

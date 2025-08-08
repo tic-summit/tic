@@ -53,7 +53,7 @@ import "slick-carousel/slick/slick-theme.css";
 
     return (
       <div className=''>
-          <div className="max-w-[1320px] mx-auto px-4 py-8 ">
+          <div className="max-w-[1500px] mx-auto px-4 py-8 ">
           <div className="container mx-auto px-4 py-8">
         <div 
           className="flex flex-row justify-between items-start md:items-center mb-6"

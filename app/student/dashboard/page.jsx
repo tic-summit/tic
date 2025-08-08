@@ -113,7 +113,7 @@ const DashboardContent = () => {
     return (
         <div className=" bg-gray-50">
             <div className="hero bg-gradient-to-r from-brand to-slate-800 py-20 text-white mb-10 lg:mb-26">
-                <div className="max-w-7xl mx-auto px-4 relative  -z-0">
+                <div className="max-w-[1500px] mx-auto px-4 relative  -z-0">
                     <h1 className='text-2xl md:text-4xlmt-2'>Dashboard</h1>
                     <div className="flex items-center gap-2 text-white/70 px-2 mt-1">
                         <Link href={'/'}>Home</Link>
@@ -133,7 +133,7 @@ const DashboardContent = () => {
                     </div>
                 </div>
             </div>
-            <div className="flex flex-col xl:flex-row max-w-7xl mx-auto px-4">
+            <div className="flex flex-col xl:flex-row max-w-[1500px] mx-auto px-4">
 
                 {/* Left sidebar */}
                 <div className={`fixed xl:static inset-y-0 left-0 z-50 w-80 xl:w-72 bg-white xl:bg-transparent border-r xl:border-r-0 transform transition-transform duration-300 ease-in-out ${sidebarOpen ? 'translate-x-0' : '-translate-x-full xl:translate-x-0'}`}>
