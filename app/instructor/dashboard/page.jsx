@@ -1,398 +1,146 @@
 "use client"
+
 import { useState } from 'react';
 import {
     X,
-    LogOut,
-    Edit,
-    Settings,
-    Trash,
-    ChevronLeft,
-    ChevronRight,
     LayoutDashboard,
-    ShoppingCart,
-    FileText,
-    Diamond,
-    Heart,
-
-    Tv,
-    Book,
 } from 'lucide-react';
-import { FaAngleLeft, FaAngleRight, FaAward, FaCheckCircle, FaPlay, FaTv, FaUserGraduate, FaGem, FaBook } from 'react-icons/fa';
-import Image from 'next/image';
-import Header from '@/components/header';
-import TopBar from '@/components/header/components/TopBar';
 import Link from 'next/link';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { useAuth } from '@/contexts/AuthContexts';
-import { Sider } from '@/components/ui/sider';
-import { Button } from '@/components/ui/button';
+import { ProfileSection } from './components/ProfileSection';
+import { CoursesTable } from './components/CourseTable';
+import NavItems from './components/NavItems';
 
 
-
+<CoursesTable />
 
 
 const InstructorDashboardContent = () => {
-    const { user, logout } = useAuth()
-    const [sidebarOpen, setSidebarOpen] = useState(false);
-    const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { user, logout } = useAuth();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('dashboard');
 
-    const defaultNavItems = [
-        {
-            id: 'dashboard',
-            name: 'Dashboard',
-            icon: <LayoutDashboard className="h-5 w-5" />,
-            component: <div>Dashboard Content</div>
-        },
-        {
-            id: 'courses',
-            name: 'My Courses',
-            icon: <ShoppingCart className="h-5 w-5" />,
-            component: <div>My Courses Content</div>
-        },
-        {
-            id: 'resume',
-            name: 'Course Resume',
-            icon: <FileText className="h-5 w-5" />,
-            component: <div>Course Resume Content</div>
-        },
-        {
-            id: 'quiz',
-            name: 'Quiz',
-            icon: <Diamond className="h-5 w-5" />,
-            component: <div>Quiz Content</div>
-        },
-        {
-            id: 'saved',
-            name: 'Saved',
-            icon: <Heart className="h-5 w-5" />,
-            component: <div>Saved Content</div>
-        },
-        {
-            id: 'edit-profile',
-            name: 'Edit Profile',
-            icon: <Edit className="h-5 w-5" />,
-            component: <div>Edit Profile Content</div>
-        },
-        {
-            id: 'settings',
-            name: 'Settings',
-            icon: <Settings className="h-5 w-5" />,
-            component: <div>Settings Content</div>
-        },
-        {
-            id: 'delete-profile',
-            name: 'Delete Profile',
-            icon: <Trash className="h-5 w-5" />,
-            component: <div>Delete Profile Content</div>
-        },
-        {
-            id: logout,
-            name: 'Sign Out',
-            icon: <LogOut className="h-5 w-5" />,
-            component: <div>Sign Out Confirmation</div>,
-            isDestructive: true
-        }
-    ];
+  // Navigation configuration
+  const navigationItems = NavItems
 
+  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
-    const toggleSidebar = () => {
-        setSidebarOpen(!sidebarOpen);
-    };
+  const handleNavItemClick = (id) => {
+    console.log('Navigation clicked:', id); // Debug log
+    const item = navigationItems.find(item => item.id === id);
+    
+    if (item?.action) {
+      item.action();
+      return;
+    }
+    
+    console.log('Setting active tab to:', id); // Debug log
+    setActiveTab(id);
+    if (sidebarOpen) toggleSidebar();
+  };
 
-    const toggleDropdown = () => {
-        setDropdownOpen(!dropdownOpen);
-    };
+  // Get the component for the active tab
+  const renderActiveComponent = () => {
+    console.log('Current active tab:', activeTab); // Debug log
+    const activeItem = navigationItems.find(item => item.id === activeTab);
+    console.log('Active item found:', activeItem?.name); // Debug log
+    return activeItem?.component || <PlaceholderContent title="Not Found" />;
+  };
 
-    return (
-        <div className="bg-gray-50">
-            <div className="hero bg-gradient-to-r from-brand to-slate-800 py-8 text-white mb-4 relative overflow-hidden">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    {/* Header and Breadcrumb */}
-                    <div className="mb-16 md:mb-20">
-                        <h1 className='text-3xl sm:text-4xl md:text-5xl font-bold'>Instructor Dashboard</h1>
-                        <div className="flex items-center gap-2 text-white/80 mt-2">
-                            <Link href={'/'} className="hover:text-white transition-colors">Home</Link>
-                            <span>/</span>
-                            <span>Dashboard</span>
-                        </div>
-                    </div>
-
-                    {/* Profile Section */}
-                    <div className="flex flex-col md:flex-row items-start gap-4 md:gap-8 pb-16 md:pb-24">
-                        {/* Profile Image */}
-                        <div className="flex-shrink-0 relative -mt-8 md:-mt-16">
-                            <div className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 relative">
-                                <Image
-                                    className="object-cover rounded-full border-4 border-white shadow-lg"
-                                    src="/Hero.webp"
-                                    fill
-                                    alt="Instructor"
-                                />
-                            </div>
-                        </div>
-
-                        {/* Profile Info */}
-                        <div className="flex-1 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-                            <div>
-                                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold">{user.fullName}</h2>
-                                <p className="text-gray-300 text-sm sm:text-base">{user.email}</p>
-
-                                {/* Stats */}
-                                <div className="flex flex-wrap gap-4 mt-3 sm:mt-4">
-                                    <div className="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-full">
-                                        <FaBook className='text-brand h-4 w-4' />
-                                        <span className="text-sm sm:text-base">25 Courses</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-full">
-                                        <FaGem className="h-4 w-4 text-blue-400" />
-                                        <span className="text-sm sm:text-base">12k Students</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Create Course Button */}
-                            <Link
-                                href="/instructor/courses/create"
-                                className="inline-flex items-center justify-center border-2 border-green-500 hover:bg-green-500/10 text-green-500 hover:text-green-400 font-medium text-sm sm:text-base px-4 py-2 sm:px-6 sm:py-3 rounded-full transition-all duration-200 shadow-sm mt-4 md:mt-0"
-                            >
-                                Create course
-                            </Link>
-                        </div>
-                    </div>
-                </div>
+  return (
+    <div className="bg-gray-50 min-h-screen">
+      {/* Hero Section */}
+      <div className="hero bg-gradient-to-r from-brand to-slate-800 py-8 text-white mb-4 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header and Breadcrumb */}
+          <div className="mb-16 md:mb-20">
+            <h1 className='text-3xl sm:text-4xl md:text-5xl font-bold'>Instructor Dashboard</h1>
+            <div className="flex items-center gap-2 text-white/80 mt-2">
+              <Link href={'/'} className="hover:text-white transition-colors">Home</Link>
+              <span>/</span>
+              <span>Dashboard</span>
             </div>
-            <div className="flex flex-col xl:flex-row max-w-7xl mx-auto px-4">
+          </div>
 
-                {/* Left sidebar */}
-                <div className={`fixed xl:static inset-y-0 left-0 z-60 lg:z-10 w-80 xl:w-72 bg-white xl:bg-transparent border-r xl:border-r-0 transform transition-transform duration-300 ease-in-out ${sidebarOpen ? 'translate-x-0' : '-translate-x-full xl:translate-x-0'}`}>
-                    {/* Sidebar header */}
-                    <div className="xl:hidden flex items-center justify-between p-4 bg-gray-100 border-b border-gray-300">
-                        <h5 className="text-lg font-semibold">My profile</h5>
-                        <button
-                            onClick={toggleSidebar}
-                            className="p-1 rounded hover:bg-gray-200"
-                            aria-label="Close"
-                        >
-                            <X size={20} />
-                        </button>
-                    </div>
-
-                    {/* Sidebar content */}
-                    <Sider defaula navItems={defaultNavItems} />
-                </div>
-
-                {/* Overlay for mobile */}
-                {sidebarOpen && (
-                    <div
-                        className="xl:hidden fixed inset-0 z-30 bg-black/50"
-                        onClick={toggleSidebar}
-                    ></div>
-                )}
-
-                {/* Main content */}
-                <div className="flex-1 xl:ml-0 pt-4 xl:pt-4 px-4 xl:px-6">
-                    {/* Mobile menu button */}
-                    <div className="xl:hidden bg-brand p-2 w-fit rounded-full">
-                        <button
-                            className="text-white p-2 hover:bg-brand"
-                            onClick={toggleSidebar}
-                        >
-                            <LayoutDashboard size={16} />
-                        </button>
-                    </div>
-
-                    {/* Counter boxes */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6 mt-2">
-                        {/* Counter item - Total Courses */}
-                        <div className="flex items-center p-4 bg-yellow-50 rounded-lg border border-gray-300">
-                            <div className="flex-shrink-0">
-                                <Tv className="h-8 w-8 text-yellow-500" />
-                            </div>
-                            <div className="ml-4">
-                                <h5 className="text-2xl font-bold text-gray-900">25</h5>
-                                <p className="text-sm text-gray-600">Total Courses</p>
-                            </div>
-                        </div>
-
-                        {/* Counter item - Total Students */}
-                        <div className="flex items-center p-4 bg-purple-50 rounded-lg border border-gray-300">
-                            <div className="flex-shrink-0">
-                                <FaUserGraduate className="h-8 w-8 text-purple-500" />
-                            </div>
-                            <div className="ml-4">
-                                <h5 className="text-2xl font-bold text-gray-900">25K+</h5>
-                                <p className="text-sm text-gray-600">Total Students</p>
-                            </div>
-                        </div>
-
-                        {/* Counter item - Enrolled Students */}
-                        <div className="flex items-center p-4 bg-blue-50 rounded-lg border border-gray-300">
-                            <div className="flex-shrink-0">
-                                <FaGem className="h-8 w-8 text-blue-500" />
-                            </div>
-                            <div className="ml-4">
-                                <h5 className="text-2xl font-bold text-gray-900">12K</h5>
-                                <p className="text-sm text-gray-600">Enrolled Students</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Earnings Chart */}
-                    <div className="bg-white rounded-lg shadow border border-gray-300 mb-6">
-                        <div className="p-6">
-
-                            {/* Placeholder for Chart - in a real app you would use a charting library */}
-                            <div className="bg-gray-100 rounded h-80 flex items-center justify-center">
-                                <p className="text-gray-500">Earnings Chart</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Most Selling Courses */}
-                    <div className="bg-white rounded-lg shadow border border-gray-300">
-                        <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                            <h3 className="text-lg font-semibold text-gray-900">Most Selling Courses</h3>
-                            <a href="#" className="btn btn-sm btn-primary-soft mb-0">View all</a>
-                        </div>
-
-                        <div className="p-6">
-                            <div className="overflow-x-auto">
-                                <table className="min-w-full divide-y divide-gray-200">
-                                    <thead className="bg-gray-50">
-                                        <tr>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course Name</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Selling</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Period</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="bg-white divide-y divide-gray-200">
-                                        {/* Table row 1 */}
-                                        <tr>
-                                            <td className="px-6 py-4">
-                                                <div className="flex items-center">
-                                                    <div className="flex-shrink-0 w-16 h-12">
-                                                        <img className="w-16 h-12 rounded object-cover" src="https://via.placeholder.com/100x75" alt="Course" />
-                                                    </div>
-                                                    <div className="ml-4">
-                                                        <h6 className="text-sm font-medium text-gray-900">
-                                                            <a href="#">Building Scalable APIs with GraphQL</a>
-                                                        </h6>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">34</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$1,25,478</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <span className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">9 months</span>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                                <button className="p-1 text-green-600 hover:text-green-800 mr-2">
-                                                    <Edit className="h-4 w-4" />
-                                                </button>
-                                                <button className="p-1 text-red-600 hover:text-red-800">
-                                                    <X className="h-4 w-4" />
-                                                </button>
-                                            </td>
-                                        </tr>
-
-                                        {/* Table row 2 */}
-                                        <tr>
-                                            <td className="px-6 py-4">
-                                                <div className="flex items-center">
-                                                    <div className="flex-shrink-0 w-16 h-12">
-                                                        <img className="w-16 h-12 rounded object-cover" src="https://via.placeholder.com/100x75" alt="Course" />
-                                                    </div>
-                                                    <div className="ml-4">
-                                                        <h6 className="text-sm font-medium text-gray-900">
-                                                            <a href="#">Bootstrap 5 From Scratch</a>
-                                                        </h6>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">45</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$2,85,478</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <span className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">6 months</span>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                                <button className="p-1 text-green-600 hover:text-green-800 mr-2">
-                                                    <Edit className="h-4 w-4" />
-                                                </button>
-                                                <button className="p-1 text-red-600 hover:text-red-800">
-                                                    <X className="h-4 w-4" />
-                                                </button>
-                                            </td>
-                                        </tr>
-
-                                        {/* Table row 3 */}
-                                        <tr>
-                                            <td className="px-6 py-4">
-                                                <div className="flex items-center">
-                                                    <div className="flex-shrink-0 w-16 h-12">
-                                                        <img className="w-16 h-12 rounded object-cover" src="https://via.placeholder.com/100x75" alt="Course" />
-                                                    </div>
-                                                    <div className="ml-4">
-                                                        <h6 className="text-sm font-medium text-gray-900">
-                                                            <a href="#">Graphic Design Masterclass</a>
-                                                        </h6>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">21</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$85,478</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <span className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">4 months</span>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                                <button className="p-1 text-green-600 hover:text-green-800 mr-2">
-                                                    <Edit className="h-4 w-4" />
-                                                </button>
-                                                <button className="p-1 text-red-600 hover:text-red-800">
-                                                    <X className="h-4 w-4" />
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            {/* Pagination */}
-                            <div className="flex flex-col sm:flex-row justify-between items-center mt-6">
-                                <p className="text-sm text-gray-700 mb-4 sm:mb-0">
-                                    Showing 1 to 5 of 20 entries
-                                </p>
-                                <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
-                                    <a href="#" className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                        <ChevronLeft className="h-3 w-3" />
-                                    </a>
-                                    <a href="#" className="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                                        1
-                                    </a>
-                                    <a href="#" className="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-blue-50 text-sm font-medium text-brand hover:bg-blue-100">
-                                        2
-                                    </a>
-                                    <a href="#" className="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                                        3
-                                    </a>
-                                    <a href="#" className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                        <ChevronRight className="h-3 w-3" />
-                                    </a>
-                                </nav>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          {/* Profile Section */}
+          <ProfileSection user={user} />
         </div>
-    );
+      </div>
+
+      {/* Main Layout */}
+      <div className="flex flex-col xl:flex-row max-w-7xl mx-auto px-4">
+        {/* Sidebar */}
+        <div className={`fixed xl:static inset-y-0 left-0 z-60 lg:z-10 w-80 xl:w-72 bg-white xl:bg-transparent border-r xl:border-r-0 transform transition-transform duration-300 ease-in-out ${
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full xl:translate-x-0'
+        }`}>
+          {/* Sidebar header - Mobile only */}
+          <div className="xl:hidden flex items-center justify-between p-4 bg-gray-100 border-b border-gray-300">
+            <h5 className="text-lg font-semibold">My profile</h5>
+            <button
+              onClick={toggleSidebar}
+              className="p-1 rounded hover:bg-gray-200"
+              aria-label="Close sidebar"
+            >
+              <X size={20} />
+            </button>
+          </div>
+
+          {/* Sidebar content */}
+          <div className="p-4 sm:border rounded-lg">
+            <nav className="space-y-2">
+              {navigationItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => handleNavItemClick(item.id)}
+                  className={`w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg transition-colors duration-200 ${
+                    activeTab === item.id
+                      ? 'bg-brand text-white'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  {item.icon}
+                  <span className="font-medium">{item.name}</span>
+                </button>
+              ))}
+            </nav>
+          </div>
+        </div>
+
+        {/* Mobile overlay */}
+        {sidebarOpen && (
+          <div
+            className="xl:hidden fixed inset-0 z-30 bg-black/50"
+            onClick={toggleSidebar}
+            aria-label="Close sidebar"
+          />
+        )}
+
+        {/* Main content */}
+        <div className="flex-1 xl:ml-0 pt-4 xl:pt-4 px-4 xl:px-6">
+          {/* Mobile menu button */}
+          <div className="xl:hidden bg-brand p-2 w-fit rounded-full mb-4">
+            <button
+              className="text-white p-2 hover:bg-brand-dark transition-colors"
+              onClick={toggleSidebar}
+              aria-label="Open sidebar"
+            >
+              <LayoutDashboard size={16} />
+            </button>
+          </div>
+
+          {/* Dynamic content based on active tab */}
+          {renderActiveComponent()}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default function InstructorDashboard() {
-    return (
-        <ProtectedRoute>
-            <InstructorDashboardContent />
-        </ProtectedRoute>
-    );
+  return (
+    <ProtectedRoute>
+      <InstructorDashboardContent />
+    </ProtectedRoute>
+  );
 }

@@ -7,8 +7,7 @@ import Link from 'next/link';
 import React from 'react';
 
 const HomeCourses = () => {
-  const page = 1;
-  const {data:courses, isLoading, isError, error} = useCourses({ page });
+  const {data:courses, isLoading, isError, error} = useCourses();
 
 
   if (isError) return <div>Error: {error.message}</div>;
@@ -23,7 +22,7 @@ const HomeCourses = () => {
         className="flex flex-row justify-between items-start md:items-center mb-6"
       >
         <div className="s mb-4 md:mb-0">
-          <h2 className="text-3xl font-bold mt-2 text-left">
+          <h2 className="text-lg md:text-2xl font-bold mt-2 text-left">
             Featured Courses
           </h2>
         </div>
@@ -54,7 +53,7 @@ const HomeCourses = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {courses.slice(0, 8).map((course, index) => (
+          {courses?.slice(0, 8).map((course, index) => (
             <CourseCard key={course.id} course={course} index={index} />
           ))}
         </div>

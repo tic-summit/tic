@@ -3,10 +3,14 @@ import { StarIcon, TimerIcon, User2Icon, CalendarIcon, BarChart2Icon, BookmarkIc
 import { useAuth } from '@/contexts/AuthContexts';
 import Link from 'next/link';
 import useCourseDetails from '@/app/api/courses/useCourseDetails.js';
+import { useInstructorCourses } from '@/services/useUserCourses';
+import { Icon } from '@iconify/react';
 
 export default function Banner({ courseId }) {
   const { user, isAuthenticated } = useAuth();
-  const { data:course, getCourseInfo:courseInfo, loading, error } = useCourseDetails(courseId);
+
+  const { data: course, getCourseInfo: courseInfo, loading, error } = useCourseDetails(courseId);
+  const { data: instructorCourses } = useInstructorCourses(user);
 
   if (loading) return (
     <div className="relative bg-gray-900 text-white py-24 overflow-hidden px-4">
@@ -36,7 +40,7 @@ export default function Banner({ courseId }) {
   if (!course) return (
     <div className="relative bg-gray-900 text-white py-24 overflow-hidden px-4">
       <div className="max-w-7xl mx-auto px-4 relative z-10">
-        <div>Course not found</div>
+        <div><Icon icon="svg-spinners:bars-scale" width="24" height="24" /> </div>
       </div>
     </div>
   );
@@ -54,7 +58,7 @@ export default function Banner({ courseId }) {
           {/* Course Categories */}
           <div className="flex flex-wrap gap-2 mb-4">
             {course.categories?.map((category, index) => (
-              <span 
+              <span
                 key={index}
                 className="px-3 py-1 bg-brand/20 text-brand rounded-full text-xs font-medium"
               >
@@ -81,12 +85,12 @@ export default function Banner({ courseId }) {
                 <span className="font-medium ml-1 text-white">{course.instructor.name}</span>
               </div>
             )}
-            
+
             <div className="flex items-center">
               <CalendarIcon className="w-4 h-4 mr-1" />
               <span>Last updated {course.lastUpdated || 'May 2023'}</span>
             </div>
-            
+
             <div className="flex items-center">
               <BarChart2Icon className="w-4 h-4 mr-1" />
               <span>{course.level || 'All Levels'}</span>
@@ -123,11 +127,21 @@ export default function Banner({ courseId }) {
           {/* CTA Button */}
           <div className="flex gap-4">
             {isAuthenticated ? (
-              <button
-                className="bg-brand hover:bg-brand-dark text-white px-8 py-3 rounded-full font-medium text-sm transition-colors"
-              >
-                Enroll Now
-              </button>
+              <>
+                <>
+                  {!user.userType === 'instructor' && (
+                    <button className="bg-brand hover:bg-brand-dark text-white px-8 py-3 rounded-full font-medium text-sm transition-colors">
+                      Enroll Now
+                    </button>
+                  )}
+                </>
+                <>
+                  {instructorCourses?.courses.map(instructorCourse => instructorCourse?.title).includes(course.title) && (
+                    <Link href={`/instructor/courses/${course._id}/edit`} className="bg-brand hover:bg-brand-dark text-white px-8 py-3 rounded-full font-medium text-sm transition-colors">
+                      Edit Now
+                    </Link>
+                  )}
+                </></>
             ) : (
               <Link
                 href={'/auth/login'}

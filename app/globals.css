@@ -95,7 +95,9 @@ html {
 /* Cellofy Font Family */
 
 
-
+Button{
+  border-radius: 30px !important;
+}
 
 /* Apply Cellofy as default font */
 body {
@@ -105,6 +107,7 @@ body {
   font-style: normal;
   font-variation-settings:
     "wdth" 100;
+    background-color: rgb(253, 246, 246);
 }
 
 /* Utility classes for other fonts */

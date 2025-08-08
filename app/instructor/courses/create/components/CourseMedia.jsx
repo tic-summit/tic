@@ -15,6 +15,7 @@ export default function CourseMediaForm({ courseId, onComplete }) {
   const [error, setError] = useState(null);
   const thumbnailInputRef = useRef(null);
   const videoInputRef = useRef(null);
+  console.log(user.token)
 
   const handleThumbnailUpload = (e) => {
     const file = e.target.files[0];
@@ -27,6 +28,11 @@ export default function CourseMediaForm({ courseId, onComplete }) {
     }
     if (file.size > 5 * 1024 * 1024) { // 5MB limit
       setError('Image size should be less than 5MB');
+      return;
+    }
+    const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!validImageTypes.includes(file.type)) {
+      setError('Please select a valid image file (JPEG, PNG, GIF, WebP)');
       return;
     }
 
@@ -52,10 +58,14 @@ export default function CourseMediaForm({ courseId, onComplete }) {
       setError('Video size should be less than 100MB');
       return;
     }
-
+    const validVideoTypes = ['video/mp4', 'video/quicktime', 'video/x-msvideo', 'video/x-ms-wmv'];
+    if (!validVideoTypes.includes(file.type)) {
+      setError('Please select a valid video file (MP4, MOV, AVI, WMV)');
+      return;
+    }
     setError(null);
-    setFormData({ 
-      ...formData, 
+    setFormData({
+      ...formData,
       promoVideo: file
     });
 
@@ -65,37 +75,44 @@ export default function CourseMediaForm({ courseId, onComplete }) {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setError(null);
+  e.preventDefault();
+  setIsSubmitting(true);
+  setError(null);
 
-    // Validation
-    if (!formData.thumbnailFile) {
-      setError('Course thumbnail is required');
-      setIsSubmitting(false);
-      return;
+  // Validation
+  if (!formData.thumbnailFile) {
+    setError('Course thumbnail is required');
+    setIsSubmitting(false);
+    return;
+  }
+
+  if (!formData.promoVideo) {
+    setError('Promo video is required');
+    setIsSubmitting(false);
+    return;
+  }
+
+  try {
+    const formPayload = new FormData();
+    
+    // Append files directly (don't use spread operator)
+    formPayload.append('thumbnail', formData.thumbnailFile);
+    formPayload.append('promoVideo', formData.promoVideo);
+
+    // Verify FormData contents before sending
+    console.log('FormData contents in component:');
+    for (let [key, value] of formPayload.entries()) {
+      console.log(key, value.name, value.size);
     }
 
-    if (!formData.promoVideo) {
-      setError('Promo video is required');
-      setIsSubmitting(false);
-      return;
-    }
-
-    try {
-      const formPayload = new FormData();
-      formPayload.append('thumbnail', formData.thumbnailFile);
-      formPayload.append('promoVideo', formData.promoVideo);
-
-      await updateCourseStep2(courseId, formPayload, user.token);
-      if (onComplete) onComplete();
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to update course media. Please try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
+    await updateCourseStep2(courseId, formPayload, user.token);
+    if (onComplete) onComplete();
+  } catch (err) {
+    setError(err.response?.data?.message || 'Failed to update course media. Please try again.');
+  } finally {
+    setIsSubmitting(false);
+  }
+};
   // Clear video preview when component unmounts or video changes
   React.useEffect(() => {
     return () => {
@@ -242,10 +259,10 @@ export default function CourseMediaForm({ courseId, onComplete }) {
                 {videoPreview ? (
                   <div className="w-full">
                     <div className="relative aspect-video bg-black rounded-lg overflow-hidden">
-                      <video 
-                        src={videoPreview} 
+                      <video
+                        src={videoPreview}
                         poster={previewImage} // Use thumbnail as poster if available
-                        controls 
+                        controls
                         className="w-full h-full object-contain"
                       />
                     </div>
@@ -293,7 +310,7 @@ export default function CourseMediaForm({ courseId, onComplete }) {
           </div>
         </div>
 
-     
+
         {/* Submit Button */}
         <div className="mt-8 flex justify-end">
           <button

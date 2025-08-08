@@ -20,39 +20,45 @@ export const createCourseStep1 = async (courseData, token) => {
   }
 };
 
-export const updateCourseStep2 = async (courseId, mediaData, token) => {
+export const updateCourseStep2 = async (courseId, formData, token) => {
   try {
-    const formData = new FormData();
+    // Create a new FormData object to ensure contents are preserved
+    const payload = new FormData();
     
-    // Append thumbnail file
-    if (mediaData.get('thumbnail')) {
-      formData.append('thumbnail', mediaData.get('thumbnail'));
-    }
+    // Manually append all files from the original FormData
+    const thumbnail = formData.get('thumbnail');
+    const promoVideo = formData.get('promoVideo');
     
-    // Append promo video file
-    if (mediaData.get('promoVideo')) {
-      formData.append('promoVideo', mediaData.get('promoVideo'));
+    if (thumbnail) payload.append('thumbnail', thumbnail);
+    if (promoVideo) payload.append('promoVideo', promoVideo);
+
+    console.log('Sending FormData with:');
+    for (let [key, value] of payload.entries()) {
+      console.log(key, value.name, value.size);
     }
 
     const response = await axios.post(
-      `${baseURL}/courses/${courseId}/step2`,
-      formData,
+      `${baseURL}/courses/step2/${courseId}/`,
+      payload,
       {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
+          // Let axios set Content-Type automatically
         }
       }
     );
 
     return response.data;
   } catch (error) {
-    console.error('Error updating course step 2:', error);
+    console.error('Error details:', {
+      message: error.message,
+      response: error.response?.data,
+      request: error.request,
+    });
     throw error;
   }
 };
 
-// src/services/courseService.js
 
 
 export const finalizeCourseCurriculum = async (courseId, curriculumData, token) => {
@@ -113,3 +119,25 @@ export const finalizeCourseCurriculum = async (courseId, curriculumData, token) 
     throw error;
   }
 };
+
+  // export const finalizeCourseCurriculum = async (courseId, curriculumData, token) => {
+  //   try {
+  //     // Transform the data to match the new backend structure
+    
+
+  //     const response = await axios.post(
+  //       `${baseURL}/modules/${courseId}/modules`,
+  //       transformedData,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //           'Content-Type': 'application/json',
+  //         }
+  //       }
+  //     );
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error('Error finalizing course curriculum:', error);
+  //     throw error;
+  //   }
+  // };
