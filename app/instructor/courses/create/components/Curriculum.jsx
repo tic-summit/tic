@@ -1,51 +1,8 @@
 import { useAuth } from '@/contexts/AuthContexts';
+import { finalizeCourseCurriculum } from '@/services/courseApi/courseApi';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
-import { toast } from 'sonner';
-import axios from 'axios';
-
-// Updated API function to match the new endpoint
-export const finalizeCourseCurriculum = async (courseId, curriculumData, token) => {
-  try {
-    // Transform the data to match the new backend structure
-    const transformedData = {
-      title: curriculumData.title || "Course Curriculum",
-      topics: curriculumData.flatMap(module => 
-        module.lessons.map(lesson => ({
-          title: lesson.title,
-          order: lesson.order || 1, // You might want to calculate this properly
-          type: lesson.type,
-          description: lesson.description || '',
-          content: {
-            ...(lesson.type === 'video' && { videoUrl: lesson.videoLink || '' }),
-            ...(lesson.type === 'pdf' && { pdfUrl: lesson.fileUrl || '' }),
-            ...(lesson.type === 'quiz' && { 
-              questions: lesson.questions || [],
-              passingScore: lesson.passingScore || 70,
-              timeLimit: lesson.timeLimit || 30
-            }),
-            textContent: lesson.textContent || ''
-          }
-        }))
-      )
-    };
-
-    const response = await axios.post(
-      `/api/modules/${courseId}/modules`,
-      transformedData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        }
-      }
-    );
-    return response.data;
-  } catch (error) {
-    console.error('Error finalizing course curriculum:', error);
-    throw error;
-  }
-};
+import { toast } from 'sonner'
 
 export default function CurriculumForm({ courseId, onComplete }) {
   const { user } = useAuth()
@@ -66,10 +23,7 @@ export default function CurriculumForm({ courseId, onComplete }) {
     pdfFile: null,
     quizFile: null,
     lessonType: 'video',
-    isPremium: false,
-    passingScore: 70,
-    timeLimit: 30,
-    questions: []
+    isPremium: false
   });
 
   const toggleTopic = (topicId) => {
@@ -87,26 +41,29 @@ export default function CurriculumForm({ courseId, onComplete }) {
         return;
       }
 
-      // Transform data to match expected structure
-      const curriculumData = topics.map(topic => ({
-        title: topic.title,
-        lessons: topic.lessons.map((lesson, index) => ({
-          ...lesson,
-          order: index + 1,
-          // Ensure quiz lessons have required fields
-          ...(lesson.type === 'quiz' && {
-            questions: lesson.questions || [],
-            passingScore: lesson.passingScore || 70,
-            timeLimit: lesson.timeLimit || 30
-          })
-        }))
+      // Transform quiz lessons to include questions if needed
+      const curriculumWithQuizData = topics.map(topic => ({
+        ...topic,
+        lessons: topic.lessons.map(lesson => {
+          if (lesson.type === 'quiz' && !lesson.questions) {
+            return {
+              ...lesson,
+              questions: [], // Default empty questions array
+              passingScore: 80 // Default passing score
+            };
+          }
+          return lesson;
+        })
       }));
 
-      await finalizeCourseCurriculum(courseId, curriculumData, user.token);
+      await finalizeCourseCurriculum(courseId, curriculumWithQuizData, user.token);
       setIsSubmitting(true);
+      // Show success message
       toast.success('Curriculum finalized successfully!');
+
+      // Call the onComplete callback to proceed to next step
       onComplete();
-      router.push('/instructor/dashboard');
+      return router.push('/instructor/dashboard')
     } catch (error) {
       console.error('Failed to finalize curriculum:', error);
       toast.error(`Failed to finalize curriculum: ${error.message}`);
@@ -161,10 +118,7 @@ export default function CurriculumForm({ courseId, onComplete }) {
         pdfFile: null,
         quizFile: null,
         lessonType: lesson.type || 'video',
-        isPremium: lesson.isPremium || false,
-        passingScore: lesson.passingScore || 70,
-        timeLimit: lesson.timeLimit || 30,
-        questions: lesson.questions || []
+        isPremium: lesson.isPremium || false
       });
     } else {
       setFormData({
@@ -175,10 +129,7 @@ export default function CurriculumForm({ courseId, onComplete }) {
         pdfFile: null,
         quizFile: null,
         lessonType: 'video',
-        isPremium: false,
-        passingScore: 70,
-        timeLimit: 30,
-        questions: []
+        isPremium: false
       });
     }
     setShowModal(true);
@@ -211,16 +162,7 @@ export default function CurriculumForm({ courseId, onComplete }) {
             ...topic,
             lessons: topic.lessons.map(lesson =>
               lesson.id === editingLesson.id
-                ? { 
-                    ...lesson, 
-                    ...formData, 
-                    type: formData.lessonType,
-                    ...(formData.lessonType === 'quiz' && {
-                      questions: formData.questions,
-                      passingScore: formData.passingScore,
-                      timeLimit: formData.timeLimit
-                    })
-                  }
+                ? { ...lesson, ...formData, type: formData.lessonType }
                 : lesson
             )
           };
@@ -237,12 +179,7 @@ export default function CurriculumForm({ courseId, onComplete }) {
             description: formData.description,
             videoLink: formData.videoLink,
             type: formData.lessonType,
-            isPremium: formData.isPremium,
-            ...(formData.lessonType === 'quiz' && {
-              questions: formData.questions,
-              passingScore: formData.passingScore,
-              timeLimit: formData.timeLimit
-            })
+            isPremium: formData.isPremium
           };
           return {
             ...topic,
@@ -293,55 +230,6 @@ export default function CurriculumForm({ courseId, onComplete }) {
       default:
         return null;
     }
-  };
-
-  // Function to add a quiz question
-  const addQuizQuestion = () => {
-    setFormData(prev => ({
-      ...prev,
-      questions: [
-        ...prev.questions,
-        {
-          id: Date.now(),
-          question: '',
-          options: { A: '', B: '', C: '' },
-          answer: 'A',
-          explanation: '',
-          points: 1,
-          questionType: 'multiple-choice'
-        }
-      ]
-    }));
-  };
-
-  // Function to update a quiz question
-  const updateQuizQuestion = (questionId, field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      questions: prev.questions.map(q => 
-        q.id === questionId ? { ...q, [field]: value } : q
-      )
-    }));
-  };
-
-  // Function to update a quiz question option
-  const updateQuizQuestionOption = (questionId, optionKey, value) => {
-    setFormData(prev => ({
-      ...prev,
-      questions: prev.questions.map(q => 
-        q.id === questionId 
-          ? { ...q, options: { ...q.options, [optionKey]: value } } 
-          : q
-      )
-    }));
-  };
-
-  // Function to remove a quiz question
-  const removeQuizQuestion = (questionId) => {
-    setFormData(prev => ({
-      ...prev,
-      questions: prev.questions.filter(q => q.id !== questionId)
-    }));
   };
 
   return (
@@ -431,11 +319,6 @@ export default function CurriculumForm({ courseId, onComplete }) {
                                 {lesson.isPremium ? 'Premium' : 'Free'}
                               </span>
                               <span className="text-xs text-gray-500 ml-2 capitalize">{lesson.type}</span>
-                              {lesson.type === 'quiz' && (
-                                <span className="text-xs text-gray-500 ml-2">
-                                  {lesson.questions?.length || 0} questions
-                                </span>
-                              )}
                             </div>
                           </div>
                         </div>
@@ -503,17 +386,15 @@ export default function CurriculumForm({ courseId, onComplete }) {
         <button
           onClick={handleFinalizeCurriculum}
           className="px-6 py-3 bg-brand hover:bg-brand text-white rounded-md"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? (
-            <span className="flex items-center">
-              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              Saving Course...
-            </span>
-          ) : 'Save Curriculum'}
+        > {isSubmitting ? (
+          <span className="flex items-center">
+            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Saving Course...
+          </span>
+        ) : 'Save'}
         </button>
       </div>
 
@@ -619,7 +500,6 @@ export default function CurriculumForm({ courseId, onComplete }) {
                     <option value="video">Video</option>
                     <option value="pdf">PDF Document</option>
                     <option value="quiz">Quiz</option>
-                    <option value="text">Text Content</option>
                   </select>
                 </div>
 
@@ -670,145 +550,21 @@ export default function CurriculumForm({ courseId, onComplete }) {
 
                 {/* Quiz Section */}
                 {formData.lessonType === 'quiz' && (
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Passing Score (%)
-                        </label>
-                        <input
-                          type="number"
-                          name="passingScore"
-                          min="0"
-                          max="100"
-                          value={formData.passingScore}
-                          onChange={handleInputChange}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Time Limit (minutes)
-                        </label>
-                        <input
-                          type="number"
-                          name="timeLimit"
-                          min="1"
-                          value={formData.timeLimit}
-                          onChange={handleInputChange}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Quiz Questions
-                      </label>
-                      <div className="space-y-4">
-                        {formData.questions.length > 0 ? (
-                          formData.questions.map((q) => (
-                            <div key={q.id} className="border border-gray-200 rounded-lg p-4">
-                              <div className="flex justify-between items-start mb-2">
-                                <h4 className="font-medium">Question #{formData.questions.indexOf(q) + 1}</h4>
-                                <button
-                                  onClick={() => removeQuizQuestion(q.id)}
-                                  className="text-red-500 hover:text-red-700"
-                                >
-                                  <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
-                                  </svg>
-                                </button>
-                              </div>
-                              <div className="mb-3">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Question Text</label>
-                                <input
-                                  type="text"
-                                  value={q.question}
-                                  onChange={(e) => updateQuizQuestion(q.id, 'question', e.target.value)}
-                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand"
-                                />
-                              </div>
-                              <div className="mb-3">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Options</label>
-                                {Object.entries(q.options).map(([key, value]) => (
-                                  <div key={key} className="flex items-center mb-2">
-                                    <span className="w-6 font-medium">{key}:</span>
-                                    <input
-                                      type="text"
-                                      value={value}
-                                      onChange={(e) => updateQuizQuestionOption(q.id, key, e.target.value)}
-                                      className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand"
-                                    />
-                                  </div>
-                                ))}
-                              </div>
-                              <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                  <label className="block text-sm font-medium text-gray-700 mb-1">Correct Answer</label>
-                                  <select
-                                    value={q.answer}
-                                    onChange={(e) => updateQuizQuestion(q.id, 'answer', e.target.value)}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand"
-                                  >
-                                    {Object.keys(q.options).map(key => (
-                                      <option key={key} value={key}>{key}</option>
-                                    ))}
-                                  </select>
-                                </div>
-                                <div>
-                                  <label className="block text-sm font-medium text-gray-700 mb-1">Points</label>
-                                  <input
-                                    type="number"
-                                    min="1"
-                                    value={q.points}
-                                    onChange={(e) => updateQuizQuestion(q.id, 'points', parseInt(e.target.value))}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand"
-                                  />
-                                </div>
-                              </div>
-                              <div className="mt-3">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Explanation</label>
-                                <textarea
-                                  value={q.explanation}
-                                  onChange={(e) => updateQuizQuestion(q.id, 'explanation', e.target.value)}
-                                  rows={2}
-                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand"
-                                />
-                              </div>
-                            </div>
-                          ))
-                        ) : (
-                          <p className="text-gray-500 text-center py-4">No questions added yet</p>
-                        )}
-                        <button
-                          type="button"
-                          onClick={addQuizQuestion}
-                          className="w-full py-2 border border-dashed border-gray-300 rounded-lg hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-brand"
-                        >
-                          <div className="flex items-center justify-center">
-                            <svg className="h-5 w-5 mr-2 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
-                            </svg>
-                            Add Question
-                          </div>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Text Content Section */}
-                {formData.lessonType === 'text' && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Content</label>
-                    <textarea
-                      name="textContent"
-                      value={formData.textContent || ''}
-                      onChange={handleInputChange}
-                      rows={6}
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Upload Quiz File <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="file"
+                      name="quizFile"
+                      accept=".json,.xlsx,.csv"
+                      onChange={handleFileChange}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand"
+                      required={formData.lessonType === 'quiz'}
                     />
+                    <p className="text-sm text-gray-500 mt-1">
+                      Supported formats: JSON, Excel (.xlsx), CSV
+                    </p>
                   </div>
                 )}
 
@@ -866,13 +622,12 @@ export default function CurriculumForm({ courseId, onComplete }) {
                 <button
                   type="button"
                   onClick={handleSubmit}
-                  disabled={!formData.title.trim() || 
-                    (formData.lessonType === 'quiz' && formData.questions.length === 0)}
-                  className="px-4 py-2 bg-brand text-white rounded-md hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 bg-brand text-white rounded-md hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand"
                 >
                   {editingLesson ? 'Update Lesson' : 'Add Lesson'}
                 </button>
               </div>
+
             </div>
           </div>
         </div>

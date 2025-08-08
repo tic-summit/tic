@@ -22,7 +22,7 @@ const HomeCourses = () => {
         className="flex flex-row justify-between items-start md:items-center mb-6"
       >
         <div className="s mb-4 md:mb-0">
-          <h2 className="text-3xl font-bold mt-2 text-left">
+          <h2 className="text-lg md:text-2xl font-bold mt-2 text-left">
             Featured Courses
           </h2>
         </div>

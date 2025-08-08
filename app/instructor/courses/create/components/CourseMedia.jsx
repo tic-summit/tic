@@ -75,31 +75,44 @@ export default function CourseMediaForm({ courseId, onComplete }) {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setError(null);
+  e.preventDefault();
+  setIsSubmitting(true);
+  setError(null);
 
-    // Validation code...
+  // Validation
+  if (!formData.thumbnailFile) {
+    setError('Course thumbnail is required');
+    setIsSubmitting(false);
+    return;
+  }
 
-    try {
-      const formPayload = new FormData();
-      formPayload.append('thumbnail', formData.thumbnailFile);
-      formPayload.append('promoVideo', formData.promoVideo);
+  if (!formData.promoVideo) {
+    setError('Promo video is required');
+    setIsSubmitting(false);
+    return;
+  }
 
-      // Debug: Log FormData contents
-      for (let [key, value] of formPayload.entries()) {
-        console.log(key, value);
-      }
+  try {
+    const formPayload = new FormData();
+    
+    // Append files directly (don't use spread operator)
+    formPayload.append('thumbnail', formData.thumbnailFile);
+    formPayload.append('promoVideo', formData.promoVideo);
 
-      await updateCourseStep2(courseId, formPayload, user.token);
-      if (onComplete) onComplete();
-    } catch (err) {
-      // Error handling...
-    } finally {
-      setIsSubmitting(false);
+    // Verify FormData contents before sending
+    console.log('FormData contents in component:');
+    for (let [key, value] of formPayload.entries()) {
+      console.log(key, value.name, value.size);
     }
-  };
 
+    await updateCourseStep2(courseId, formPayload, user.token);
+    if (onComplete) onComplete();
+  } catch (err) {
+    setError(err.response?.data?.message || 'Failed to update course media. Please try again.');
+  } finally {
+    setIsSubmitting(false);
+  }
+};
   // Clear video preview when component unmounts or video changes
   React.useEffect(() => {
     return () => {

@@ -31,7 +31,10 @@ function Page() {
     const currentIndex = allTopics?.findIndex(t => t.slug === topicSlug);
     const nextTopic = currentIndex !== -1 && allTopics?.[currentIndex + 1];
     const prevTopic = currentIndex !== -1 && allTopics?.[currentIndex - 1];
-
+   if(!currentModule || !currentTopic) {
+     return <div className='flex items-center justify-center h-full'>
+        <p className='text-gray-500'>Module or Topic not found</p>
+   </div>;}
     return (
         <div className='flex h-[calc(100vh-5rem)] border'>
             <CourseMenu />

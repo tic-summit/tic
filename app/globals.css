@@ -95,7 +95,9 @@ html {
 /* Cellofy Font Family */
 
 
-
+Button{
+  border-radius: 30px !important;
+}
 
 /* Apply Cellofy as default font */
 body {

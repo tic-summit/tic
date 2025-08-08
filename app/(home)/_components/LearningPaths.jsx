@@ -14,22 +14,22 @@ import {
 export default function LearningPath() {
   const steps = [
     {
-      icon: <Icon icon="game-icons:archive-register" className="text-brand" width="64" height="64" />,
+      icon: <Icon icon="game-icons:archive-register"  className="text-brand size-8 md:size-16" />,
       title: "Register",
       desc: "Choose your tech domain"
     },
     {
-      icon: <Icon icon="emojione-v1:closed-book" width="64" height="64" />,
+      icon: <Icon icon="emojione-v1:closed-book" className="text-brand size-8 md:size-16" />,
       title: "Learn",
       desc: "Access courses"
     },
     {
-      icon: <Icon icon="ic:outline-build-circle" className="text-brand" width="64" height="64" />,
+      icon: <Icon icon="ic:outline-build-circle" className="text-brand size-8 md:size-16" />,
       title: "Build",
       desc: "Work on hands-on projects"
     },
     {
-      icon: <Icon icon="streamline-ultimate-color:award-trophy-1" className="text-brand" width="64" height="64" />,
+      icon: <Icon icon="streamline-ultimate-color:award-trophy-1" className="text-brand size-8 md:size-16" />,
       title: "Compete",
       desc: "Join hackathons"
     },
@@ -37,7 +37,7 @@ export default function LearningPath() {
   ];
 
   return (
-    <section className="py-24 px-4">
+    <section className="py-8 md:py-24 px-4">
       <div className="max-w-[1320px] mx-auto px-2 text-center">
         <h1 className="font-bold text-xl  md:text-4xl">Tic Learning Path</h1>
         <div className="text-sm text-gray-500 mt-4">Class odio natoque sociosqu etiam tempor orci. Sem et tortor consequat id.<br/> Fermentum egestas tellus. Nunc eu hendrerit turpis. Fusce non lectus sem In pellentesque nunc.</div>
@@ -58,7 +58,7 @@ export default function LearningPath() {
               <h3 className="font-bold text-xl">{step.title}</h3>
               <p className="text-lg text-gray-500 mt-1 mb-10">{step.desc}</p>
               <div className="absolute -bottom-9 left-1/2 transform  -translate-x-1/2 duration-200 ease-in-out bg-brand p-6 w-fit rounded-full text-white">
-                <ArrowRight className="-rotate-45 group-hover:rotate-0 duration-300" />
+                <ArrowRight className="-rotate-45 group-hover:rotate-0 duration-300 size-4 md:size-6" />
               </div>
               </div>
             </div>
