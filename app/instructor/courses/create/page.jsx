@@ -46,13 +46,13 @@ function CreateCourse() {
     <ProtectedRoute>
       <div className="bg-gray-50 min-h-screen">
       <div className="hero bg-gradient-to-r from-brand to-slate-800 py-16 text-center text-white mb-10 lg:mb-18">
-        <div className="max-w-7xl mx-auto px-4 relative -z-0 text-center">
+        <div className="max-w-[1500px] mx-auto px-4 relative -z-0 text-center">
           <h1 className='text-2xl md:text-4xl mt-2'>Create a new Course</h1>
           <p className="text-gray-300 mt-2">Build and customize your educational content with our intuitive course creation tools</p>
         </div>
       </div>
       
-      <div className='max-w-7xl mx-auto px-6 pb-10'>
+      <div className='max-w-[1500px] mx-auto px-6 pb-10'>
         <div className="description-form text-center">
           <p className="text-gray-500 mb-8">
             Fill out the form below to create your new course. Provide a clear title, engaging description, <br />

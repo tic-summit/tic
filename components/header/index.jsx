@@ -90,7 +90,7 @@ export default function Header() {
         >
             {/* Main header */}
             <div className="bg-brand/10">
-                <div className="max-w-7xl mx-auto px-4  flex items-center justify-between gap-4">
+                <div className="max-w-[1500px] mx-auto px-4  flex items-center justify-between gap-4">
                 {/* Logo */}
                 <div className="flex-1">
                     <Logo />

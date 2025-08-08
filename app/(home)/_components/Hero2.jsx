@@ -23,7 +23,7 @@ function Hero2() {
             {/* Hero */}
             {/* bg-[#f1f0f8 */}
             <div className=''>
-                <div className='max-w-[1500px] mx-auto'>
+                <div className='max-w-[1650px] mx-auto'>
                     <div className='grid grid-cols-1 md:grid-cols-2 h-[calc(90vh-6rem)]   md:h-[calc(90vh-6rem)] gap-4  pl-4  overflow-hidden'>
                         <div className="letf-section md:ml-10 h-[calc(90vh-6rem)]  md:h-[calc(90vh-6rem)]  flex flex-col  justify-center">
                             <div className="hero-title space-y-8 px-2 md:px-10">
@@ -31,7 +31,7 @@ function Hero2() {
                                     <span className='text-brand font-extrabold londrina'>Empowering</span> <br />The Next <span className='text-brand font-extrabold'>Genration</span> Of Tech Talents
                                 </h1>
                                 <div className="hero-subtitle ">
-                                    <h2 className='text-gray-700 sm:text-lg'>
+                                    <h2 className='text-gray-700 sm:text-lg font-semibold'>
                                         Master in-demand tech skills through interactive courses,
                                         real-world projects, hackathons, internships,
                                         and expert mentorship — all in one platform

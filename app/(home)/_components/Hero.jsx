@@ -41,7 +41,7 @@ function Hero() {
 
                 <Header />
 
-                <div className="max-w-7xl mx-auto pt-12 pb-0 md:pt-20   px-4 relative z-10 h-auto flex flex-col md:flex-row md:items-center md:justify-between gap-10">
+                <div className="max-w-[1500px] mx-auto pt-12 pb-0 md:pt-20   px-4 relative z-10 h-auto flex flex-col md:flex-row md:items-center md:justify-between gap-10">
                     {/* Left Section - Content */}
                     <div className="w-full text-center md:text-left md:w-1/2">
                         <div className="space-y-4 sm:space-y-6">

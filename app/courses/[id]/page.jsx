@@ -16,7 +16,7 @@ const CourseTabs = () => {
     return (
         <div className="min-h-screen">
             <Banner courseId={courseId} />
-            <div className="max-w-7xl mx-auto px-4 py-8">
+            <div className="max-w-[1500px] mx-auto px-4 py-8">
                 <div className='flex flex-col lg:flex-row justify-between gap-10'>
                     <CourseCurriculum courseId={courseId} />
                     <CourseInfo courseId={courseId} />

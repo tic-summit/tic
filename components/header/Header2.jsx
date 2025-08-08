@@ -98,8 +98,8 @@ function Header2() {
     }
 
     return (
-        <header className="h-16 lg:h-24 px-4 bg-white z-40 sticky top-0">
-            <div className={`${pathname === '/labs/new' ? '' : 'max-w-[1400px]'} mx-auto h-full flex items-center justify-between`}>
+        <header className="h-16 lg:h-24 px-4 bg-white z-40 ">
+            <div className={`${pathname === '/labs/new' ? '' : 'max-w-[1600px]'} mx-auto h-full flex items-center justify-between`}>
                 {/* Left section - Logo */}
                 <div className="flex items-center">
                     <Logo className="h-8 lg:h-10" />

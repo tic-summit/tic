@@ -8,19 +8,19 @@ export default function CourseCard({ course, index }) {
     <div
 
       key={course.id}
-      className="course-box max-w-full border border-brand rounded-lg"
+      className="course-box border border-brand rounded-lg max-w-[440px]"
       data-aos="fade-up"
       data-aos-delay={index * 100}
     >
       <div className=" rounded-lg overflow-hidden border border-gray-300">
         <div className="relative group overflow-hidden h-48">
           {/* Main content (image + price tag) */}
-          <div className="relative h-full w-full z-10">
-            <div href={course.url}>
+          <div className="relative h-full w-full rounded-lg z-10">
+            <div href={course.url} className='p-2'>
               <img
                 src={course.image}
                 alt={course.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full rounded-lg object-cover"
                 loading="lazy"
               />
             </div>

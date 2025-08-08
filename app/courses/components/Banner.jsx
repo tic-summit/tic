@@ -14,7 +14,7 @@ export default function Banner({ courseId }) {
 
   if (loading) return (
     <div className="relative bg-gray-900 text-white py-24 overflow-hidden px-4">
-      <div className="max-w-7xl mx-auto px-4 relative z-10">
+      <div className="max-w-[1500px] mx-auto px-4 relative z-10">
         <div className="max-w-4xl space-y-6">
           <div className="h-12 bg-gray-700 rounded w-3/4 animate-pulse"></div>
           <div className="h-6 bg-gray-700 rounded w-1/2 animate-pulse"></div>
@@ -31,7 +31,7 @@ export default function Banner({ courseId }) {
 
   if (error) return (
     <div className="relative bg-gray-900 text-white py-24 overflow-hidden px-4">
-      <div className="max-w-7xl mx-auto px-4 relative z-10">
+      <div className="max-w-[1500px] mx-auto px-4 relative z-10">
         <div className="text-red-400">Error loading course details: {error}</div>
       </div>
     </div>
@@ -39,7 +39,7 @@ export default function Banner({ courseId }) {
 
   if (!course) return (
     <div className="relative bg-gray-900 text-white py-24 overflow-hidden px-4">
-      <div className="max-w-7xl mx-auto px-4 relative z-10">
+      <div className="max-w-[1500px] mx-auto px-4 relative z-10">
         <div><Icon icon="svg-spinners:bars-scale" width="24" height="24" /> </div>
       </div>
     </div>
@@ -53,7 +53,7 @@ export default function Banner({ courseId }) {
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 relative z-10">
+      <div className="max-w-[1500px] mx-auto px-4 relative z-10">
         <div className="max-w-4xl">
           {/* Course Categories */}
           <div className="flex flex-wrap gap-2 mb-4">
