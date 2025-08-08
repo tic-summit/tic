@@ -6,6 +6,9 @@ import Header2 from "../components/header/Header2";
 import ClientLayout from "@/components/ClientLayout";
 import { Toaster } from "sonner";
 import { QueryClientComponent } from "@/services/queryClientComponent";
+/* In your globals.css */
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 export const metadata = {
   title: "Your App",

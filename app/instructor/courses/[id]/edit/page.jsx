@@ -1,5 +1,6 @@
 "use client"
 
+import ProtectedRoute from '@/components/ProtectedRoute';
 import {
     Save,
     X,
@@ -283,7 +284,7 @@ const CourseEditForm = () => {
             {/* Submit Button */}
             <div className="flex justify-end gap-4">
                 <Link
-                    href="/instructor/courses"
+                    href="/instructor/dashboard?"
                     className="px-6 py-3 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
                 >
                     Cancel
@@ -304,6 +305,7 @@ const CourseEditForm = () => {
 
 export default function CourseEditPage() {
     return (
+    <ProtectedRoute>
         <div className="min-h-screen bg-gray-50">
             {/* Header */}
             <div className="bg-white shadow-sm border-b border-gray-200">
@@ -339,5 +341,6 @@ export default function CourseEditPage() {
                 <CourseEditForm />
             </div>
         </div>
+    </ProtectedRoute>
     );
 }
