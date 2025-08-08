@@ -53,7 +53,7 @@ const HomeCourses = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {courses?.slice(0, 8).map((course, index) => (
+          {courses?.slice(0, 4).map((course, index) => (
             <CourseCard key={course.id} course={course} index={index} />
           ))}
         </div>

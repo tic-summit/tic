@@ -5,6 +5,7 @@ import BasicInformationForm from './components/CourseDetails'
 import CourseMediaForm from './components/CourseMedia'
 import CurriculumForm from './components/Curriculum'
 import ProgressSteps from './components/ProgressSteps'
+import ProtectedRoute from '@/components/ProtectedRoute'
 
 function CreateCourse() {
   const [activeStep, setActiveStep] = useState(1)
@@ -42,7 +43,8 @@ function CreateCourse() {
   const isFirstStep = activeStep === 1
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <ProtectedRoute>
+      <div className="bg-gray-50 min-h-screen">
       <div className="hero bg-gradient-to-r from-brand to-slate-800 py-16 text-center text-white mb-10 lg:mb-18">
         <div className="max-w-7xl mx-auto px-4 relative -z-0 text-center">
           <h1 className='text-2xl md:text-4xl mt-2'>Create a new Course</h1>
@@ -109,6 +111,7 @@ function CreateCourse() {
         </div>
       </div>
     </div>
+    </ProtectedRoute>
   )
 }
 

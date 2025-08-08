@@ -10,7 +10,7 @@ const useProfileImage = (userId, token) => {
       const formData = new FormData();
       formData.append('image', imageFile);
       
-      const response = await axios.post(
+      const response = await axios.patch(
         `${baseURL}/profile/${userId}/image`, 
         formData, 
         {

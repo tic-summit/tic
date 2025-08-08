@@ -6,6 +6,7 @@ import { useParams, useRouter } from 'next/navigation'
 import React from 'react'
 import CourseMenu from './components/CourseMenu'
 import useCourseDetails from '@/app/api/courses/useCourseDetails.js'
+import ProtectedRoute from '@/components/ProtectedRoute'
 
 function Page() {
     const router = useRouter();
@@ -36,7 +37,8 @@ function Page() {
         <p className='text-gray-500'>Module or Topic not found</p>
    </div>;}
     return (
-        <div className='flex h-[calc(100vh-5rem)] border'>
+        <ProtectedRoute>
+            <div className='flex h-[calc(100vh-5rem)] border'>
             <CourseMenu />
             <div className="bg-gray-100 w-full border boder-gray-800 flex h-[calc(100vh-5rem)] overflow-auto">
                 <div className='max-w-[1500px] mx-auto w-full'>
@@ -147,6 +149,7 @@ function Page() {
                 </div>
             </div>
         </div>
+        </ProtectedRoute>
     )
 }
 
