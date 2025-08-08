@@ -1,13 +1,14 @@
 import { Eye, Heart, Star } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
+import { Button } from '../ui/button'
 
 export default function CourseCard({ course, index }) {
   return (
     <div
 
       key={course.id}
-      className="course-box shadow max-w-full"
+      className="course-box max-w-full border border-brand rounded-lg"
       data-aos="fade-up"
       data-aos-delay={index * 100}
     >
@@ -23,14 +24,14 @@ export default function CourseCard({ course, index }) {
                 loading="lazy"
               />
             </div>
-            <div className="absolute top-4 right-4 bg-white px-3 py-1 rounded z-30">
+            <div className="absolute top-4 right-4 bg-rose-400  px-3 py-1 rounded-full z-30">
               {course.originalPrice ? (
                 <h3 className="text-sm font-semibold">
                   <span className="text-primary">{course.price}</span>
                   <span className="text-gray-500 line-through ml-2">{course.originalPrice}</span>
                 </h3>
               ) : (
-                <h3 className="text-green-500 text-xs font-semibold">{course.price}</h3>
+                <h3 className="text-white text-xs font-semibold">{course.price}</h3>
               )}
             </div>
           </div>
@@ -49,7 +50,7 @@ export default function CourseCard({ course, index }) {
                 href={`/courses/${course.id}`}
                 className="
         
-         text-green-600 text-xs font-bold 
+         text-brand text-xs font-bold 
       "
               >
                 <Eye className='h-4 w-4' />
@@ -73,7 +74,7 @@ export default function CourseCard({ course, index }) {
             <div className='max-w-[240px]  truncate' href={course.url}>{course.title}</div>
           </h3>
 
-          <div className="flex items-center text-xs text-gray-500 mb-4">
+          <div className="flex items-center text-[15px] text-gray-500 font-semibold mb-4 border-b-2 pb-4 border-brand border-dashed ">
             <div className="flex items-center mr-4">
               <img
                 src="https://dreamslms-wp.dreamstechnologies.com/wp-content/themes/dreamslms/assets/images/icon-01.svg"
@@ -95,7 +96,7 @@ export default function CourseCard({ course, index }) {
           </div>
 
           <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 ">
               {[...Array(5)].map((_, i) => (
                 <Star
                   key={i}
@@ -108,7 +109,11 @@ export default function CourseCard({ course, index }) {
                 </span>
               )}
             </div>
-
+            <Button variant={"outline"} className={"shadow-none bg-brand text-white hover:text-white border-none  hover:bg-brand/90"}>
+              <Link href={`/courses/${course.id}`} className="text-xs font-semibold">
+                View Course
+              </Link>
+            </Button>
           </div>
         </div>
       </div>
