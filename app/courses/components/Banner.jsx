@@ -3,8 +3,8 @@ import { StarIcon, TimerIcon, User2Icon, CalendarIcon, BarChart2Icon, BookmarkIc
 import { useAuth } from '@/contexts/AuthContexts';
 import Link from 'next/link';
 import useCourseDetails from '@/app/api/courses/useCourseDetails.js';
-import { useInstructorCourses } from '@/services/useUserCourses';
 import { Icon } from '@iconify/react';
+import { useInstructorCourses } from '@/services/useUserCourses';
 
 export default function Banner({ courseId }) {
   const { user, isAuthenticated } = useAuth();
@@ -82,13 +82,13 @@ export default function Banner({ courseId }) {
             {course.instructor && (
               <div className="flex items-center">
                 <span>Created by </span>
-                <span className="font-medium ml-1 text-white">{course.instructor.name}</span>
+                <span className="font-medium ml-1 text-white">{course.instructor.fullName}</span>
               </div>
             )}
 
             <div className="flex items-center">
               <CalendarIcon className="w-4 h-4 mr-1" />
-              <span>Last updated {course.lastUpdated || 'May 2023'}</span>
+              <span>Last updated {new Date(course.updatedAt).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'}) || 'May 13, 2025'}</span>
             </div>
 
             <div className="flex items-center">
