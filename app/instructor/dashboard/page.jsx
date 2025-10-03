@@ -16,7 +16,7 @@ import NavItems from './components/NavItems';
 <CoursesTable />
 
 
-const InstructorDashboardContent = () => {
+const StudentDashboardContent = () => {
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -137,10 +137,10 @@ const InstructorDashboardContent = () => {
   );
 };
 
-export default function InstructorDashboard() {
+export default function StudentDashboard() {
   return (
     <ProtectedRoute>
-      <InstructorDashboardContent />
+      <StudentDashboardContent />
     </ProtectedRoute>
   );
 }
