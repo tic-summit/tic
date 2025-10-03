@@ -29,11 +29,22 @@ const defaultNavItems = [
 export function Sider({ 
   className = '', 
   navItems = defaultNavItems,
-  defaultActiveId = 'dashboard'
+  defaultActiveId = 'dashboard',
+  onItemClick,
+  activeId
 }) {
-  const [activeId, setActiveId] = useState(defaultActiveId);
+  const [internalActiveId, setInternalActiveId] = useState(defaultActiveId);
+  const currentActiveId = activeId || internalActiveId;
 
-  const activeComponent = navItems.find(item => item.id === activeId)?.component;
+  const handleItemClick = (item) => {
+    if (item.onClick) {
+      item.onClick();
+    } else if (onItemClick) {
+      onItemClick(item.id);
+    } else {
+      setInternalActiveId(item.id);
+    }
+  };
 
   return (
     <div className={`flex gap-4 ${className}`}>
@@ -41,7 +52,7 @@ export function Sider({
         <div className="rounded-lg p-4 w-full">
           <nav className="space-y-1 z-50">
             {navItems.map((item) => {
-              const isActive = activeId === item.id;
+              const isActive = currentActiveId === item.id;
               const baseClasses = 'flex items-center px-3 py-2 text-sm font-medium rounded-md cursor-pointer';
               const activeClasses = isActive 
                 ? 'text-white bg-brand' 
@@ -52,7 +63,7 @@ export function Sider({
               return (
                 <div
                   key={item.id}
-                  onClick={() => setActiveId(item.id)}
+                  onClick={() => handleItemClick(item)}
                   className={`${baseClasses} ${activeClasses}`}
                 >
                   <span className="mr-3">{item.icon}</span>

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import useCourseDetails from '@/app/api/courses/useCourseDetails.js';
 import { Icon } from '@iconify/react';
 import { useInstructorCourses } from '@/services/useUserCourses';
+import EnrollmentButton from '@/components/course/EnrollmentButton';
 
 export default function Banner({ courseId }) {
   const { user, isAuthenticated } = useAuth();
@@ -32,7 +33,7 @@ export default function Banner({ courseId }) {
   if (error) return (
     <div className="relative bg-gray-900 text-white py-24 overflow-hidden px-4">
       <div className="max-w-[1500px] mx-auto px-4 relative z-10">
-        <div className="text-red-400">Error loading course details: {error}</div>
+        <div className="text-red-400">Error loading course details: {error.message || 'Unknown error occurred'}</div>
       </div>
     </div>
   );
@@ -126,29 +127,21 @@ export default function Banner({ courseId }) {
 
           {/* CTA Button */}
           <div className="flex gap-4">
-            {isAuthenticated ? (
-              <>
-                <>
-                  {!user.userType === 'instructor' && (
-                    <button className="bg-brand hover:bg-brand-dark text-white px-8 py-3 rounded-full font-medium text-sm transition-colors">
-                      Enroll Now
-                    </button>
-                  )}
-                </>
-                <>
-                  {instructorCourses?.courses.map(instructorCourse => instructorCourse?.title).includes(course.title) && (
-                    <Link href={`/instructor/courses/${course._id}/edit`} className="bg-brand hover:bg-brand-dark text-white px-8 py-3 rounded-full font-medium text-sm transition-colors">
-                      Edit Now
-                    </Link>
-                  )}
-                </></>
-            ) : (
-              <Link
-                href={'/auth/login'}
+            {/* Show enrollment button for students, edit button for instructors */}
+            {isAuthenticated && user?.userType === 'instructor' && 
+             instructorCourses?.courses.map(instructorCourse => instructorCourse?.title).includes(course.title) ? (
+              <Link 
+                href={`/instructor/courses/${course._id}/edit`} 
                 className="bg-brand hover:bg-brand-dark text-white px-8 py-3 rounded-full font-medium text-sm transition-colors"
               >
-                Login to Enroll
+                Edit Course
               </Link>
+            ) : (
+              <EnrollmentButton 
+                courseId={courseId} 
+                courseTitle={course.title}
+                className="px-8 py-3 rounded-full font-medium text-sm"
+              />
             )}
             <button className="border border-white/30 hover:bg-white/10 text-white px-6 py-3 rounded-full font-medium text-sm transition-colors">
               Add to Wishlist

@@ -101,7 +101,7 @@ export default function EditCurriculumForm({ onComplete }) {
       await finalizeCourseCurriculum(courseId, curriculumWithQuizData, user.token);
       toast.success('Curriculum updated successfully!');
       onComplete();
-      router.push('/instructor/dashboard');
+      router.push('/instructor/dashboard    ');
     } catch (error) {
       setError(submitError || 'Failed to finalize curriculum');
       toast.error(submitError || 'Failed to finalize curriculum');

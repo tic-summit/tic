@@ -1,5 +1,7 @@
 "use client"
 import { createContext, useContext, useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { isTokenExpired } from '@/lib/tokenUtils';
 
 const AuthContext = createContext();
 
@@ -7,6 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -15,6 +18,13 @@ export const AuthProvider = ({ children }) => {
       
       if (storedUser && token) {
         try {
+          // Check if token is expired
+          if (isTokenExpired(token)) {
+            console.log('Token expired, logging out user');
+            logout();
+            return;
+          }
+
           // Combine user data with token
           const userData = { ...JSON.parse(storedUser), token };
           setUser(userData);
@@ -30,6 +40,21 @@ export const AuthProvider = ({ children }) => {
     initializeAuth();
   }, []);
 
+  // Listen for session expiration events from API interceptor
+  useEffect(() => {
+    const handleSessionExpired = () => {
+      console.log('Session expired, redirecting to homepage');
+      logout();
+      router.push('/');
+    };
+
+    window.addEventListener('sessionExpired', handleSessionExpired);
+    
+    return () => {
+      window.removeEventListener('sessionExpired', handleSessionExpired);
+    };
+  }, [router]);
+
   const login = (userData, token) => {
     // Combine user data with token before storing
     const userWithToken = { ...userData, token };
@@ -40,12 +65,20 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    setTimeout(() => {
-      localStorage.removeItem('user');
+    localStorage.removeItem('user');
     localStorage.removeItem('token');
     setUser(null);
     setIsAuthenticated(false);
-    }, 1000); // Simulate a delay for logout
+  };
+
+  // Function to validate current session
+  const validateSession = () => {
+    const token = localStorage.getItem('token');
+    if (!token || isTokenExpired(token)) {
+      logout();
+      return false;
+    }
+    return true;
   };
 
   return (
@@ -54,7 +87,8 @@ export const AuthProvider = ({ children }) => {
       isAuthenticated, 
       isLoading,
       login, 
-      logout 
+      logout,
+      validateSession
     }}>
       {children}
     </AuthContext.Provider>

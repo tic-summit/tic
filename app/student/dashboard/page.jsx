@@ -14,7 +14,11 @@ import {
     Heart,
     Repeat,
     LucideFlagTriangleLeft,
- 
+    BookOpen,
+    Clock,
+    Star,
+    PlayCircle,
+    ArrowRight
 } from 'lucide-react';
 import { FaAngleLeft, FaAngleRight, FaAward, FaCheckCircle, FaPlay, FaTv } from 'react-icons/fa';
 import Image from 'next/image';
@@ -24,6 +28,15 @@ import Link from 'next/link';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { useAuth } from '@/contexts/AuthContexts';
 import { Sider } from '@/components/ui/sider';
+import { useEnrolledCourses, useCourseQuizzes } from '@/app/api/student/useStudentCourses';
+import { Progress } from '@/components/ui/progress';
+import QuizCard from '@/components/quiz/QuizCard';
+import QuizTaking from '@/components/quiz/QuizTaking';
+import ContinueCourse from '@/components/course/ContinueCourse';
+import { useAllCourseProgress } from '@/app/api/courses/useCourseProgressTracking';
+import CourseRow from '@/components/course/CourseRow';
+import CourseCard from '@/components/course/CourseCard';
+import ResumeCourseCard from '@/components/course/ResumeCourseCard';
 
 
 
@@ -32,71 +45,142 @@ import { Sider } from '@/components/ui/sider';
 
 const DashboardContent = () => {
     const {user, logout} = useAuth()
-    console.log(user);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [activeTab, setActiveTab] = useState('dashboard');
+    const [selectedQuiz, setSelectedQuiz] = useState(null);
+    const [isTakingQuiz, setIsTakingQuiz] = useState(false);
+    const [quizSearchTerm, setQuizSearchTerm] = useState('');
+    
+    // Fetch enrolled courses using the real API
+    const { data: enrolledData, isLoading, error } = useEnrolledCourses(user?.id, user?.token);
+    const courses = enrolledData?.courses || [];
+    
+    // Filter courses based on search term
+    const filteredCourses = courses.filter(course => 
+        course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        course.category?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    
+    // Calculate statistics
+    const totalCourses = courses.length;
+    const completedCourses = courses.filter(course => course.progress === 100).length;
+    const totalProgress = courses.reduce((sum, course) => sum + (course.progress || 0), 0);
+    const averageProgress = totalCourses > 0 ? Math.round(totalProgress / totalCourses) : 0;
+    const handleTabClick = (tabId) => {
+        if (tabId === 'logout') {
+            logout();
+            return;
+        }
+        setActiveTab(tabId);
+    };
+
+    const handleStartQuiz = (quiz) => {
+        setSelectedQuiz(quiz);
+        setIsTakingQuiz(true);
+    };
+
+    const handleQuizComplete = (score, passed) => {
+        console.log('Quiz completed:', { score, passed });
+        setIsTakingQuiz(false);
+        setSelectedQuiz(null);
+        // Here you would typically update the quiz completion status via API
+    };
+
+    const handleQuizCancel = () => {
+        setIsTakingQuiz(false);
+        setSelectedQuiz(null);
+    };
+
+
     const defaultNavItems = [
         {
           id: 'dashboard',
           name: 'Dashboard',
           icon: <LayoutDashboard className="mr-3 h-5 w-5" />,
           href: '#',
-          className: 'flex items-center px-3 py-2 text-sm font-medium text-white bg-brand rounded-md'
+          onClick: () => handleTabClick('dashboard'),
+          className: activeTab === 'dashboard' 
+            ? 'flex items-center px-3 py-2 text-sm font-medium text-white bg-brand rounded-md'
+            : 'flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-brand hover:text-white rounded-md'
         },
         {
           id: 'courses',
           name: 'My Courses',
           icon: <ShoppingCart className="mr-3 h-5 w-5" />,
           href: '#',
-          className: 'flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-brand hover:text-white rounded-md'
+          onClick: () => handleTabClick('courses'),
+          className: activeTab === 'courses' 
+            ? 'flex items-center px-3 py-2 text-sm font-medium text-white bg-brand rounded-md'
+            : 'flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-brand hover:text-white rounded-md'
         },
         {
           id: 'resume',
           name: 'Course Resume',
           icon: <FileText className="mr-3 h-5 w-5" />,
           href: '#',
-          className: 'flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-brand hover:text-white rounded-md'
+          onClick: () => handleTabClick('resume'),
+          className: activeTab === 'resume' 
+            ? 'flex items-center px-3 py-2 text-sm font-medium text-white bg-brand rounded-md'
+            : 'flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-brand hover:text-white rounded-md'
         },
         {
           id: 'quiz',
           name: 'Quiz',
           icon: <Diamond className="mr-3 h-5 w-5" />,
           href: '#',
-          className: 'flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-brand hover:text-white rounded-md'
+          onClick: () => handleTabClick('quiz'),
+          className: activeTab === 'quiz' 
+            ? 'flex items-center px-3 py-2 text-sm font-medium text-white bg-brand rounded-md'
+            : 'flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-brand hover:text-white rounded-md'
         },
         {
           id: 'saved',
           name: 'Saved',
           icon: <Heart className="mr-3 h-5 w-5" />,
           href: '#',
-          className: 'flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-brand hover:text-white rounded-md'
+          onClick: () => handleTabClick('saved'),
+          className: activeTab === 'saved' 
+            ? 'flex items-center px-3 py-2 text-sm font-medium text-white bg-brand rounded-md'
+            : 'flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-brand hover:text-white rounded-md'
         },
         {
           id: 'edit-profile',
           name: 'Edit Profile',
           icon: <Edit className="mr-3 h-5 w-5" />,
           href: '#',
-          className: 'flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-brand hover:text-white rounded-md'
+          onClick: () => handleTabClick('edit-profile'),
+          className: activeTab === 'edit-profile' 
+            ? 'flex items-center px-3 py-2 text-sm font-medium text-white bg-brand rounded-md'
+            : 'flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-brand hover:text-white rounded-md'
         },
         {
           id: 'settings',
           name: 'Settings',
           icon: <Settings className="mr-3 h-5 w-5" />,
           href: '#',
-          className: 'flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-brand hover:text-white rounded-md'
+          onClick: () => handleTabClick('settings'),
+          className: activeTab === 'settings' 
+            ? 'flex items-center px-3 py-2 text-sm font-medium text-white bg-brand rounded-md'
+            : 'flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-brand hover:text-white rounded-md'
         },
         {
           id: 'delete-profile',
           name: 'Delete Profile',
           icon: <Trash className="mr-3 h-5 w-5" />,
           href: '#',
-          className: 'flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-brand hover:text-white rounded-md'
+          onClick: () => handleTabClick('delete-profile'),
+          className: activeTab === 'delete-profile' 
+            ? 'flex items-center px-3 py-2 text-sm font-medium text-white bg-brand rounded-md'
+            : 'flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:bg-brand hover:text-white rounded-md'
         },
         {
-          id: logout,
+          id: 'logout',
           name: 'Sign Out',
           icon: <LogOut className="mr-3 h-5 w-5" />,
           href: '#',
+          onClick: () => handleTabClick('logout'),
           className: 'flex items-center px-3 py-2 text-sm font-medium text-red-400 hover:bg-red-900 hover:bg-opacity-25 hover:text-red-300 rounded-md',
           isDestructive: true
         }
@@ -150,7 +234,11 @@ const DashboardContent = () => {
                     </div>
 
                     {/* Sidebar content */}
-                    <Sider navItems={defaultNavItems}/>
+                    <Sider 
+                        navItems={defaultNavItems}
+                        activeId={activeTab}
+                        onItemClick={handleTabClick}
+                    />
                 </div>
 
                 {/* Overlay for mobile */}
@@ -173,6 +261,10 @@ const DashboardContent = () => {
                         </button>
                     </div>
 
+                    {/* Tab Content */}
+                    {activeTab === 'dashboard' && (
+                        <div>
+
                     {/* Counter boxes */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6 mt-2">
                         {/* Counter item 1 */}
@@ -181,7 +273,9 @@ const DashboardContent = () => {
                                 <FaTv className="h-8 w-8 text-orange-500" />
                             </div>
                             <div className="ml-4">
-                                <h5 className="text-2xl font-bold text-gray-900">9</h5>
+                                <h5 className="text-2xl font-bold text-gray-900">
+                                    {isLoading ? '...' : totalCourses}
+                                </h5>
                                 <p className="text-sm text-gray-600">Total Courses</p>
                             </div>
                         </div>
@@ -192,8 +286,10 @@ const DashboardContent = () => {
                                 <FaCheckCircle className="h-8 w-8 text-purple-500" />
                             </div>
                             <div className="ml-4">
-                                <h5 className="text-2xl font-bold text-gray-900">52</h5>
-                                <p className="text-sm text-gray-600">Complete lessons</p>
+                                <h5 className="text-2xl font-bold text-gray-900">
+                                    {isLoading ? '...' : completedCourses}
+                                </h5>
+                                <p className="text-sm text-gray-600">Completed Courses</p>
                             </div>
                         </div>
 
@@ -203,8 +299,10 @@ const DashboardContent = () => {
                                 <FaAward className="h-8 w-8 text-green-500" />
                             </div>
                             <div className="ml-4">
-                                <h5 className="text-2xl font-bold text-gray-900">8</h5>
-                                <p className="text-sm text-gray-600">Achieved Certificates</p>
+                                <h5 className="text-2xl font-bold text-gray-900">
+                                    {isLoading ? '...' : averageProgress}%
+                                </h5>
+                                <p className="text-sm text-gray-600">Average Progress</p>
                             </div>
                         </div>
                     </div>
@@ -225,8 +323,10 @@ const DashboardContent = () => {
                                     <input
                                         className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         type="search"
-                                        placeholder="Search"
+                                        placeholder="Search courses..."
                                         aria-label="Search"
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
                                     />
                                     <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500" type="submit">
                                         <Search className="h-5 w-5" />
@@ -247,114 +347,403 @@ const DashboardContent = () => {
 
                             {/* Course table */}
                             <div className="overflow-x-auto">
+                                {isLoading ? (
+                                    <div className="flex justify-center items-center py-12">
+                                        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-brand"></div>
+                                    </div>
+                                ) : error ? (
+                                    <div className="text-center py-12">
+                                        <div className="text-red-500 text-lg">Error loading courses: {error.message}</div>
+                                    </div>
+                                ) : filteredCourses.length === 0 ? (
+                                    <div className="text-center py-12">
+                                        <BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                                        <h3 className="text-lg font-medium text-gray-900 mb-2">
+                                            {searchTerm ? 'No courses found' : 'No enrolled courses yet'}
+                                        </h3>
+                                        <p className="text-gray-600 mb-4">
+                                            {searchTerm 
+                                                ? 'Try adjusting your search terms'
+                                                : 'Explore our courses and start your learning journey!'
+                                            }
+                                        </p>
+                                        {!searchTerm && (
+                                            <Link href="/courses" className="bg-brand hover:bg-brand-dark text-white px-6 py-3 rounded-md font-medium transition-colors">
+                                                Browse Courses
+                                            </Link>
+                                        )}
+                                    </div>
+                                ) : (
                                 <table className="min-w-full divide-y divide-gray-200">
                                     <thead className="bg-gray-50">
                                         <tr>
                                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course Title</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Lectures</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Completed Lecture</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Accessed</th>
                                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody className="bg-white divide-y divide-gray-200">
-                                        {/* Table row 1 */}
-                                        <tr className="hover:bg-gray-50">
-                                            <td className="px-6 py-4">
-                                                <div className="flex items-center">
-                                                    <div className="flex-shrink-0 w-20 h-15">
-                                                        <img className="w-20 h-15 rounded object-cover" src="https://via.placeholder.com/100x75" alt="" />
-                                                    </div>
-                                                    <div className="ml-4 flex-1">
-                                                        <h6 className="text-sm font-medium text-gray-900 hover:text-blue-600">
-                                                            <a href="#">Building Scalable APIs with GraphQL</a>
-                                                        </h6>
-                                                        <div className="mt-2">
-                                                            <div className="flex justify-between items-center mb-1">
-                                                                <span className="text-xs text-gray-500">Progress</span>
-                                                                <span className="text-xs font-medium text-gray-700">85%</span>
-                                                            </div>
-                                                            <div className="w-full bg-gray-200 rounded-full h-2">
-                                                                <div className="bg-brand h-2 rounded-full" style={{ width: '85%' }}></div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">56</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">40</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                                <a href="#" className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200">
-                                                    <FaPlay className="mr-1 h-3 w-3" />
-                                                    Continue
-                                                </a>
-                                            </td>
-                                        </tr>
-
-                                        {/* Table row 2 */}
-                                        <tr className="hover:bg-gray-50">
-                                            <td className="px-6 py-4">
-                                                <div className="flex items-center">
-                                                    <div className="flex-shrink-0 w-20 h-15">
-                                                        <img className="w-20 h-15 rounded object-cover" src="https://via.placeholder.com/100x75" alt="" />
-                                                    </div>
-                                                    <div className="ml-4 flex-1">
-                                                        <h6 className="text-sm font-medium text-gray-900 hover:text-blue-600">
-                                                            <a href="#">Create a Design System in Figma</a>
-                                                        </h6>
-                                                        <div className="mt-2">
-                                                            <div className="flex justify-between items-center mb-1">
-                                                                <span className="text-xs text-gray-500">Progress</span>
-                                                                <span className="text-xs font-medium text-gray-700">100%</span>
-                                                            </div>
-                                                            <div className="w-full bg-gray-200 rounded-full h-2">
-                                                                <div className="bg-green-600 h-2 rounded-full" style={{ width: '100%' }}></div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">42</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">42</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
-                                                <button className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-green-700 bg-green-100 cursor-not-allowed opacity-75">
-                                                    <FaCheckCircle className="mr-1 h-3 w-3" />
-                                                    Complete
-                                                </button>
-                                                <a href="#" className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                                                    <Repeat className="mr-1 h-3 w-3" />
-                                                    Restart
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                            {filteredCourses.map((course) => (
+                                                <CourseRow key={course._id} course={course} />
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                )}
                             </div>
 
                             {/* Pagination */}
-                            <div className="flex flex-col sm:flex-row justify-between items-center mt-6">
-                                <p className="text-sm text-gray-700 mb-4 sm:mb-0">
-                                    Showing 1 to 8 of 20 entries
-                                </p>
-                                <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
-                                    <a href="#" className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                        <LucideFlagTriangleLeft className="h-3 w-3" />
-                                    </a>
-                                    <a href="#" className="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                                        1
-                                    </a>
-                                    <a href="#" className="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-blue-50 text-sm font-medium text-brand hover:bg-blue-100">
-                                        2
-                                    </a>
-                                    <a href="#" className="relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                                        3
-                                    </a>
-                                    <a href="#" className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                        <FaAngleRight className="h-3 w-3" />
-                                    </a>
-                                </nav>
+                            {filteredCourses.length > 0 && (
+                                <div className="flex flex-col sm:flex-row justify-between items-center mt-6">
+                                    <p className="text-sm text-gray-700 mb-4 sm:mb-0">
+                                        Showing {filteredCourses.length} of {totalCourses} courses
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                        </div>
+                    )}
+
+                    {/* My Courses Tab */}
+                    {activeTab === 'courses' && (
+                        <div className="min-h-screen bg-gray-50 py-8">
+                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                                <div className="mb-8">
+                                    <h1 className="text-3xl font-bold text-gray-900">My Courses</h1>
+                                    <p className="text-gray-600 mt-2">
+                                        Continue your learning journey and track your progress
+                                    </p>
+                                </div>
+
+                                {isLoading ? (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {[...Array(6)].map((_, i) => (
+                                            <div key={i} className="bg-white rounded-lg shadow p-6 animate-pulse">
+                                                <div className="h-4 bg-gray-300 rounded w-3/4 mb-4"></div>
+                                                <div className="h-3 bg-gray-300 rounded w-1/2 mb-2"></div>
+                                                <div className="h-3 bg-gray-300 rounded w-2/3"></div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : error ? (
+                                    <div className="text-center py-12">
+                                        <div className="text-red-500 text-lg">Error loading courses: {error.message}</div>
+                                    </div>
+                                ) : courses.length > 0 ? (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {courses.map((course, index) => (
+                                            <CourseCard key={course._id} course={course} index={index} isEnrolled={true} />
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="text-center py-12 bg-white rounded-lg shadow">
+                                        <BookOpen className="w-20 h-20 text-gray-400 mx-auto mb-6" />
+                                        <h2 className="text-2xl font-bold text-gray-900 mb-3">No Courses Enrolled Yet</h2>
+                                        <p className="text-gray-600 mb-6">
+                                            It looks like you haven't enrolled in any courses. Explore our catalog and start your learning journey!
+                                        </p>
+                                        <Link href="/courses" className="bg-brand hover:bg-brand-dark text-white px-6 py-3 rounded-md font-medium transition-colors">
+                                            Browse Courses
+                                        </Link>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Course Resume Tab */}
+                    {activeTab === 'resume' && (
+                        <div className="min-h-screen bg-gray-50 py-8">
+                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                                <div className="mb-8">
+                                    <h1 className="text-3xl font-bold text-gray-900">Course Resume</h1>
+                                    <p className="text-gray-600 mt-2">
+                                        Pick up where you left off in your courses
+                                    </p>
+                                </div>
+
+                                {isLoading ? (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {[...Array(6)].map((_, i) => (
+                                            <div key={i} className="bg-white rounded-lg shadow p-6 animate-pulse">
+                                                <div className="h-4 bg-gray-300 rounded w-3/4 mb-4"></div>
+                                                <div className="h-3 bg-gray-300 rounded w-1/2 mb-2"></div>
+                                                <div className="h-3 bg-gray-300 rounded w-2/3"></div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : error ? (
+                                    <div className="text-center py-12">
+                                        <div className="text-red-500 text-lg">Error loading courses: {error.message}</div>
+                                    </div>
+                                ) : courses.length > 0 ? (
+                                    <div className="space-y-6">
+                                        {/* Recently Accessed Courses */}
+                                        <div>
+                                            <h2 className="text-xl font-semibold text-gray-900 mb-4">Continue Learning</h2>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                                {courses.map((course, index) => (
+                                                    <ContinueCourse 
+                                                        key={course._id} 
+                                                        course={course}
+                                                        index={index}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* All Courses */}
+                                        <div>
+                                            <h2 className="text-xl font-semibold text-gray-900 mb-4">All Your Courses</h2>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                                {courses.map((course, index) => (
+                                                    <ResumeCourseCard key={course._id} course={course} index={index} />
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="bg-white rounded-lg shadow p-8 text-center">
+                                        <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                                        <h3 className="text-xl font-semibold text-gray-900 mb-2">No Courses Enrolled</h3>
+                                        <p className="text-gray-600 mb-6">
+                                            You need to be enrolled in courses to see your resume.
+                                        </p>
+                                        <Link 
+                                            href="/courses" 
+                                            className="bg-brand hover:bg-brand-dark text-white px-6 py-3 rounded-md font-medium transition-colors"
+                                        >
+                                            Browse Courses
+                                        </Link>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Quiz Tab */}
+                    {activeTab === 'quiz' && (
+                        <div className="min-h-screen bg-gray-50 py-8">
+                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                                <div className="mb-8">
+                                    <h1 className="text-3xl font-bold text-gray-900">Quizzes</h1>
+                                    <p className="text-gray-600 mt-2">
+                                        Test your knowledge with course quizzes
+                                    </p>
+                                </div>
+
+                                {isTakingQuiz ? (
+                                    <QuizTaking
+                                        quiz={selectedQuiz}
+                                        onComplete={handleQuizComplete}
+                                        onCancel={handleQuizCancel}
+                                    />
+                                ) : (
+                                    <div>
+                                        {/* Search and Filter */}
+                                        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+                                            <div className="flex flex-col md:flex-row gap-4">
+                                                <div className="flex-1 relative">
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Search quizzes..."
+                                                        value={quizSearchTerm}
+                                                        onChange={(e) => setQuizSearchTerm(e.target.value)}
+                                                        className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                    />
+                                                    <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                                </div>
+                                                <div className="flex gap-2">
+                                                    <Button variant="outline" size="sm">
+                                                        All Quizzes
+                                                    </Button>
+                                                    <Button variant="outline" size="sm">
+                                                        Completed
+                                                    </Button>
+                                                    <Button variant="outline" size="sm">
+                                                        Pending
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Quizzes Grid */}
+                                        {courses.length > 0 ? (
+                                            <div className="space-y-6">
+                                                {courses.map((course) => {
+                                                    const { data: quizData, isLoading: quizLoading } = useCourseQuizzes(
+                                                        user?._id, 
+                                                        course._id, 
+                                                        user?.token
+                                                    );
+                                                    const quizzes = quizData?.quizzes || [];
+
+                                                    if (quizLoading) {
+                                                        return (
+                                                            <div key={course._id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                                                                <div className="animate-pulse">
+                                                                    <div className="h-4 bg-gray-300 rounded w-1/4 mb-4"></div>
+                                                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                                                        {[...Array(3)].map((_, i) => (
+                                                                            <div key={i} className="h-32 bg-gray-200 rounded"></div>
+                                                                        ))}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    }
+
+                                                    if (quizzes.length === 0) {
+                                                        return null;
+                                                    }
+
+                                                    const filteredQuizzes = quizzes.filter(quiz =>
+                                                        quiz.title.toLowerCase().includes(quizSearchTerm.toLowerCase()) ||
+                                                        quiz.description?.toLowerCase().includes(quizSearchTerm.toLowerCase())
+                                                    );
+
+                                                    return (
+                                                        <div key={course._id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                                                            <div className="flex items-center justify-between mb-6">
+                                                                <div>
+                                                                    <h3 className="text-lg font-semibold text-gray-900">{course.title}</h3>
+                                                                    <p className="text-sm text-gray-600">
+                                                                        {quizzes.length} quiz{quizzes.length !== 1 ? 'zes' : ''} available
+                                                                    </p>
+                                                                </div>
+                                                                <Link 
+                                                                    href={`/courses/${course._id}`}
+                                                                    className="text-brand hover:text-brand-dark text-sm font-medium"
+                                                                >
+                                                                    View Course →
+                                                                </Link>
+                                                            </div>
+
+                                                            {filteredQuizzes.length > 0 ? (
+                                                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                                                    {filteredQuizzes.map((quiz) => (
+                                                                        <QuizCard
+                                                                            key={quiz._id}
+                                                                            quiz={{
+                                                                                ...quiz,
+                                                                                courseId: course._id
+                                                                            }}
+                                                                            courseTitle={course.title}
+                                                                            onStartQuiz={handleStartQuiz}
+                                                                        />
+                                                                    ))}
+                                                                </div>
+                                                            ) : (
+                                                                <div className="text-center py-8">
+                                                                    <Diamond className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                                                                    <p className="text-gray-600">No quizzes found matching your search.</p>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        ) : (
+                                            <div className="bg-white rounded-lg shadow p-8 text-center">
+                                                <Diamond className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                                                <h3 className="text-xl font-semibold text-gray-900 mb-2">No Quizzes Available</h3>
+                                                <p className="text-gray-600 mb-6">
+                                                    You need to be enrolled in courses to access quizzes.
+                                                </p>
+                                                <Link 
+                                                    href="/courses" 
+                                                    className="bg-brand hover:bg-brand-dark text-white px-6 py-3 rounded-md font-medium transition-colors"
+                                                >
+                                                    Browse Courses
+                                                </Link>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Saved Tab */}
+                    {activeTab === 'saved' && (
+                        <div className="min-h-screen bg-gray-50 py-8">
+                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                                <div className="mb-8">
+                                    <h1 className="text-3xl font-bold text-gray-900">Saved Courses</h1>
+                                    <p className="text-gray-600 mt-2">
+                                        Your bookmarked courses and resources
+                                    </p>
+                                </div>
+                                <div className="bg-white rounded-lg shadow p-8 text-center">
+                                    <Heart className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                                    <h3 className="text-xl font-semibold text-gray-900 mb-2">No Saved Courses</h3>
+                                    <p className="text-gray-600">Save courses you're interested in to access them later.</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Edit Profile Tab */}
+                    {activeTab === 'edit-profile' && (
+                        <div className="min-h-screen bg-gray-50 py-8">
+                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                                <div className="mb-8">
+                                    <h1 className="text-3xl font-bold text-gray-900">Edit Profile</h1>
+                                    <p className="text-gray-600 mt-2">
+                                        Update your personal information and preferences
+                                    </p>
+                                </div>
+                                <div className="bg-white rounded-lg shadow p-8 text-center">
+                                    <Edit className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Profile Editor Coming Soon</h3>
+                                    <p className="text-gray-600">Profile editing functionality will be available soon.</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Settings Tab */}
+                    {activeTab === 'settings' && (
+                        <div className="min-h-screen bg-gray-50 py-8">
+                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                                <div className="mb-8">
+                                    <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
+                                    <p className="text-gray-600 mt-2">
+                                        Manage your account settings and preferences
+                                    </p>
+                                </div>
+                                <div className="bg-white rounded-lg shadow p-8 text-center">
+                                    <Settings className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Settings Coming Soon</h3>
+                                    <p className="text-gray-600">Account settings and preferences will be available soon.</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Delete Profile Tab */}
+                    {activeTab === 'delete-profile' && (
+                        <div className="min-h-screen bg-gray-50 py-8">
+                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                                <div className="mb-8">
+                                    <h1 className="text-3xl font-bold text-gray-900">Delete Profile</h1>
+                                    <p className="text-gray-600 mt-2">
+                                        Permanently delete your account and all associated data
+                                    </p>
+                                </div>
+                                <div className="bg-white rounded-lg shadow p-8 text-center">
+                                    <Trash className="w-16 h-16 text-red-400 mx-auto mb-4" />
+                                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Account Deletion</h3>
+                                    <p className="text-gray-600 mb-4">This action cannot be undone. All your data will be permanently deleted.</p>
+                                    <button className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-md font-medium transition-colors">
+                                        Delete Account
+                                    </button>
                             </div>
                         </div>
                     </div>
+                    )}
                 </div>
             </div>
         </div>
@@ -366,5 +755,6 @@ export default function Dashboard() {
       <ProtectedRoute>
         <DashboardContent />
       </ProtectedRoute>
+
     );
   }
