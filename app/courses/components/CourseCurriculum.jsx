@@ -22,15 +22,23 @@ import {
     Award,
     Globe,
     Languages,
+    Lock,
+    MessageSquare,
 } from 'lucide-react';
 import useCourseDetails from '@/app/api/courses/useCourseDetails.js';
 import { Skeleton } from '@/components/ui/skeleton';
 import { FaCertificate } from 'react-icons/fa';
 import Link from 'next/link';
+import { useAuth } from '@/contexts/AuthContexts';
+import { useEnrollmentStatus } from '@/app/api/courses/useCourseEnroll';
+import EnrollmentButton from '@/components/course/EnrollmentButton';
+import CourseForum from '@/components/forum/CourseForum';
 
 export default function CourseCurriculum({ courseId }) {
     const [activeTab, setActiveTab] = useState('overview');
     const [scrollPosition, setScrollPosition] = useState(0);
+    const { user, isAuthenticated } = useAuth();
+    const { data: enrollmentStatus, isLoading: enrollmentLoading } = useEnrollmentStatus(courseId);
 
     const {
         data: course,
@@ -48,9 +56,17 @@ export default function CourseCurriculum({ courseId }) {
         setScrollPosition(container.scrollLeft + scrollAmount);
     };
 
+    // Check if user can access curriculum (enrolled or is instructor)
+    const canAccessCurriculum = () => {
+        if (!isAuthenticated) return false;
+        if (user?.userType === 'instructor') return true;
+        return enrollmentStatus?.isEnrolled || false;
+    };
+
     const tabs = [
         { id: 'overview', icon: <Info size={18} />, label: 'Overview' },
         { id: 'curriculum', icon: <BookOpen size={18} />, label: 'Curriculum' },
+        { id: 'discussions', icon: <MessageSquare size={18} />, label: 'Discussions' },
         { id: 'members', icon: <Users size={18} />, label: 'Members' },
         { id: 'instructors', icon: <UserCircle size={18} />, label: 'Instructors' },
         { id: 'news', icon: <Newspaper size={18} />, label: 'News' },
@@ -68,7 +84,7 @@ export default function CourseCurriculum({ courseId }) {
         </div>
     );
 
-    if (error) return <div className="flex-1 p-6 text-red-500">Error: {error}</div>;
+    if (error) return <div className="flex-1 p-6 text-red-500">Error: {error.message || 'Unknown error occurred'}</div>;
 
     return (
         <div className='flex-1'>
@@ -204,10 +220,13 @@ export default function CourseCurriculum({ courseId }) {
                     {activeTab === 'curriculum' && (
                         <div className="p-6">
                             <h3 className="text-2xl font-bold mb-6">Course Curriculum</h3>
+                            
+                            {/* Show curriculum preview for everyone, but with enrollment prompt for non-enrolled users */}
                             {curriculum && curriculum.length > 0 ? (
                                 <div className="space-y-4">
-                                    {curriculum.map((module, index) => (
-                                        <Link href={`/courses/${courseId}/${module.title}`} key={module.id} className="border border-gray-200 rounded-lg p-4 block">
+                                    {/* Show first 3 modules as preview for non-enrolled users */}
+                                    {(canAccessCurriculum() ? curriculum : curriculum.slice(0, 3)).map((module, index) => (
+                                        <div key={module.id} className="border border-gray-200 rounded-lg p-4">
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center">
                                                     <FileText className="text-primary mr-3" size={20} />
@@ -239,12 +258,42 @@ export default function CourseCurriculum({ courseId }) {
                                                     ))}
                                                 </div>
                                             )}
-                                        </Link>
+                                        </div>
                                     ))}
+                                    
+                                    {/* Show enrollment prompt for non-enrolled users */}
+                                    {!canAccessCurriculum() && (
+                                        <div className="mt-6 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+                                            <div className="text-center">
+                                                <Lock className="w-12 h-12 text-blue-500 mx-auto mb-4" />
+                                                <h4 className="text-lg font-semibold text-gray-900 mb-2">
+                                                    {!isAuthenticated ? 'Login to see full curriculum' : 'Enroll to access full curriculum'}
+                                                </h4>
+                                                <p className="text-gray-600 mb-4">
+                                                    {!isAuthenticated 
+                                                        ? 'Sign in to view the complete course curriculum and start learning.'
+                                                        : `This course has ${curriculum.length} modules. Enroll now to access all content and start your learning journey.`
+                                                    }
+                                                </p>
+                                                <EnrollmentButton 
+                                                    courseId={courseId} 
+                                                    courseTitle={course?.title}
+                                                    className="px-6 py-3 rounded-lg font-medium"
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             ) : (
                                 <p className="text-gray-500">No curriculum available</p>
                             )}
+                        </div>
+                    )}
+
+                    {/* Discussions Tab */}
+                    {activeTab === 'discussions' && (
+                        <div className="p-6">
+                            <CourseForum courseId={courseId} />
                         </div>
                     )}
 

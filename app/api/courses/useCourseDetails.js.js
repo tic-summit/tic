@@ -1,13 +1,9 @@
 import { useState, useEffect, useMemo } from 'react';
-import axios, { AxiosError, AxiosResponse } from 'axios';
 import { useQuery } from '@tanstack/react-query';
-
-
+import api from '@/services/api';
 
 const fetchCourseDetails = async(courseId) =>{
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/courses/${courseId}`
-        );
+        const response = await api.get(`/courses/${courseId}`);
 
         if (!response.data.success) {
           throw new Error('Failed to fetch course details');
@@ -67,36 +63,30 @@ const useCourseDetails = (courseId) => {
     if (!query?.data) return null;
     
     return query?.data?.modules.map(module => ({
-      id: module._id,
+      _id: module._id,
       title: module.title,
-      resources: {
-        videoUrl: module.videoUrl,
-        pdfUrl: module.pdfUrl,
-        textContent: module.textContent,
-      },
-      summaries: module.summaries.map(summary => ({
-        id: summary._id,
-        title: summary.title,
-        content: summary.content,
-      })),
-      quizzes: module.quizzes.map(quiz => ({
-        id: quiz._id,
-        title: quiz.title,
-        questionCount: quiz.questionCount,
-        questions: quiz.questions.map(q => ({
-          question: q.question,
-          options: q.options,
-          correctAnswer: q.answer,
-        })),
-      })),
+      description: module.description,
+      order: module.order,
+      content: module.content, // Keep the original content structure
+      topics: module.topics?.map(topic => ({
+        _id: topic._id,
+        title: topic.title,
+        description: topic.description,
+        type: topic.type,
+        order: topic.order,
+        isPublished: topic.isPublished,
+        content: topic.content, // Keep the original content structure
+      })) || [],
     }));
   }, [query?.data]);
 
   return{
     ...query,
-   getCourseInfo, 
-   getInstructorInfo,
-   getCurriculum,
+    course: query?.data,
+    curriculum: getCurriculum,
+    getCourseInfo, 
+    getInstructorInfo,
+    getCurriculum,
   }
 }
 

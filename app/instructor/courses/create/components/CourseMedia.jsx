@@ -133,7 +133,7 @@ export default function CourseMediaForm({ courseId, onComplete }) {
 
       {error && (
         <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-          {error}
+          {error.message || 'Unknown error occurred'}
         </div>
       )}
 

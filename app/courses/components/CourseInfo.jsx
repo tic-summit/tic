@@ -24,7 +24,7 @@ function CourseInfo({ courseId }) {
 
     if (error) return (
         <div className="bg-white p-6 border border-gray-300 rounded-xl h-fit text-red-500">
-            Error loading course info: {error}
+            Error loading course info: {error.message || 'Unknown error occurred'}
         </div>
     );
 
