@@ -69,7 +69,10 @@ export const useEnrollCourse = () => {
         localStorage.setItem('userEnrollments', JSON.stringify(enrollments));
       }
       
-      toast.success(data.message || 'Enrollment successful!');
+      toast.success('🎉 Enrollment successful! Redirecting to course...', {
+        description: 'You can now access all course materials and start learning.',
+        duration: 3000,
+      });
       queryClient.invalidateQueries(['courseDetails', variables.courseId]);
       queryClient.invalidateQueries(['enrollments']);
       queryClient.invalidateQueries(['enrollmentStatus']);
