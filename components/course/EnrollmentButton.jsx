@@ -1,4 +1,3 @@
-"use client";
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContexts';
@@ -6,11 +5,13 @@ import { useEnrollCourse, useEnrollmentStatus } from '@/app/api/courses/useCours
 import { Loader2, CheckCircle, PlayCircle, Lock } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
+import useCourseDetails from '@/app/api/courses/useCourseDetails.js';
 
 export default function EnrollmentButton({ courseId, courseTitle, className = "" }) {
   const { user, isAuthenticated } = useAuth();
   const { data: enrollmentStatus, isLoading: statusLoading } = useEnrollmentStatus(courseId);
   const enrollMutation = useEnrollCourse();
+  const { curriculum } = useCourseDetails(courseId);
 
   // Debug logging
   console.log('EnrollmentButton Debug:', {
@@ -34,15 +35,27 @@ export default function EnrollmentButton({ courseId, courseTitle, className = ""
 
     try {
       await enrollMutation.mutateAsync({ courseId });
+      // After successful enrollment, redirect to the first module
+      setTimeout(() => {
+        if (curriculum && curriculum.length > 0) {
+          window.location.href = `/courses/${courseId}/${curriculum[0]._id}`;
+        } else {
+          window.location.href = `/courses/${courseId}`;
+        }
+      }, 1000); // Small delay to show the success toast
     } catch (error) {
       // Error is handled by the mutation's onError
     }
   };
 
   const handleStartCourse = () => {
-    // Navigate to the first module/topic of the course
-    // This will be implemented based on your course structure
-    window.location.href = `/courses/${courseId}/${courseId}`;
+    // Navigate to the first module of the course
+    if (curriculum && curriculum.length > 0) {
+      window.location.href = `/courses/${courseId}/${curriculum[0]._id}`;
+    } else {
+      // Fallback to course details page if no curriculum
+      window.location.href = `/courses/${courseId}`;
+    }
   };
 
   if (statusLoading) {

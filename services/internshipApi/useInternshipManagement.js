@@ -98,58 +98,8 @@ export const useDeleteInternship = () => {
   });
 };
 
-// Get internship statistics
-export const useInternshipStats = () => {
-  return useQuery({
-    queryKey: ['internship-stats'],
-    queryFn: async () => {
-      const response = await axios.get(`${baseURL}/internships/stats`);
-      return response.data;
-    },
-  });
-};
-
-// Get internships by company
-export const useCompanyInternships = (companyId, options = {}) => {
-  const { page = 1, limit = 10, status = 'active' } = options;
-  
-  return useQuery({
-    queryKey: ['company-internships', companyId, page, limit, status],
-    queryFn: async () => {
-      const params = new URLSearchParams({
-        page: page.toString(),
-        limit: limit.toString(),
-        status
-      });
-      
-      const response = await axios.get(`${baseURL}/internships/company/${companyId}?${params}`);
-      return response.data;
-    },
-    enabled: !!companyId,
-  });
-};
-
-// Get featured internships
-export const useFeaturedInternships = (limit = 6) => {
-  return useQuery({
-    queryKey: ['featured-internships', limit],
-    queryFn: async () => {
-      const response = await axios.get(`${baseURL}/internships/featured?limit=${limit}`);
-      return response.data;
-    },
-  });
-};
-
-// Get internship categories
-export const useInternshipCategories = () => {
-  return useQuery({
-    queryKey: ['internship-categories'],
-    queryFn: async () => {
-      const response = await axios.get(`${baseURL}/internships/categories`);
-      return response.data;
-    },
-  });
-};
+// Note: useInternshipStats, useCompanyInternships, useFeaturedInternships, and useInternshipCategories
+// are exported from useInternships.js to avoid duplicate exports
 
 // Get internship types
 export const useInternshipTypes = () => {
