@@ -52,7 +52,7 @@ export default function LearningPath() {
               className="w-full  group "
 
             >
-              <div className="relative w-full  p-4 rounded-lg border border-dashed  border-gray-200 group-group-hover:rounded-b-xl group-hover:border-white group-hover:border-b-8 transition-all duration-300">
+              <div className="relative w-full  p-4 rounded-lg border  border-gray-200 group-group-hover:rounded-b-xl group-hover:border-white group-hover:border-b-8 transition-all duration-300">
                 <div className="mx-auto py-1   text-start mb-2  w-full">
                   <div className="bg-white w-fit rounded-full">
                     {step.icon}
