@@ -2,7 +2,7 @@
 
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { baseURL } from '@/services/baseUrl';
+import { baseURL } from './baseUrl.jsx';
 
 const useProfileImage = (userId, token) => {
   return useMutation({

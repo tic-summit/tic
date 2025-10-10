@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
-import { baseURL } from '@/services/baseUrl';
+import { baseURL } from './baseUrl.jsx';
 
 const useQuizzes = (user) => {
   const fetchQuizzes = async () => {

@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { baseURL } from '../baseUrl';
+import { baseURL } from '../baseUrl.jsx';
 
 // Get all applications (Admin/Mentor only)
 export const useAllApplications = (options = {}) => {

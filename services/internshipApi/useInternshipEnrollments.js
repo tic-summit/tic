@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { baseURL } from '../baseUrl';
+import { baseURL } from '../baseUrl.jsx';
 
 // Get all enrollments for a specific internship
 export const useInternshipEnrollments = (internshipId, options = {}) => {
@@ -23,11 +23,11 @@ export const useInternshipEnrollments = (internshipId, options = {}) => {
 };
 
 // Get all enrollments for a specific student
-export const useStudentEnrollments = (studentId, options = {}) => {
+export const useStudentInternshipEnrollments = (studentId, options = {}) => {
   const { page = 1, limit = 10, status } = options;
   
   return useQuery({
-    queryKey: ['student-enrollments', studentId, page, limit, status],
+    queryKey: ['student-internship-enrollments', studentId, page, limit, status],
     queryFn: async () => {
       const params = new URLSearchParams({
         page: page.toString(),
@@ -55,9 +55,9 @@ export const useEnrollment = (enrollmentId) => {
 };
 
 // Get enrollment statistics
-export const useEnrollmentStats = (internshipId) => {
+export const useInternshipEnrollmentStats = (internshipId) => {
   return useQuery({
-    queryKey: ['enrollment-stats', internshipId],
+    queryKey: ['internship-enrollment-stats', internshipId],
     queryFn: async () => {
       const params = internshipId ? `?internshipId=${internshipId}` : '';
       const response = await axios.get(`${baseURL}/enrollments/stats${params}`);

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { baseURL } from '../baseUrl';
+import { baseURL } from '../baseUrl.jsx';
 
 /**
  * Enroll a student in a course
@@ -118,5 +118,31 @@ export const checkEnrollmentStatus = async (courseId, token) => {
   } catch (error) {
     console.error('Error checking enrollment status:', error);
     return false;
+  }
+};
+
+/**
+ * Update progress for a user in a course
+ * @param {string} courseId - The ID of the course
+ * @param {Object} progressData - Progress data to update
+ * @param {string} token - Authentication token
+ * @returns {Promise<Object>} Updated progress response
+ */
+export const updateCourseProgress = async (courseId, progressData, token) => {
+  try {
+    const response = await axios.post(
+      `${baseURL}/progress/${courseId}/progress`,
+      progressData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error updating course progress:', error);
+    throw error;
   }
 };
