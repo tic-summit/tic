@@ -1,6 +1,6 @@
 "use client"
 
-import { Star, MessageCircle, Award, Users, Code, Briefcase } from "lucide-react";
+import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
@@ -88,7 +88,7 @@ export default function MentorsSection() {
 
   return (
     <section className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Learn from Industry Experts
@@ -106,7 +106,7 @@ export default function MentorsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
-              className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-brand/20 group"
+              className="bg-white rounded-2xl p-6 border border-gray-200 hover:border-brand/20"
             >
               <div className="text-center mb-6">
                 <div className="relative inline-block">
@@ -117,7 +117,7 @@ export default function MentorsSection() {
                   />
                   {mentor.verified && (
                     <div className="absolute -top-2 -right-2 bg-brand text-white rounded-full p-1">
-                      <Award className="w-4 h-4" />
+                      <Icon icon="solar:verified-check-outline" className="w-4 h-4" />
                     </div>
                   )}
                 </div>
@@ -130,15 +130,15 @@ export default function MentorsSection() {
 
               <div className="flex items-center justify-center space-x-4 mb-4">
                 <div className="flex items-center space-x-1">
-                  <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                  <Icon icon="solar:star-outline" className="w-4 h-4 text-yellow-400" />
                   <span className="text-sm font-medium text-gray-600">{mentor.rating}</span>
                 </div>
                 <div className="flex items-center space-x-1">
-                  <Users className="w-4 h-4 text-gray-400" />
+                  <Icon icon="solar:users-group-rounded-outline" className="w-4 h-4 text-gray-400" />
                   <span className="text-sm text-gray-600">{mentor.students} students</span>
                 </div>
                 <div className="flex items-center space-x-1">
-                  <Briefcase className="w-4 h-4 text-gray-400" />
+                  <Icon icon="solar:suitcase-outline" className="w-4 h-4 text-gray-400" />
                   <span className="text-sm text-gray-600">{mentor.experience}</span>
                 </div>
               </div>
@@ -155,11 +155,11 @@ export default function MentorsSection() {
               </div>
 
               <div className="flex space-x-2">
-                <button className="flex-1 bg-brand text-white py-2 px-4 rounded-full font-semibold hover:bg-brand/90 transition-colors duration-300 text-sm">
+                <button className="flex-1 bg-brand text-white py-2 px-4 rounded-full font-semibold hover:bg-brand/90 text-sm">
                   Book Session
                 </button>
-                <button className="flex-1 border border-brand text-brand py-2 px-4 rounded-full font-semibold hover:bg-brand/10 transition-colors duration-300 text-sm flex items-center justify-center space-x-1">
-                  <MessageCircle className="w-4 h-4" />
+                <button className="flex-1 border border-brand text-brand py-2 px-4 rounded-full font-semibold hover:bg-brand/10 text-sm flex items-center justify-center space-x-1">
+                  <Icon icon="solar:chat-round-outline" className="w-4 h-4" />
                   <span>Message</span>
                 </button>
               </div>
@@ -170,9 +170,9 @@ export default function MentorsSection() {
         <div className="text-center">
           <Link
             href="/mentor"
-            className="inline-flex items-center space-x-2 bg-gray-100 text-gray-900 px-8 py-3 rounded-full font-semibold hover:bg-gray-200 transition-colors duration-300"
+            className="inline-flex items-center space-x-2 bg-gray-100 text-gray-900 px-8 py-3 rounded-full font-semibold hover:bg-gray-200"
           >
-            <Users className="w-5 h-5" />
+            <Icon icon="solar:users-group-rounded-outline" className="w-5 h-5" />
             <span>View All Mentors</span>
           </Link>
         </div>

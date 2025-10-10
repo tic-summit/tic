@@ -1,6 +1,6 @@
 "use client"
 
-import { Briefcase, MapPin, Clock, DollarSign, Users, Star } from "lucide-react";
+import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
@@ -70,7 +70,7 @@ export default function InternshipsSection() {
 
   return (
     <section className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Internship Opportunities
@@ -88,9 +88,7 @@ export default function InternshipsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
-              className={`relative bg-white rounded-2xl p-6 border-2 ${
-                internship.featured ? 'border-brand' : 'border-gray-100'
-              } hover:border-brand/50`}
+              className={`relative bg-white rounded-2xl p-6 border-2 border-brand `}
             >
               {internship.featured && (
                 <div className="absolute -top-3 left-6 bg-brand text-white px-3 py-1 rounded-full text-sm font-semibold">
@@ -111,7 +109,7 @@ export default function InternshipsSection() {
                   </div>
                 </div>
                 <div className="flex items-center space-x-1">
-                  <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                  <Icon icon="solar:star-outline" className="w-4 h-4 text-yellow-400" />
                   <span className="text-sm font-medium text-gray-600">{internship.rating}</span>
                 </div>
               </div>
@@ -120,19 +118,19 @@ export default function InternshipsSection() {
 
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="flex items-center space-x-2 text-sm text-gray-600">
-                  <MapPin className="w-4 h-4" />
+                  <Icon icon="solar:map-point-outline" className="w-4 h-4" />
                   <span>{internship.location}</span>
                 </div>
                 <div className="flex items-center space-x-2 text-sm text-gray-600">
-                  <Clock className="w-4 h-4" />
+                  <Icon icon="solar:clock-circle-outline" className="w-4 h-4" />
                   <span>{internship.duration}</span>
                 </div>
                 <div className="flex items-center space-x-2 text-sm text-gray-600">
-                  <Briefcase className="w-4 h-4" />
+                  <Icon icon="solar:suitcase-outline" className="w-4 h-4" />
                   <span>{internship.type}</span>
                 </div>
                 <div className="flex items-center space-x-2 text-sm text-gray-600">
-                  <DollarSign className="w-4 h-4" />
+                  <Icon icon="solar:dollar-outline" className="w-4 h-4" />
                   <span>{internship.salary}</span>
                 </div>
               </div>
@@ -150,7 +148,7 @@ export default function InternshipsSection() {
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2 text-sm text-gray-500">
-                  <Users className="w-4 h-4" />
+                  <Icon icon="solar:users-group-rounded-outline" className="w-4 h-4" />
                   <span>{internship.applicants} applicants</span>
                 </div>
                 <Link

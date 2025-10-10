@@ -1,6 +1,6 @@
 "use client"
 
-import { Mail, Send, CheckCircle, ArrowRight, Users } from "lucide-react";
+import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 
@@ -24,8 +24,8 @@ export default function NewsletterSection() {
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-br from-brand to-secondary">
-      <div className="max-w-7xl mx-auto px-4">
+    <section className="py-20 bg-gray-900">
+      <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
           <motion.div
@@ -52,7 +52,7 @@ export default function NewsletterSection() {
                   viewport={{ once: true }}
                   className="flex items-center space-x-3"
                 >
-                  <CheckCircle className="w-5 h-5 text-green-300 flex-shrink-0" />
+                  <Icon icon="solar:check-circle-outline" className="w-5 h-5 text-green-300 flex-shrink-0" />
                   <span className="text-white/90">{benefit}</span>
                 </motion.div>
               ))}
@@ -60,11 +60,11 @@ export default function NewsletterSection() {
 
             <div className="flex items-center space-x-4 text-sm opacity-75">
               <div className="flex items-center space-x-2">
-                <Users className="w-4 h-4" />
+                <Icon icon="solar:users-group-rounded-outline" className="w-4 h-4" />
                 <span>50,000+ subscribers</span>
               </div>
               <div className="flex items-center space-x-2">
-                <Mail className="w-4 h-4" />
+                <Icon icon="solar:letter-unread-outline" className="w-4 h-4" />
                 <span>Weekly updates</span>
               </div>
             </div>
@@ -76,11 +76,11 @@ export default function NewsletterSection() {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
-            className="bg-white rounded-2xl p-8 shadow-2xl"
+            className="bg-white rounded-2xl p-8"
           >
             <div className="text-center mb-6">
               <div className="bg-brand/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Mail className="w-8 h-8 text-brand" />
+                <Icon icon="solar:letter-unread-outline" className="w-8 h-8 text-brand" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-2">
                 Join Our Community
@@ -96,7 +96,7 @@ export default function NewsletterSection() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="text-center py-8"
               >
-                <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+                <Icon icon="solar:check-circle-outline" className="w-16 h-16 text-green-500 mx-auto mb-4" />
                 <h4 className="text-xl font-bold text-gray-900 mb-2">
                   Successfully Subscribed!
                 </h4>
@@ -116,7 +116,7 @@ export default function NewsletterSection() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent outline-none transition-all duration-300"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent outline-none"
                     placeholder="Enter your email address"
                   />
                 </div>
@@ -127,7 +127,7 @@ export default function NewsletterSection() {
                   </label>
                   <select
                     id="interests"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent outline-none transition-all duration-300"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent outline-none"
                   >
                     <option value="">Select your interests</option>
                     <option value="web-development">Web Development</option>
@@ -142,9 +142,9 @@ export default function NewsletterSection() {
 
                 <button
                   type="submit"
-                  className="w-full bg-brand text-white py-3 px-6 rounded-lg font-semibold hover:bg-brand/90 transition-colors duration-300 flex items-center justify-center space-x-2"
+                  className="w-full bg-brand text-white py-3 px-6 rounded-lg font-semibold hover:bg-brand/90 flex items-center justify-center space-x-2"
                 >
-                  <Send className="w-5 h-5" />
+                  <Icon icon="solar:plain-2-outline" className="w-5 h-5" />
                   <span>Subscribe Now</span>
                 </button>
 
@@ -157,15 +157,15 @@ export default function NewsletterSection() {
             <div className="mt-6 pt-6 border-t border-gray-200">
               <div className="flex items-center justify-center space-x-6 text-sm text-gray-500">
                 <div className="flex items-center space-x-1">
-                  <CheckCircle className="w-4 h-4 text-green-500" />
+                  <Icon icon="solar:check-circle-outline" className="w-4 h-4 text-green-500" />
                   <span>No spam</span>
                 </div>
                 <div className="flex items-center space-x-1">
-                  <CheckCircle className="w-4 h-4 text-green-500" />
+                  <Icon icon="solar:check-circle-outline" className="w-4 h-4 text-green-500" />
                   <span>Easy unsubscribe</span>
                 </div>
                 <div className="flex items-center space-x-1">
-                  <CheckCircle className="w-4 h-4 text-green-500" />
+                  <Icon icon="solar:check-circle-outline" className="w-4 h-4 text-green-500" />
                   <span>Weekly updates</span>
                 </div>
               </div>

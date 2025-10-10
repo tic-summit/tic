@@ -1,6 +1,6 @@
 "use client"
 
-import { Trophy, Calendar, Users, DollarSign, Clock, Award, Code, Zap } from "lucide-react";
+import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
@@ -88,7 +88,7 @@ export default function HackathonsSection() {
 
   return (
     <section className="py-20 bg-gradient-to-br from-brand/5 to-secondary/10">
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Hackathons & Competitions
@@ -112,7 +112,6 @@ export default function HackathonsSection() {
             >
               {hackathon.featured && (
                 <div className="absolute -top-3 left-6 bg-brand text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center space-x-1">
-                  <Trophy className="w-4 h-4" />
                   <span>Featured</span>
                 </div>
               )}
@@ -135,19 +134,19 @@ export default function HackathonsSection() {
 
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="flex items-center space-x-2 text-sm text-gray-600">
-                  <Calendar className="w-4 h-4" />
+                  <Icon icon="solar:calendar-outline" className="w-4 h-4" />
                   <span>{new Date(hackathon.date).toLocaleDateString()}</span>
                 </div>
                 <div className="flex items-center space-x-2 text-sm text-gray-600">
-                  <Clock className="w-4 h-4" />
+                  <Icon icon="solar:clock-circle-outline" className="w-4 h-4" />
                   <span>{hackathon.duration}</span>
                 </div>
                 <div className="flex items-center space-x-2 text-sm text-gray-600">
-                  <Users className="w-4 h-4" />
+                  <Icon icon="solar:users-group-rounded-outline" className="w-4 h-4" />
                   <span>{hackathon.participants} participants</span>
                 </div>
                 <div className="flex items-center space-x-2 text-sm text-gray-600">
-                  <DollarSign className="w-4 h-4" />
+                  <Icon icon="solar:dollar-outline" className="w-4 h-4" />
                   <span className="font-semibold text-green-600">{hackathon.prize}</span>
                 </div>
               </div>
@@ -165,15 +164,15 @@ export default function HackathonsSection() {
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2 text-sm text-gray-500">
-                  <Code className="w-4 h-4" />
+                  <Icon icon="solar:code-outline" className="w-4 h-4" />
                   <span>{hackathon.location}</span>
                 </div>
                 {hackathon.status === 'upcoming' ? (
                   <Link
                     href={`/hackathons/${hackathon.id}`}
-                    className="bg-brand text-white px-6 py-2 rounded-full font-semibold hover:bg-brand/90 transition-colors duration-300 flex items-center space-x-2"
+                    className="bg-brand text-white px-6 py-2 rounded-full font-semibold hover:bg-brand/90 flex items-center space-x-2"
                   >
-                    <Zap className="w-4 h-4" />
+                    <Icon icon="solar:flash-outline" className="w-4 h-4" />
                     <span>Join Now</span>
                   </Link>
                 ) : (
@@ -192,9 +191,8 @@ export default function HackathonsSection() {
         <div className="text-center">
           <Link
             href="/hackathons"
-            className="inline-flex items-center space-x-2 bg-white text-brand px-8 py-3 rounded-full font-semibold hover:bg-gray-50 transition-colors duration-300 border-2 border-brand"
+            className="inline-flex items-center space-x-2 bg-white text-brand px-8 py-3 rounded-full font-semibold hover:bg-gray-50 border-2 border-brand"
           >
-            <Trophy className="w-5 h-5" />
             <span>View All Hackathons</span>
           </Link>
         </div>
