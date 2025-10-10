@@ -53,8 +53,10 @@ function Hero2() {
                                         {
                                             [1, 2, 3, 4].map(item => (
                                                 <img
+                                                    key={item}
                                                     src={`https://randomuser.me/api/portraits/${item % 2 === 0 ? 'women' : 'men'}/${item + 20}.jpg`}
                                                     className='h-14 w-14 sm:h-18 sm:w-18 rounded-full border-4'
+                                                    alt={`User ${item}`}
                                                 />
                                             ))
                                         }
