@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { baseURL } from '../baseUrl';
+import { baseURL } from '../baseUrl.jsx';
 
 // Get all internships with advanced filtering
 export const useAllInternships = (options = {}) => {
@@ -50,7 +50,7 @@ export const useInternshipById = (internshipId) => {
 };
 
 // Create new internship
-export const useCreateInternship = () => {
+export const useCreateInternshipAdmin = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
@@ -66,7 +66,7 @@ export const useCreateInternship = () => {
 };
 
 // Update internship
-export const useUpdateInternship = () => {
+export const useUpdateInternshipAdmin = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
@@ -83,7 +83,7 @@ export const useUpdateInternship = () => {
 };
 
 // Delete internship
-export const useDeleteInternship = () => {
+export const useDeleteInternshipAdmin = () => {
   const queryClient = useQueryClient();
   
   return useMutation({

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContexts';
-import { useMyApplications, useStudentEnrollments, useApplicationStats } from '@/services/internshipApi';
+import { useMyApplications, useStudentInternshipEnrollments, useApplicationStats } from '@/services/internshipApi';
 import { 
   LayoutDashboard, 
   Briefcase, 
@@ -38,7 +38,7 @@ export default function InternshipDashboard() {
     status: statusFilter === 'all' ? undefined : statusFilter
   });
 
-  const { data: enrollments, isLoading: enrollmentsLoading } = useStudentEnrollments(user?.id, {
+  const { data: enrollments, isLoading: enrollmentsLoading } = useStudentInternshipEnrollments(user?.id, {
     page: 1,
     limit: 50,
     status: statusFilter === 'all' ? undefined : statusFilter

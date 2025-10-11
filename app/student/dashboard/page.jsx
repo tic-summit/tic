@@ -28,7 +28,15 @@ import Link from 'next/link';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { useAuth } from '@/contexts/AuthContexts';
 import { Sider } from '@/components/ui/sider';
-import { useEnrolledCourses, useCourseQuizzes } from '@/app/api/student/useStudentCourses';
+// Updated imports to use our new API services
+import { 
+  useStudentEnrollments, 
+  getAllCourses,
+  getEnrolledCourses,
+  useNotifications,
+  useProfile,
+  useUserCourseRating
+} from '@/services';
 import { Progress } from '@/components/ui/progress';
 import QuizCard from '@/components/quiz/QuizCard';
 import QuizTaking from '@/components/quiz/QuizTaking';
@@ -45,7 +53,7 @@ import { Button } from '@/components/ui/button';
   
 
 const DashboardContent = () => {
-    const {user, logout} = useAuth()
+    const {user, logout, token} = useAuth()
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -54,13 +62,16 @@ const DashboardContent = () => {
     const [isTakingQuiz, setIsTakingQuiz] = useState(false);
     const [quizSearchTerm, setQuizSearchTerm] = useState('');
     
-    // Fetch enrolled courses using the real API
-    const { data: enrolledData, isLoading, error } = useEnrolledCourses(user?.id, user?.token);
-    const courses = enrolledData?.courses || [];
+    // Use our new API services
+    const { data: enrolledData, isLoading, error } = useStudentEnrollments(token);
+    const { data: notifications } = useNotifications();
+    const { data: userProfile } = useProfile(user?.id);
+    
+    const courses = enrolledData?.data?.courses || [];
     
     // Filter courses based on search term
     const filteredCourses = courses.filter(course => 
-        course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        course.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         course.category?.toLowerCase().includes(searchTerm.toLowerCase())
     );
     
@@ -69,6 +80,9 @@ const DashboardContent = () => {
     const completedCourses = courses.filter(course => course.progress === 100).length;
     const totalProgress = courses.reduce((sum, course) => sum + (course.progress || 0), 0);
     const averageProgress = totalCourses > 0 ? Math.round(totalProgress / totalCourses) : 0;
+    
+    // Get unread notifications count
+    const unreadNotifications = notifications?.data?.filter(n => !n.isRead).length || 0;
     const handleTabClick = (tabId) => {
         if (tabId === 'logout') {
             logout();

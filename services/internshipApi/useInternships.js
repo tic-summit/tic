@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { baseURL } from '../baseUrl';
+import { baseURL } from '../baseUrl.jsx';
 
 // Get all internships
 export const useInternships = (options = {}) => {
@@ -85,6 +85,77 @@ export const useInternshipCategories = () => {
     queryFn: async () => {
       const response = await axios.get(`${baseURL}/internships/categories`);
       return response.data;
+    },
+  });
+};
+
+// Create a new internship listing (Admin only)
+export const useCreateInternship = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async ({ internshipData, token }) => {
+      const response = await axios.post(
+        `${baseURL}/internships`,
+        internshipData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          }
+        }
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['internships'] });
+    },
+  });
+};
+
+// Update an internship (Admin only)
+export const useUpdateInternship = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async ({ internshipId, updateData, token }) => {
+      const response = await axios.patch(
+        `${baseURL}/internships/${internshipId}`,
+        updateData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          }
+        }
+      );
+      return response.data;
+    },
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['internships'] });
+      queryClient.invalidateQueries({ queryKey: ['internship', variables.internshipId] });
+    },
+  });
+};
+
+// Delete an internship (Admin only)
+export const useDeleteInternship = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async ({ internshipId, token }) => {
+      const response = await axios.delete(
+        `${baseURL}/internships/${internshipId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        }
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['internships'] });
     },
   });
 };

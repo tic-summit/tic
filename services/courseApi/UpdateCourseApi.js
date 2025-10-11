@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { baseURL } from '../baseUrl';
+import { baseURL } from '../baseUrl.jsx';
 
 export const useUpdateCourseStep1 = () => {
   const [isLoading, setIsLoading] = useState(false);

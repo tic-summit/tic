@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { baseURL } from "./baseUrl";
+import { baseURL } from "./baseUrl.jsx";
 
 export const useInstructorCourses = (user) => {
   const fetchCourses = async () => {

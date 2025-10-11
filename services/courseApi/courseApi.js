@@ -1,6 +1,7 @@
 import axios from 'axios';
 import api from '../api';
-import { baseURL } from '../baseUrl';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { baseURL } from '../baseUrl.jsx';
 import { useAuth } from '@/contexts/AuthContexts';
 
 
@@ -120,24 +121,189 @@ export const finalizeCourseCurriculum = async (courseId, curriculumData, token) 
   }
 };
 
-  // export const finalizeCourseCurriculum = async (courseId, curriculumData, token) => {
-  //   try {
-  //     // Transform the data to match the new backend structure
-    
+// Get all courses
+export const getAllCourses = async () => {
+  try {
+    const response = await axios.get(`${baseURL}/courses`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching courses:', error);
+    throw error;
+  }
+};
 
-  //     const response = await axios.post(
-  //       `${baseURL}/modules/${courseId}/modules`,
-  //       transformedData,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //           'Content-Type': 'application/json',
-  //         }
-  //       }
-  //     );
-  //     return response.data;
-  //   } catch (error) {
-  //     console.error('Error finalizing course curriculum:', error);
-  //     throw error;
-  //   }
-  // };
+// Get complete course details with modules, quizzes, and enrolled students
+export const getCourseById = async (courseId) => {
+  try {
+    const response = await axios.get(`${baseURL}/courses/${courseId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching course details:', error);
+    throw error;
+  }
+};
+
+// Update course basic information (Step 1)
+export const updateCourseStep1 = async (courseId, courseData, token) => {
+  try {
+    const response = await axios.put(
+      `${baseURL}/courses/${courseId}/update-step-1`,
+      courseData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error updating course step 1:', error);
+    throw error;
+  }
+};
+
+// Update course media (Step 2) - already exists as updateCourseStep2
+
+// Update course modules and content (Step 3)
+export const updateCourseStep3 = async (courseId, curriculumData, token) => {
+  try {
+    const response = await axios.put(
+      `${baseURL}/courses/${courseId}/update-step-3`,
+      curriculumData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error updating course step 3:', error);
+    throw error;
+  }
+};
+
+// Delete a course
+export const deleteCourse = async (courseId, token) => {
+  try {
+    const response = await axios.delete(`${baseURL}/courses/${courseId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting course:', error);
+    throw error;
+  }
+};
+
+// Get courses by a specific instructor
+export const getCoursesByInstructor = async (instructorId, token) => {
+  try {
+    const response = await axios.get(
+      `${baseURL}/courses/instructors/${instructorId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching instructor courses:', error);
+    throw error;
+  }
+};
+
+// Get enrolled courses for authenticated student
+export const getEnrolledCourses = async (studentId, token) => {
+  try {
+    const response = await axios.get(
+      `${baseURL}/courses/enrolled/${studentId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching enrolled courses:', error);
+    throw error;
+  }
+};
+
+// Get all quizzes created by an instructor
+export const getInstructorQuizzes = async (instructorId, token) => {
+  try {
+    const response = await axios.get(
+      `${baseURL}/courses/instructors/${instructorId}/quizzes`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching instructor quizzes:', error);
+    throw error;
+  }
+};
+
+// Get all modules created by an instructor
+export const getInstructorModules = async (instructorId, token) => {
+  try {
+    const response = await axios.get(
+      `${baseURL}/courses/instructors/${instructorId}/modules`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching instructor modules:', error);
+    throw error;
+  }
+};
+
+// Get modules for a course the student is enrolled in
+export const getStudentCourseModules = async (studentId, courseId, token) => {
+  try {
+    const response = await axios.get(
+      `${baseURL}/courses/${studentId}/enrolled/${courseId}/modules`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching student course modules:', error);
+    throw error;
+  }
+};
+
+// Get quizzes for a course the student is enrolled in
+export const getStudentCourseQuizzes = async (studentId, courseId, token) => {
+  try {
+    const response = await axios.get(
+      `${baseURL}/courses/${studentId}/enrolled/${courseId}/quizzes`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching student course quizzes:', error);
+    throw error;
+  }
+};

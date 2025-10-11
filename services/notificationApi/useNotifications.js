@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { baseURL } from '../baseUrl';
+import { baseURL } from '../baseUrl.jsx';
 
 // Get user notifications
 export const useNotifications = (options = {}) => {
@@ -174,6 +174,65 @@ export const useUnregisterPushToken = () => {
         data: tokenData
       });
       return response.data;
+    },
+  });
+};
+
+// Create notification (Admin only)
+export const useCreateNotification = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async ({ notificationData, token }) => {
+      const response = await axios.post(
+        `${baseURL}/notifications`,
+        notificationData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          }
+        }
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+    },
+  });
+};
+
+// Get notification settings for admin
+export const useNotificationSettings = () => {
+  return useQuery({
+    queryKey: ['notification-settings'],
+    queryFn: async () => {
+      const response = await axios.get(`${baseURL}/notifications/settings`);
+      return response.data;
+    },
+  });
+};
+
+// Update notification settings (Admin only)
+export const useUpdateNotificationSettings = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async ({ settings, token }) => {
+      const response = await axios.put(
+        `${baseURL}/notifications/settings`,
+        settings,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          }
+        }
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notification-settings'] });
     },
   });
 };
