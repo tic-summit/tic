@@ -132,14 +132,14 @@ function Header2() {
                         </div>
 
                         {/* Notifications */}
-                        <div className="relative">
+                        {/* <div className="relative">
                             <button className="p-2 hover:bg-gray-100 rounded-full">
                                 <Bell className="w-5 h-5 sm:w-6 sm:h-6" />
                             </button>
                             <div className="absolute -top-1 right-0 bg-pink-400 text-white text-xs flex items-center justify-center w-4 h-4 sm:w-5 sm:h-5 rounded-full">
                                 0
                             </div>
-                        </div>
+                        </div> */}
                     </div>
 
                     {/* Auth Buttons */}
